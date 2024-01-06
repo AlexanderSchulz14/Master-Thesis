@@ -17,6 +17,7 @@ from scipy.stats import pearsonr
 import requests as req
 import yfinance as yf
 import fredapi as fred
+import filterpy # for Kalman Filter
 
 # Get Data
 # API

@@ -15,7 +15,6 @@ from statsmodels.tools.eval_measures import rmse, aic
 from statsmodels.tsa.stattools import grangercausalitytests
 from scipy.stats import pearsonr
 import requests as req
-import yfinance as yf
 import fredapi as fred
 import filterpy # for Kalman Filter
 

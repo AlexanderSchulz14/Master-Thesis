@@ -116,3 +116,35 @@ df_us = pd.concat(df_us, axis=1).dropna()
 
 # Stationarity Check
 get_adf(df_us)
+
+
+
+# VAR
+var_us_ordered = ['GDP_US',
+                  'Infl_US',
+                  'FFR',
+                  'TS10Y2Y_US'
+                  ]
+
+df_var_us = df_us[var_us_ordered]
+
+
+model_us = VAR(df_var_us)
+print(model_us.select_order())
+
+result = model_us.fit(ic='aic')
+result.summary()
+
+# print(result.test_whiteness())
+print(result.is_stable())
+
+residuals = result.sigma_u
+resid_chol_decomp = np.linalg.cholesky(residuals)
+np.linalg.eigvals(resid_chol_decomp)
+
+
+
+# IRFs
+irfs_us = result.irf(20)
+irfs_us.plot(orth=True, signif=0.16)
+plt.show()

@@ -18,6 +18,7 @@ import requests as req
 import yfinance as yf
 import fredapi as fred
 import filterpy # for Kalman Filter
+import nelson_siegel_svensson # Nelson-Siegel YC decomposition
 
 # Get Data
 # API

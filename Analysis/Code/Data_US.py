@@ -5,6 +5,8 @@ from datetime import date, datetime
 from pandas.tseries.frequencies import to_offset
 import os
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+import plotly.graph_objects as go
 import copy
 import yfinance as yf
 import statsmodels.api as sm
@@ -66,8 +68,6 @@ ind_pro_us.rename('INDPRO', inplace=True)
 cpi_us = fred.get_series('CPIAUCSL') # convert to YoY rate
 cpi_us.rename('Infl_US', inplace=True)
 infl_us = cpi_us.pct_change(periods=12).dropna() *100
-
-infl_us.plot()
 
 
 # Investment
@@ -148,6 +148,10 @@ yields_us['Date'] = pd.to_datetime(yields_us['Date'],
 yields_us.set_index([yields_us.columns[0]], inplace=True)
 yields_us.columns = [col.replace(' ', '') for col in yields_us.columns]
 
+# Subset Yield Data as not all maturities are available for each point in time
+start_yields_us = '1972-01-01'
+yields_us_sub = yields_us.loc[start_yields_us:]
+
 
 # Get Period
 start_us = max(min(gdp_us.index),
@@ -178,39 +182,23 @@ df_us = pd.concat(df_us, axis=1).dropna()
 
 
 
-# Analysis
+# # Plots
+# x = ['3m', '6m', '12m', '24m', '36m','60m', '120m']
+# y = yields_us_sub.index
+# Z = yields_us_sub[x].to_numpy()
 
-# Stationarity Check
-get_adf(df_us)
+# # X, Y = np.meshgrid(x, y)
+# # fig = plt.figure()
+# # ax = fig.add_subplot(111, projection='3d')
+# # ax.plot_surface(X, Y, Z, cmap='viridis')
 
-
-
-# VAR
-var_us_ordered = ['GDP_US',
-                  'Infl_US',
-                  'FFR',
-                  'TS10Y2Y_US'
-                  ]
-
-df_var_us = df_us[var_us_ordered]
-
-
-model_us = VAR(df_var_us)
-print(model_us.select_order())
-
-result = model_us.fit(ic='aic')
-result.summary()
-
-# print(result.test_whiteness())
-print(result.is_stable())
-
-residuals = result.sigma_u
-resid_chol_decomp = np.linalg.cholesky(residuals)
-np.linalg.eigvals(resid_chol_decomp)
+# # # Set labels
+# # ax.set_xticks(x)
+# # ax.set_xticklabels(yields_us_sub.index.strftime('%Y-%m-%d'), rotation=45, ha='right')
+# # ax.set_xlabel('Date')
 
 
-
-# IRFs
-irfs_us = result.irf(20)
-irfs_us.plot(orth=True, signif=0.16)
-plt.show()
+# fig = go.Figure(data=[go.Surface(z=Z, x=x, y=y)])
+# fig.update_layout(title='Yield Curve',
+#                   scene = {"aspectratio": {"x": 1, "y": 1, "z": 0.75}})
+# fig.show()

@@ -17,7 +17,7 @@ from statsmodels.tsa.seasonal import seasonal_decompose
 from statsmodels.tsa.filters.hp_filter import hpfilter
 from scipy.stats import pearsonr
 import requests as req
-import yfinance as yfb
+import yfinance as yf
 from fredapi import Fred
 fred = Fred(api_key="ef7244731efdde9698fef5d547b7094f")
 import filterpy # for Kalman Filter
@@ -57,6 +57,11 @@ gdp_us = fred.get_series('GDPC1')
 gdp_us.rename('GDP_US', inplace=True)
 
 
+# Industrial Production
+ind_pro_us = fred.get_series('INDPRO')
+ind_pro_us.rename('INDPRO', inplace=True)
+
+
 # CPI
 cpi_us = fred.get_series('CPIAUCSL') # convert to YoY rate
 cpi_us.rename('Infl_US', inplace=True)
@@ -64,14 +69,39 @@ infl_us = cpi_us.pct_change(periods=12).dropna() *100
 
 infl_us.plot()
 
-# FFR
-ffr = fred.get_series('DFF') # convert daily to monthly!!!
-ffr.rename('FFR', inplace=True)
-ffr_m = ffr.resample('M', loffset='1d').mean()
+
+# Investment
+inv_us = fred.get_series('GPDIC96')
+inv_us.rename('Inv_US', inplace=True)
+
 
 # Cpaital Utilization
 cap_util_us = fred.get_series('TCU')
 cap_util_us.rename('CU_US', inplace=True)
+
+
+# FFR
+ffr = fred.get_series('DFF') 
+ffr.rename('FFR', inplace=True)
+ffr_m = ffr.resample('M', loffset='1d').mean() # convert daily to monthly!!!
+
+
+# T-Bill 3M
+tb_3m = fred.get_series('TB3MS')
+tb_3m.rename('TB_3M', inplace=True)
+
+
+# T-Note 1Y
+tb_1y = fred.get_series('DGS1')
+tb_1y.rename('DGS1', inplace=True)
+tb_1y_m = tb_1y.resample('M', loffset='1d').mean()
+
+
+# T-Bond 10Y
+tb_10y = fred.get_series('DGS10')
+tb_10y.rename('DGS10', inplace=True)
+tb_10y_m = tb_10y.resample('M', loffset='1d').mean()
+
 
 # Term Spread
 ts_10y3m_us = fred.get_series('T10Y3M')
@@ -81,6 +111,25 @@ ts_10y2y_us = fred.get_series('T10Y2Y')
 ts_10y2y_us.rename('TS10Y2Y_US', inplace=True)
 
 # y_12m = fred.get_series('TY12MCD')
+
+
+# S&P 500
+sp_500_tckr = yf.Ticker('^GSPC')
+sp_500 = sp_500_tckr.history(period='max')
+sp_500_1 = yf.download('^GSPC', 
+                       start='1970-01-01',
+                       end='2023-12-01')
+sp_500_1_m = sp_500_1.resample('M', loffset='1d').mean()
+
+
+# Financial Stress Variables
+# Excess Bond Premium (EBP)
+
+
+# Moody's Seasoned Baa Corporate Bond Yield Relative to Yield on 10-Year Treasury Constant Maturity
+corp_spread = fred.get_series('BAA10Y')
+corp_spread.rename('BAA10Y', inplace=True)
+corp_spread_m = corp_spread.resample('M', loffset='1d').mean()
 
 
 # Get Period

@@ -25,7 +25,7 @@ from fredapi import Fred
 fred = Fred(api_key="ef7244731efdde9698fef5d547b7094f")
 
 import filterpy # for Kalman Filter
-from nelson_siegel_svensson.calibrate import calibrate_ns_ols
+from nelson_siegel_svensson.calibrate import *
 
 
 
@@ -143,6 +143,7 @@ corp_spread_m = corp_spread.resample('M', loffset='1d').mean()
 
 
 # Yield Data
+os.chdir(r'C:\Users\alexa\Documents\Studium\MSc (WU)\Master Thesis\Analysis\Data')
 yields_us = pd.read_excel('LW_monthly.xlsx',
                           skiprows=8)
 
@@ -218,10 +219,23 @@ maturities_to_use = ['1m', '3m',
                      '24m', '60m',
                      '90m', '120m']
 
+
+maturities_to_use = ['3m', '6m', 
+                     '9m', '12m', 
+                     '15m', '18m',
+                     '21m', '24m',
+                     '30m', '36m',
+                     '48m', '60m',
+                     '72m', '84m',
+                     '96m', '108m',
+                     '120m']
+
+
 maturities_float = [float(mat.replace('m', '')) for mat in maturities_to_use]
 maturities_float_year = [mat/12 for mat in maturities_float]
 
-test_data = yields_us_sub.loc[:, maturities_to_use].iloc[0, :]
+date = '2019-01-01'
+test_data = yields_us_sub.loc[date, maturities_to_use]
 
 
 
@@ -235,7 +249,7 @@ print(curve)
 
 
 errors = []
-beta0_ls = []
+beta0_ls = {}
 
 for date in yields_us_sub.index:
     
@@ -248,10 +262,13 @@ for date in yields_us_sub.index:
         curve, status = calibrate_ns_ols(t, y, tau0=1.0)
         assert status.success
         print(curve.beta0)
-        beta0_ls.append(curve.beta0)
+        beta0_ls[date] = curve.beta0
         # yields_us_sub.loc[date, 'beta0'] = curve.beta0
         
     except:
         errors.append(date)
         # yields_us_sub.loc[date, 'beta0'] = 'NA'
     
+    
+    
+    sorted(beta0_ls.items(), key=lambda x:x[1], reverse=True)

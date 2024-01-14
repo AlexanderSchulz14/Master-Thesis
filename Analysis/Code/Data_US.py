@@ -20,9 +20,12 @@ from statsmodels.tsa.filters.hp_filter import hpfilter
 from scipy.stats import pearsonr
 import requests as req
 import yfinance as yf
+
 from fredapi import Fred
 fred = Fred(api_key="ef7244731efdde9698fef5d547b7094f")
+
 import filterpy # for Kalman Filter
+from nelson_siegel_svensson.calibrate import calibrate_ns_ols
 
 
 
@@ -142,10 +145,14 @@ corp_spread_m = corp_spread.resample('M', loffset='1d').mean()
 # Yield Data
 yields_us = pd.read_excel('LW_monthly.xlsx',
                           skiprows=8)
+
 yields_us.rename(columns={yields_us.columns[0]:'Date'}, inplace=True)
+
 yields_us['Date'] = pd.to_datetime(yields_us['Date'],
                                    format='%Y%m')
+
 yields_us.set_index([yields_us.columns[0]], inplace=True)
+
 yields_us.columns = [col.replace(' ', '') for col in yields_us.columns]
 
 # Subset Yield Data as not all maturities are available for each point in time
@@ -202,3 +209,49 @@ df_us = pd.concat(df_us, axis=1).dropna()
 # fig.update_layout(title='Yield Curve',
 #                   scene = {"aspectratio": {"x": 1, "y": 1, "z": 0.75}})
 # fig.show()
+
+
+
+# Nelson Siegel Decomposition playing around
+maturities_to_use = ['1m', '3m', 
+                     '6m', '12m', 
+                     '24m', '60m',
+                     '90m', '120m']
+
+maturities_float = [float(mat.replace('m', '')) for mat in maturities_to_use]
+maturities_float_year = [mat/12 for mat in maturities_float]
+
+test_data = yields_us_sub.loc[:, maturities_to_use].iloc[0, :]
+
+
+
+
+t = np.array(maturities_float_year)
+y = test_data.values
+
+curve, status = calibrate_ns_ols(t, y, tau0=1.0)
+assert status.success
+print(curve)
+
+
+errors = []
+beta0_ls = []
+
+for date in yields_us_sub.index:
+    
+    try:
+        decomp_data = yields_us_sub.loc[date, maturities_to_use]
+        
+        t = np.array(maturities_float_year)
+        y = decomp_data.values
+        
+        curve, status = calibrate_ns_ols(t, y, tau0=1.0)
+        assert status.success
+        print(curve.beta0)
+        beta0_ls.append(curve.beta0)
+        # yields_us_sub.loc[date, 'beta0'] = curve.beta0
+        
+    except:
+        errors.append(date)
+        # yields_us_sub.loc[date, 'beta0'] = 'NA'
+    

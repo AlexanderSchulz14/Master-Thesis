@@ -118,11 +118,11 @@ ts_10y2y_us.rename('TS10Y2Y_US', inplace=True)
 
 
 # S&P 500
-sp_500_tckr = yf.Ticker('^GSPC')
-sp_500 = sp_500_tckr.history(period='max')
+# sp_500_tckr = yf.Ticker('^GSPC')
+# sp_500 = sp_500_tckr.history(period='max')
 sp_500_1 = yf.download('^GSPC', 
                        start='1970-01-01',
-                       end='2023-12-01')
+                       end='2023-01-01')
 sp_500_1_m = sp_500_1.resample('M', loffset='1d').mean()
 
 
@@ -135,6 +135,11 @@ ebp = pd.read_csv('ebp_csv.csv',
 
 
 # VIX? (von Bloomberg?)
+vix = yf.download('^VIX',
+                  start='1990-01-02',
+                  end='2024-01-01')
+vix_m = vix.resample('M', loffset='1d').mean()
+
 
 
 # Moody's Seasoned Baa Corporate Bond Yield Relative to Yield on 10-Year Treasury Constant Maturity
@@ -158,7 +163,7 @@ yields_us.set_index([yields_us.columns[0]], inplace=True)
 yields_us.columns = [col.replace(' ', '') for col in yields_us.columns]
 
 # Subset Yield Data as not all maturities are available for each point in time
-start_yields_us = '1978-01-01'
+start_yields_us = '1972-01-01'
 yields_us_sub = yields_us.loc[start_yields_us:]
 yields_us_sub.to_csv("Yields_Data_Subset.csv")
 

@@ -40,7 +40,37 @@ infl_ea = fred.get_series('CPHPTT01EZM659N')
 infl_ea.rename('Infl_EA', inplace=True)
 
 
-# Yields
+
+# Short Term Interest Rate
+ea_rate_3m = fred.get_series('IR3TIB01EZM156N')
+ea_rate_3m.rename('EA_Rate_3M', inplace=True)
+
+
+# Stock Market
+eustx_50 = yf.download('^GDAXI',
+                       start='1990-01-01',
+                       end='2024-01-01')
+
+eustx_50_m = eustx_50.resample('M', loffset='1d').mean()
+
+
+# Financial Stress (VSTOXX) -> geht nur bis 2016!
+# -> Alternative: VIX fuer US & EA?
+# os.chdir(r'C:\Users\alexa\Documents\Studium\MSc (WU)\Master Thesis\Analysis\Data')
+# vstoxx = pd.read_csv('VSTOXX.csv',
+#                      skiprows=2, 
+#                      index_col=[0],
+#                      parse_dates=True,
+#                      dayfirst=True)
+
+# vstoxx_m = vstoxx.resample('M', loffset='1d').mean()
+
+# vstoxx.to_excel('VSTOXX_D_Excel.xlsx')
+# vstoxx_m.to_excel('VSTOXX_M_Excel.xlsx')
+
+
+
+# Yieldcurve Factors
 os.chdir(r'C:\Users\alexa\Documents\Studium\MSc (WU)\Master Thesis\Analysis\Data')
 factors_ea = pd.read_csv('ECB_data_full.csv',
                          usecols=['DATA_TYPE_FM', 'TIME_PERIOD', 'OBS_VALUE'],

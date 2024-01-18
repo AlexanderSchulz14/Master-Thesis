@@ -26,6 +26,7 @@ fred = Fred(api_key="ef7244731efdde9698fef5d547b7094f")
 
 import filterpy # for Kalman Filter
 from nelson_siegel_svensson.calibrate import *
+import rpy2
 
 
 
@@ -157,8 +158,17 @@ yields_us.set_index([yields_us.columns[0]], inplace=True)
 yields_us.columns = [col.replace(' ', '') for col in yields_us.columns]
 
 # Subset Yield Data as not all maturities are available for each point in time
-start_yields_us = '1972-01-01'
+start_yields_us = '1978-01-01'
 yields_us_sub = yields_us.loc[start_yields_us:]
+yields_us_sub.to_csv("Yields_Data_Subset.csv")
+
+
+
+# Beta Coefficients from R
+yields_us_sub_r = pd.read_csv('Yields_US_R.csv',
+                              index_col=[0],
+                              parse_dates=True)
+
 
 
 # Get Period
@@ -214,10 +224,10 @@ df_us = pd.concat(df_us, axis=1).dropna()
 
 
 # Nelson Siegel Decomposition playing around
-maturities_to_use = ['1m', '3m', 
-                     '6m', '12m', 
-                     '24m', '60m',
-                     '90m', '120m']
+# maturities_to_use = ['1m', '3m', 
+#                      '6m', '12m', 
+#                      '24m', '60m',
+#                      '90m', '120m']
 
 
 maturities_to_use = ['3m', '6m', 
@@ -272,3 +282,25 @@ for date in yields_us_sub.index:
     
     
     sorted(beta0_ls.items(), key=lambda x:x[1], reverse=True)
+
+
+
+
+keys = list(beta0_ls.keys())
+values = list(beta0_ls.values())
+
+plt.plot(keys, values, linestyle='-')
+plt.xlabel('Date')
+plt.ylabel('Beta_0')
+# plt.title('Dictionary Values Line Plot')
+plt.grid(True)
+plt.show()
+
+
+
+
+
+
+
+
+

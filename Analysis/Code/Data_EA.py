@@ -42,11 +42,18 @@ infl_ea.rename('Infl_EA', inplace=True)
 
 # Yields
 os.chdir(r'C:\Users\alexa\Documents\Studium\MSc (WU)\Master Thesis\Analysis\Data')
-factors_ea = pd.read_csv('ECB_data.csv',
+factors_ea = pd.read_csv('ECB_data_full.csv',
                          usecols=['DATA_TYPE_FM', 'TIME_PERIOD', 'OBS_VALUE'],
                          index_col=['TIME_PERIOD'],
                          infer_datetime_format=True)
 factors_ea.index = pd.to_datetime(factors_ea.index)
 
-factors_ea_sub = factors_ea.loc[factors_ea['DATA_TYPE_FM'].isin(['BETA0', 'BETA1', 
-                                                  'BETA2', 'TAU1'])]
+factors_ea_sub = factors_ea.loc[factors_ea['DATA_TYPE_FM'].isin(['BETA0', 
+                                                                 'BETA1', 
+                                                                 'BETA2', 
+                                                                 'TAU1'])]
+
+
+for coeff in factors_ea_sub['DATA_TYPE_FM'].unique():
+    factors_ea_sub.loc[factors_ea_sub['DATA_TYPE_FM'] == str(coeff)].plot()
+

@@ -1,23 +1,85 @@
-install.packages("YieldCurve")
+rm(list=ls())
+
+# Packages
+library(tidyverse)
 library(YieldCurve)
-
-maturities <- c(0.08333333333333333, 0.25, 0.5, 1.0, 2.0, 5.0, 7.5, 10.0)
-yields <- c(2.36180471, 2.39571285, 
-            2.44879254, 2.51586724, 
-            2.45099558, 2.43416199, 
-            2.53235959, 2.64622369)
-
-NSParameters <- Nelson.Siegel(rate = yields, maturity = maturities)
-NSParameters[,1]
+library(readxl)
+library(bsvars)
 
 
-data(FedYieldCurve)
-maturity.Fed <- c(3/12, 0.5, 1,2,3,5,7,10)
-NSParameters <- Nelson.Siegel( rate=first(FedYieldCurve,'10 month'),	maturity=maturity.Fed)
-y <- NSrates(NSParameters[5,], maturity.Fed)
-plot(maturity.Fed,FedYieldCurve[5,],main="Fitting Nelson-Siegel yield curve",
-     xlab=c("Pillars in months"), type="o")
-lines(maturity.Fed,y, col=2)
-legend("topleft",legend=c("observed yield curve","fitted yield curve"),
-       col=c(1,2),lty=1)
-grid()
+# WD
+setwd('C:/Users/alexa/Documents/Studium/MSc (WU)/Master Thesis/Analysis/Data')
+
+# Analysis
+maturities_str <- c('3m',
+                     '6m',
+                     '9m',
+                     '12m',
+                     '15m',
+                     '18m',
+                     '21m',
+                     '24m',
+                     '30m',
+                     '36m',
+                     '48m',
+                     '60m',
+                     '72m',
+                     '84m',
+                     '96m',
+                     '108m',
+                     '120m')
+
+maturities_yrs <- c(0.25,
+                  0.5,
+                  0.75,
+                  1.0,
+                  1.25,
+                  1.5,
+                  1.75,
+                  2.0,
+                  2.5,
+                  3.0,
+                  4.0,
+                  5.0,
+                  6.0,
+                  7.0,
+                  8.0,
+                  9.0,
+                  10.0)
+
+
+####################
+yields_sub_us <- read_csv('Yields_Data_Subset.csv')
+
+yields_sub_us$beta_0 <- NA
+yields_sub_us$beta_1 <- NA
+yields_sub_us$beta_2 <- NA
+
+
+
+for (i in 1:nrow(yields_sub_us)) {
+  yields_ls <- yields_sub_us[i, maturities_str]
+  NSParameters <- Nelson.Siegel(rate = yields_ls, maturity = maturities_yrs)
+  yields_sub_us[i, c('beta_0')] <- NSParameters[,1]
+  yields_sub_us[i, c('beta_1')] <- NSParameters[,2]
+  yields_sub_us[i, c('beta_2')] <- NSParameters[,3]
+  
+}
+
+
+which.max(yields_sub_us$beta_0)
+which.min(yields_sub_us$beta_0)
+
+yields_sub_us[442,1]
+
+write.csv(yields_sub_us, file = 'Yields_US_R.csv', row.names = FALSE)
+
+
+
+
+
+
+
+
+
+

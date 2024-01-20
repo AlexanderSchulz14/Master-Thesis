@@ -29,6 +29,7 @@ fred = Fred(api_key="ef7244731efdde9698fef5d547b7094f")
 import filterpy # for Kalman Filter
 from nelson_siegel_svensson.calibrate import *
 import rpy2
+import io
 
 
 

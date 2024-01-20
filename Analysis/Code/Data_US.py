@@ -5,6 +5,8 @@ from datetime import date, datetime
 from pandas.tseries.frequencies import to_offset
 import os
 import matplotlib.pyplot as plt
+import seaborn as sns
+sns.set_theme(style='darkgrid')
 from mpl_toolkits.mplot3d import Axes3D
 import plotly.graph_objects as go
 import copy
@@ -30,7 +32,7 @@ import rpy2
 
 
 
-# Functions
+# Auxiliary Functions
 # Plot Function
 def plot_data(data):
     for col in data.columns:
@@ -55,6 +57,17 @@ def get_adf(data):
         print(str(col) + ': ' + str(p_val))
 
 
+# Coefficient Approximation Function
+def get_beta_0_approx(data, time, 
+                  yield_1='3m', 
+                  yield_2='24m', 
+                  yield_3='120m'):
+    calc_data = data.loc[time, [yield_1, yield_2, yield_3]]
+    beta_0_approx = calc_data.mean()
+    
+    return beta_0_approx
+    
+    
 
 # Get Data
 # Data
@@ -174,32 +187,70 @@ yields_us_sub_r = pd.read_csv('Yields_US_R.csv',
                               index_col=[0],
                               parse_dates=True)
 
+yields_us_sub_r.rename(columns={'beta_0' : 'Level Factor',
+                                'beta_1' : 'Slope Factor',
+                                'beta_2' : 'Curvature Factor'},
+                       inplace=True)
+
+
+# Get Approximations for Coefficients (see Diebold et al. (2006))
+# Beta 0 - Level Factor
+yields_us_sub_r['y(3) + y(24) + y(120)/3'] = np.nan
+for t in yields_us_sub_r.index:
+    result_beta_0 = get_beta_0_approx(yields_us_sub_r, t)
+    yields_us_sub_r.loc[t, 'y(3) + y(24) + y(120)/3'] = result_beta_0
+    
+
+# Beta 1 - Slope Factor
+yields_us_sub_r['y(3) - y(120)'] = yields_us_sub_r['3m'] - yields_us_sub_r['120m']
+
+
+# Beta 2 - Curvature Factor
+yields_us_sub_r['2 * y(24) - y(120) - y(3)'] =  2 * yields_us_sub_r['24m'] - yields_us_sub_r['120m'] - yields_us_sub_r['3m']
+
 
 
 # Get Period
 start_us = max(min(gdp_us.index),
+               min(ind_pro_us.index),
                min(infl_us.index),
                min(ffr_m.index),
                min(cap_util_us.index),
-               min(ts_10y2y_us.index))
+               min(yields_us_sub_r.index),
+               min(tb_3m.index),
+               min(sp_500_1_m.index)
+            #    min(vix_m.index),
+            #    min(ts_10y2y_us.index)
+               )
 
 
 
 end_us = min(max(gdp_us.index),
+               max(ind_pro_us.index),
                max(infl_us.index),
                max(ffr_m.index),
                max(cap_util_us.index),
-               max(ts_10y2y_us.index))
+               max(yields_us_sub_r.index),
+               max(tb_3m.index),
+               max(sp_500_1_m.index)
+            #    max(vix_m.index),
+            #    max(ts_10y2y_us.index)
+               )
 
 
 
 
 # Merge Data
 df_us = [gdp_us[start_us:end_us],
+         ind_pro_us[start_us:end_us],
          infl_us[start_us:end_us],
          ffr_m[start_us:end_us],
          cap_util_us[start_us:end_us],
-         ts_10y2y_us[start_us:end_us]]
+         yields_us_sub_r[start_us:end_us],
+         tb_3m[start_us:end_us],
+         sp_500_1_m[start_us:end_us]['Close']
+        #  ts_10y2y_us[start_us:end_us]
+         ]
 
 df_us = pd.concat(df_us, axis=1).dropna()
 
@@ -235,77 +286,124 @@ df_us = pd.concat(df_us, axis=1).dropna()
 #                      '90m', '120m']
 
 
-maturities_to_use = ['3m', '6m', 
-                     '9m', '12m', 
-                     '15m', '18m',
-                     '21m', '24m',
-                     '30m', '36m',
-                     '48m', '60m',
-                     '72m', '84m',
-                     '96m', '108m',
-                     '120m']
+# maturities_to_use = ['3m', '6m', 
+#                      '9m', '12m', 
+#                      '15m', '18m',
+#                      '21m', '24m',
+#                      '30m', '36m',
+#                      '48m', '60m',
+#                      '72m', '84m',
+#                      '96m', '108m',
+#                      '120m']
 
 
-maturities_float = [float(mat.replace('m', '')) for mat in maturities_to_use]
-maturities_float_year = [mat/12 for mat in maturities_float]
+# maturities_float = [float(mat.replace('m', '')) for mat in maturities_to_use]
+# maturities_float_year = [mat/12 for mat in maturities_float]
 
-date = '2019-01-01'
-test_data = yields_us_sub.loc[date, maturities_to_use]
-
-
+# date = '2019-01-01'
+# test_data = yields_us_sub.loc[date, maturities_to_use]
 
 
-t = np.array(maturities_float_year)
-y = test_data.values
-
-curve, status = calibrate_ns_ols(t, y, tau0=1.0)
-assert status.success
-print(curve)
 
 
-errors = []
-beta0_ls = {}
+# t = np.array(maturities_float_year)
+# y = test_data.values
 
-for date in yields_us_sub.index:
+# curve, status = calibrate_ns_ols(t, y, tau0=1.0)
+# assert status.success
+# print(curve)
+
+
+# errors = []
+# beta0_ls = {}
+
+# for date in yields_us_sub.index:
     
-    try:
-        decomp_data = yields_us_sub.loc[date, maturities_to_use]
+#     try:
+#         decomp_data = yields_us_sub.loc[date, maturities_to_use]
         
-        t = np.array(maturities_float_year)
-        y = decomp_data.values
+#         t = np.array(maturities_float_year)
+#         y = decomp_data.values
         
-        curve, status = calibrate_ns_ols(t, y, tau0=1.0)
-        assert status.success
-        print(curve.beta0)
-        beta0_ls[date] = curve.beta0
-        # yields_us_sub.loc[date, 'beta0'] = curve.beta0
+#         curve, status = calibrate_ns_ols(t, y, tau0=1.0)
+#         assert status.success
+#         print(curve.beta0)
+#         beta0_ls[date] = curve.beta0
+#         # yields_us_sub.loc[date, 'beta0'] = curve.beta0
         
-    except:
-        errors.append(date)
-        # yields_us_sub.loc[date, 'beta0'] = 'NA'
+#     except:
+#         errors.append(date)
+#         # yields_us_sub.loc[date, 'beta0'] = 'NA'
     
     
     
-    sorted(beta0_ls.items(), key=lambda x:x[1], reverse=True)
+#     sorted(beta0_ls.items(), key=lambda x:x[1], reverse=True)
 
 
 
 
-keys = list(beta0_ls.keys())
-values = list(beta0_ls.values())
+# keys = list(beta0_ls.keys())
+# values = list(beta0_ls.values())
 
-plt.plot(keys, values, linestyle='-')
-plt.xlabel('Date')
-plt.ylabel('Beta_0')
-# plt.title('Dictionary Values Line Plot')
-plt.grid(True)
+# plt.plot(keys, values, linestyle='-')
+# plt.xlabel('Date')
+# plt.ylabel('Beta_0')
+# # plt.title('Dictionary Values Line Plot')
+# plt.grid(True)
+# plt.show()
+
+
+# Plots
+# All Coefficients
+os.chdir(r'C:\Users\alexa\Documents\Studium\MSc (WU)\Master Thesis\Analysis')
+
+plt.figure(figsize=(15,10))
+sns.lineplot(yields_us_sub_r[['Level Factor', 'Slope Factor', 'Curvature Factor']])
+plt.legend(loc='lower right')
+
+plt.savefig('Factor_Figure.pdf', dpi=1000)
 plt.show()
 
+# Beta 0 Level Factor & Inflation
+plt.figure(figsize=(15,10))
+sns.lineplot(df_us[['Level Factor', 'y(3) + y(24) + y(120)/3', 'Infl_US']],
+             legend='auto',
+             palette=['blue', 'orange', 'green'])
+plt.legend(loc='lower right')
+
+plt.savefig('Beta_0_Figure.pdf', dpi=1000)
+plt.show()
+
+# Correlation
+df_us['Level Factor'].corr(df_us['y(3) + y(24) + y(120)/3'])
+
+df_us['Level Factor'].corr(df_us['Infl_US'])
 
 
 
+# Beta 1 Slope Factor
+plt.figure(figsize=(15,10))
+sns.lineplot(df_us[['Slope Factor', 'y(3) - y(120)']])
+plt.legend(loc='lower right')
+
+plt.savefig('Beta_1_Figure.pdf', dpi=1000)
+plt.show()
+
+# Correlation
+df_us['Slope Factor'].corr(df_us['y(3) - y(120)'])
 
 
 
+# Beta 2 - Curvature Factor
+plt.figure(figsize=(15,10))
+sns.lineplot(df_us[['Curvature Factor', '2 * y(24) - y(120) - y(3)']],
+             palette=['c', 'r'])
+plt.legend(loc='lower right')
+
+plt.savefig('Beta_2_Figure.pdf', dpi=1000)
+plt.show()
+
+# Correlation
+df_us['Curvature Factor'].corr(df_us['2 * y(24) - y(120) - y(3)'])
 
 

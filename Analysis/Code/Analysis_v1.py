@@ -66,6 +66,104 @@ ts_10y2y_us = fred.get_series('T10Y2Y')
 
 # # Analysis
 
+# # Plots
+# x = ['3m', '6m', '12m', '24m', '36m','60m', '120m']
+# y = yields_us_sub.index
+# Z = yields_us_sub[x].to_numpy()
+
+# # X, Y = np.meshgrid(x, y)
+# # fig = plt.figure()
+# # ax = fig.add_subplot(111, projection='3d')
+# # ax.plot_surface(X, Y, Z, cmap='viridis')
+
+# # # Set labels
+# # ax.set_xticks(x)
+# # ax.set_xticklabels(yields_us_sub.index.strftime('%Y-%m-%d'), rotation=45, ha='right')
+# # ax.set_xlabel('Date')
+
+
+# fig = go.Figure(data=[go.Surface(z=Z, x=x, y=y)])
+# fig.update_layout(title='Yield Curve',
+#                   scene = {"aspectratio": {"x": 1, "y": 1, "z": 0.75}})
+# fig.show()
+
+
+
+# Nelson Siegel Decomposition playing around
+# maturities_to_use = ['1m', '3m', 
+#                      '6m', '12m', 
+#                      '24m', '60m',
+#                      '90m', '120m']
+
+
+# maturities_to_use = ['3m', '6m', 
+#                      '9m', '12m', 
+#                      '15m', '18m',
+#                      '21m', '24m',
+#                      '30m', '36m',
+#                      '48m', '60m',
+#                      '72m', '84m',
+#                      '96m', '108m',
+#                      '120m']
+
+
+# maturities_float = [float(mat.replace('m', '')) for mat in maturities_to_use]
+# maturities_float_year = [mat/12 for mat in maturities_float]
+
+# date = '2019-01-01'
+# test_data = yields_us_sub.loc[date, maturities_to_use]
+
+
+
+
+# t = np.array(maturities_float_year)
+# y = test_data.values
+
+# curve, status = calibrate_ns_ols(t, y, tau0=1.0)
+# assert status.success
+# print(curve)
+
+
+# errors = []
+# beta0_ls = {}
+
+# for date in yields_us_sub.index:
+    
+#     try:
+#         decomp_data = yields_us_sub.loc[date, maturities_to_use]
+        
+#         t = np.array(maturities_float_year)
+#         y = decomp_data.values
+        
+#         curve, status = calibrate_ns_ols(t, y, tau0=1.0)
+#         assert status.success
+#         print(curve.beta0)
+#         beta0_ls[date] = curve.beta0
+#         # yields_us_sub.loc[date, 'beta0'] = curve.beta0
+        
+#     except:
+#         errors.append(date)
+#         # yields_us_sub.loc[date, 'beta0'] = 'NA'
+    
+    
+    
+#     sorted(beta0_ls.items(), key=lambda x:x[1], reverse=True)
+
+
+
+
+# keys = list(beta0_ls.keys())
+# values = list(beta0_ls.values())
+
+# plt.plot(keys, values, linestyle='-')
+# plt.xlabel('Date')
+# plt.ylabel('Beta_0')
+# # plt.title('Dictionary Values Line Plot')
+# plt.grid(True)
+# plt.show()
+
+
+
 # # Stationarity Check
 # get_adf(df_us)
 
@@ -100,3 +198,5 @@ ts_10y2y_us = fred.get_series('T10Y2Y')
 # irfs_us = result.irf(20)
 # irfs_us.plot(orth=True, signif=0.16)
 # plt.show()
+
+

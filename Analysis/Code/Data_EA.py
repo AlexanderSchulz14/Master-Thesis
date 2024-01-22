@@ -33,7 +33,7 @@ import io
 import sdmx
 
 
-# Data
+##### Data
 # Industrial Production
 ind_pro_ea = fred.get_series('EA19PRINTO01GYSAM')
 ind_pro_ea.rename('INDPRO_EA', inplace=True)
@@ -80,34 +80,6 @@ eustx_50_m = eustx_50.resample('M', loffset='1d').mean()
 
 # Yields
 
-ecb = sdmx.Client('ECB')
-def get_column(series_key):
-    column = series_key.attrib.TITLE.value
-    return column if len(column) <= 90 else column[:90] + '...'
-
-def get_unit(data_message):
-    unit_codelist = data_message.structure.attributes.get('UNIT').local_representation.enumerated
-    series_key = next(iter(data_message.data[0].series))
-    return unit_codelist[series_key.attrib.UNIT.value].name.localized_default()
-
-def get_datasets(client, dataflow_id, keys=None, startPeriod=None, endPeriod=None, data_structure_definition=None):
-    data_message = client.data(dataflow_id, key=keys, params={'startPeriod': startPeriod, 'endPeriod': endPeriod})
-
-    df = sdmx.to_pandas(data_message, datetime={'dim': 'TIME_PERIOD'})
-    columns = [get_column(series_key) for series_key in data_message.data[0].series]
-
-    return df, columns
-
-
-yc_df, yc_columns, yc_unit = get_datasets(
-    ecb,
-    'YC',
-    keys={'DATA_TYPE_FM': ['SR_10Y', 'SR_1Y'], 'INSTRUMENT_FM': ['G_N_A'], 'FREQ': 'B'},
-    startPeriod='2012',
-)
-yc_df
-
-
 entrypoint = 'https://data-api.ecb.europa.eu/service'
 resource = 'data'
 flowRef = 'YC'
@@ -127,6 +99,8 @@ yield_3m_ea = pd.read_csv(io.StringIO(response.text),
 
 yield_3m_ea.index = pd.to_datetime(yield_3m_ea.index)
 
+yield_3m_ea_m = yield_3m_ea.resample('M', loffset='1d').mean()
+
 # Yield 2Y
 key = 'B.U2.EUR.4F.G_N_A.SV_C_YM.SR_2Y'
 
@@ -139,6 +113,8 @@ yield_2y_ea = pd.read_csv(io.StringIO(response.text),
                           infer_datetime_format=True)
 
 yield_2y_ea.index = pd.to_datetime(yield_2y_ea.index)
+
+yield_2y_ea_m = yield_2y_ea.resample('M', loffset='1d').mean()
 
 # Yield 5Y
 key = 'B.U2.EUR.4F.G_N_A.SV_C_YM.SR_5Y'
@@ -153,6 +129,7 @@ yield_5y_ea = pd.read_csv(io.StringIO(response.text),
 
 yield_5y_ea.index = pd.to_datetime(yield_5y_ea.index)
 
+yield_5y_ea_m = yield_5y_ea.resample('M', loffset='1d').mean()
 
 
 # Yield 10Y
@@ -167,6 +144,8 @@ yield_10y_ea = pd.read_csv(io.StringIO(response.text),
                           infer_datetime_format=True)
 
 yield_10y_ea.index = pd.to_datetime(yield_10y_ea.index)
+
+yield_10y_ea_m = yield_10y_ea.resample('M', loffset='1d').mean()
 
 
 # Yieldcurve Factors
@@ -184,6 +163,137 @@ factors_ea_sub = factors_ea.loc[factors_ea['DATA_TYPE_FM'].isin(['BETA0',
                                                                  'TAU1'])]
 
 
+
+# Beta 0 - Level Factor
+beta_0 = pd.DataFrame(factors_ea.loc[factors_ea['DATA_TYPE_FM'] == 'BETA0', 'OBS_VALUE'])
+beta_0.rename(columns={'OBS_VALUE' : 'Level Factor'}, inplace=True)
+
+beta_0_m = beta_0.resample('M', loffset='1d').mean()
+
+# Beta 0 Approximation
+beta_0_m['y(3) + y(24) + y(120)/3'] = np.nan
+for t in beta_0_m.index:
+    yield_3m = yield_3m_ea_m.loc[t, 'OBS_VALUE']
+    yield_2y = yield_2y_ea_m.loc[t, 'OBS_VALUE']
+    yield_10y = yield_10y_ea_m.loc[t, 'OBS_VALUE']
+    
+    beta_0_m.loc[t, 'y(3) + y(24) + y(120)/3'] = (yield_3m + yield_2y + yield_10y) / 3
+    
+    
+
+# Beta 1 - Slope Factor
+beta_1 = pd.DataFrame(factors_ea.loc[factors_ea['DATA_TYPE_FM'] == 'BETA1', 'OBS_VALUE'])
+beta_1.rename(columns={'OBS_VALUE' : 'Slope Factor'}, inplace=True)
+
+beta_1_m = beta_1.resample('M', loffset='1d').mean()
+
+
+# Beta 1 Approximation
+beta_1_m['y(3) - y(120)'] = np.nan
+
+for t in beta_1_m.index:
+    spread = yield_3m_ea_m.loc[t, 'OBS_VALUE'] - yield_10y_ea_m.loc[t, 'OBS_VALUE']
+    beta_1_m.loc[t, 'y(3) - y(120)'] = spread
+
+
+# Beta 2 - Curvature Factor
+beta_2 = pd.DataFrame(factors_ea.loc[factors_ea['DATA_TYPE_FM'] == 'BETA2', 'OBS_VALUE'])
+beta_2.rename(columns={'OBS_VALUE' : 'Curvature Factor'}, inplace=True)
+
+beta_2_m = beta_2.resample('M', loffset='1d').mean()
+
+
+# Beta 2 Approximation
+beta_2_m['Curvature_Approx'] = np.nan
+
+for t in beta_2_m.index:
+    curvat_approx = 2 * yield_2y_ea_m.loc[t, 'OBS_VALUE'] - yield_10y_ea_m.loc[t, 'OBS_VALUE'] - yield_3m_ea_m.loc[t, 'OBS_VALUE']
+    beta_2_m.loc[t, 'Curvature_Approx'] = curvat_approx
+
+
+##### Plots
+os.chdir(r'C:\Users\alexa\Documents\Studium\MSc (WU)\Master Thesis\Analysis')
+
+# Factors
+plt.figure(figsize=(15,10))
+plt.plot(beta_0_m.loc[:, 'Level Factor'], label='Level Factor', 
+         color='b')
+
+plt.plot(beta_1_m.loc[:, 'Slope Factor'],
+         label='Slope Factor',
+         color='orange',
+         linestyle='--')
+
+plt.plot(beta_2_m.loc[:, 'Curvature Factor'],
+         label='Curvature Factor',
+         color='g',
+         linestyle=':')
+
+plt.legend()
+plt.savefig('Factors_Figure_EA.pdf', dpi=1000)
+plt.show()
+
+
+
+# Beta 0 & Approximation & Inflation
+plt.figure(figsize=(15,10))
+plt.plot(beta_0_m.loc[:, 'Level Factor'], label='Level Factor', 
+         color='b')
+
+plt.plot(beta_0_m.loc[:, 'y(3) + y(24) + y(120)/3'], 
+         label='y(3) + y(24) + y(120)/3',
+         linestyle='--',
+         color='orange')
+
+plt.plot(infl_ea.loc['2004-10-01':], label='Inflation EA',
+         linestyle=':',
+         color='g')
+
+plt.legend()
+plt.savefig('Beta_0_Figure_EA.pdf', dpi=1000)
+plt.show()
+
+
+
+
+
+# Beta 1 & Approximation
+plt.figure(figsize=(15,10))
+plt.plot(beta_1_m.loc[:, 'Slope Factor'],
+         label='Slope Factor',
+         color='b')
+
+plt.plot(beta_1_m.loc[:, 'y(3) - y(120)'],
+         label='y(3) - y(120)',
+         color='orange',
+         linestyle='--')
+
+plt.legend()
+plt.savefig('Beta_1_Figure_EA.pdf', dpi=1000)
+plt.show()
+
+
+
+
+
+# Beta 2 & Approximation
+plt.figure(figsize=(15,10))
+plt.plot(beta_2_m.loc[:, 'Curvature Factor'],
+         label='Curvature Factor',
+         color='c')
+
+plt.plot(beta_2_m.loc[:, 'Curvature_Approx'],
+         label='2 * y(24) - y(120) - y(3)',
+         color='red',
+         linestyle='--')
+
+plt.legend()
+plt.savefig('Beta_2_Figure_EA.pdf', dpi=1000)
+plt.show()
+
+
+
+
+
 for coeff in factors_ea_sub['DATA_TYPE_FM'].unique():
     factors_ea_sub.loc[factors_ea_sub['DATA_TYPE_FM'] == str(coeff)].plot()
-

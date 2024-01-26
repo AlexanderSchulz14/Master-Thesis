@@ -33,6 +33,12 @@ import io
 import sdmx
 
 
+
+
+
+
+
+
 ##### Data
 # Industrial Production
 ind_pro_ea = fred.get_series('EA19PRINTO01GYSAM')
@@ -99,6 +105,8 @@ yield_3m_ea = pd.read_csv(io.StringIO(response.text),
 
 yield_3m_ea.index = pd.to_datetime(yield_3m_ea.index)
 
+yield_3m_ea.rename(columns={'OBS_VALUE' : 'Y3M'}, inplace=True)
+
 yield_3m_ea_m = yield_3m_ea.resample('M', loffset='1d').mean()
 
 # Yield 2Y
@@ -114,6 +122,9 @@ yield_2y_ea = pd.read_csv(io.StringIO(response.text),
 
 yield_2y_ea.index = pd.to_datetime(yield_2y_ea.index)
 
+yield_2y_ea.rename(columns={'OBS_VALUE' : 'Y2Y'}, inplace=True)
+
+
 yield_2y_ea_m = yield_2y_ea.resample('M', loffset='1d').mean()
 
 # Yield 5Y
@@ -128,6 +139,9 @@ yield_5y_ea = pd.read_csv(io.StringIO(response.text),
                           infer_datetime_format=True)
 
 yield_5y_ea.index = pd.to_datetime(yield_5y_ea.index)
+
+yield_5y_ea.rename(columns={'OBS_VALUE' : 'Y5Y'}, inplace=True)
+
 
 yield_5y_ea_m = yield_5y_ea.resample('M', loffset='1d').mean()
 
@@ -145,7 +159,47 @@ yield_10y_ea = pd.read_csv(io.StringIO(response.text),
 
 yield_10y_ea.index = pd.to_datetime(yield_10y_ea.index)
 
+yield_10y_ea.rename(columns={'OBS_VALUE' : 'Y10Y'}, inplace=True)
+
+
 yield_10y_ea_m = yield_10y_ea.resample('M', loffset='1d').mean()
+
+
+
+# Merge Yield Data
+start_yields_ea = max(
+        min(yield_3m_ea_m.index),
+        min(yield_2y_ea_m.index),
+        min(yield_5y_ea_m.index),
+        min(yield_10y_ea_m.index)
+    )
+
+
+
+
+end_yields_ea = min(
+        max(yield_3m_ea_m.index),
+        max(yield_2y_ea_m.index),
+        max(yield_5y_ea_m.index),
+        max(yield_10y_ea_m.index)
+    )
+
+
+
+yields_ea_m = [
+    yield_3m_ea_m.loc[start_yields_ea:end_yields_ea, 'Y3M'],
+    yield_2y_ea_m.loc[start_yields_ea:end_yields_ea, 'Y2Y'],
+    yield_5y_ea_m.loc[start_yields_ea:end_yields_ea, 'Y5Y'],
+    yield_10y_ea_m.loc[start_yields_ea:end_yields_ea, 'Y10Y']
+]
+
+yields_ea_m = pd.concat(yields_ea_m, axis=1)
+
+os.chdir(r'C:\Users\alexa\Documents\Studium\MSc (WU)\Master Thesis\Analysis\Data')
+yields_ea_m.to_csv('Yields_EA.csv')
+
+
+
 
 
 # Yieldcurve Factors
@@ -209,6 +263,12 @@ beta_2_m['Curvature_Approx'] = np.nan
 for t in beta_2_m.index:
     curvat_approx = 2 * yield_2y_ea_m.loc[t, 'OBS_VALUE'] - yield_10y_ea_m.loc[t, 'OBS_VALUE'] - yield_3m_ea_m.loc[t, 'OBS_VALUE']
     beta_2_m.loc[t, 'Curvature_Approx'] = curvat_approx
+
+
+
+
+
+
 
 
 ##### Plots

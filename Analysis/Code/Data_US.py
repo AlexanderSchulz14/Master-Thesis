@@ -33,6 +33,11 @@ import io
 
 
 
+
+
+
+
+
 # Auxiliary Functions
 # Plot Function
 def plot_data(data):
@@ -69,6 +74,11 @@ def get_beta_0_approx(data, time,
     return beta_0_approx
     
     
+
+
+
+
+
 
 # Get Data
 # Data
@@ -210,50 +220,75 @@ yields_us_sub_r['y(3) - y(120)'] = yields_us_sub_r['3m'] - yields_us_sub_r['120m
 yields_us_sub_r['2 * y(24) - y(120) - y(3)'] =  2 * yields_us_sub_r['24m'] - yields_us_sub_r['120m'] - yields_us_sub_r['3m']
 
 
+# Columns to use for merge
+yield_cols_to_use = ['3m', '6m', 
+                     '9m', '12m', 
+                     '15m', '18m',
+                     '21m', '24m',
+                     '30m', '36m',
+                     '48m', '60m',
+                     '72m', '84m',
+                     '96m', '108m',
+                     '120m', 'Level Factor',
+                     'Slope Factor', 'Curvature Factor',
+                     'y(3) + y(24) + y(120)/3',
+                     'y(3) - y(120)',
+                     '2 * y(24) - y(120) - y(3)']
+
+
 
 # Get Period
-start_us = max(min(gdp_us.index),
-               min(ind_pro_us.index),
-               min(infl_us.index),
-               min(ffr_m.index),
-               min(cap_util_us.index),
-               min(yields_us_sub_r.index),
-               min(tb_3m.index),
-               min(sp_500_1_m.index)
-            #    min(vix_m.index),
-            #    min(ts_10y2y_us.index)
+start_us = max(
+    # min(gdp_us.index),
+    min(ind_pro_us.index),
+    min(infl_us.index),
+    min(ffr_m.index),
+    # min(cap_util_us.index),
+    min(yields_us_sub_r.index),
+    min(tb_3m.index),
+    min(sp_500_1_m.index),
+    min(ebp['ebp'].index)
+#    min(vix_m.index),
+#    min(ts_10y2y_us.index)
                )
 
 
 
-end_us = min(max(gdp_us.index),
-               max(ind_pro_us.index),
-               max(infl_us.index),
-               max(ffr_m.index),
-               max(cap_util_us.index),
-               max(yields_us_sub_r.index),
-               max(tb_3m.index),
-               max(sp_500_1_m.index)
-            #    max(vix_m.index),
-            #    max(ts_10y2y_us.index)
+end_us = min(
+    # max(gdp_us.index),
+    max(ind_pro_us.index),
+    max(infl_us.index),
+    max(ffr_m.index),
+    # max(cap_util_us.index),
+    max(yields_us_sub_r.index),
+    max(tb_3m.index),
+    max(sp_500_1_m.index),
+    max(ebp['ebp'].index)
+#    max(vix_m.index),
+#    max(ts_10y2y_us.index)
                )
-
 
 
 
 # Merge Data
-df_us = [gdp_us[start_us:end_us],
-         ind_pro_us[start_us:end_us],
-         infl_us[start_us:end_us],
-         ffr_m[start_us:end_us],
-         cap_util_us[start_us:end_us],
-         yields_us_sub_r[start_us:end_us],
-         tb_3m[start_us:end_us],
-         sp_500_1_m[start_us:end_us]['Close']
-        #  ts_10y2y_us[start_us:end_us]
+df_us = [
+    # gdp_us[start_us:end_us],
+    ind_pro_us[start_us:end_us],
+    infl_us[start_us:end_us],
+    ffr_m[start_us:end_us],
+    # cap_util_us[start_us:end_us],
+    yields_us_sub_r.loc[start_us:end_us, yield_cols_to_use],
+    tb_3m[start_us:end_us],
+    sp_500_1_m.loc[start_us:end_us, 'Close'],
+    ebp.loc[start_us:end_us, 'ebp']
+#  ts_10y2y_us[start_us:end_us]
          ]
 
 df_us = pd.concat(df_us, axis=1).dropna()
+
+
+
+
 
 
 
@@ -263,7 +298,7 @@ df_us = pd.concat(df_us, axis=1).dropna()
 os.chdir(r'C:\Users\alexa\Documents\Studium\MSc (WU)\Master Thesis\Analysis')
 
 plt.figure(figsize=(15,10))
-sns.lineplot(yields_us_sub_r[['Level Factor', 'Slope Factor', 'Curvature Factor']])
+sns.lineplot(df_us[['Level Factor', 'Slope Factor', 'Curvature Factor']])
 plt.legend(loc='lower right')
 
 plt.savefig('Factor_Figure.pdf', dpi=1000)

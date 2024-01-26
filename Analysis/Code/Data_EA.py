@@ -109,6 +109,26 @@ yield_3m_ea.rename(columns={'OBS_VALUE' : 'Y3M'}, inplace=True)
 
 yield_3m_ea_m = yield_3m_ea.resample('M', loffset='1d').mean()
 
+# Yield 1Y
+key = 'B.U2.EUR.4F.G_N_A.SV_C_YM.SR_1Y'
+
+request_url = entrypoint + '/' + resource + '/'+ flowRef + '/' + key + form
+response = req.get(request_url)
+
+yield_1y_ea = pd.read_csv(io.StringIO(response.text),
+                          usecols=['TIME_PERIOD', 'OBS_VALUE', 'DATA_TYPE_FM'],
+                          index_col=['TIME_PERIOD'],
+                          infer_datetime_format=True)
+
+yield_1y_ea.index = pd.to_datetime(yield_1y_ea.index)
+
+yield_1y_ea.rename(columns={'OBS_VALUE' : 'Y1Y'}, inplace=True)
+
+
+yield_1y_ea_m = yield_1y_ea.resample('M', loffset='1d').mean()
+
+
+
 # Yield 2Y
 key = 'B.U2.EUR.4F.G_N_A.SV_C_YM.SR_2Y'
 
@@ -145,6 +165,23 @@ yield_5y_ea.rename(columns={'OBS_VALUE' : 'Y5Y'}, inplace=True)
 
 yield_5y_ea_m = yield_5y_ea.resample('M', loffset='1d').mean()
 
+# Yield 7Y
+key = 'B.U2.EUR.4F.G_N_A.SV_C_YM.SR_7Y'
+
+request_url = entrypoint + '/' + resource + '/'+ flowRef + '/' + key + form
+response = req.get(request_url)
+
+yield_7y_ea = pd.read_csv(io.StringIO(response.text),
+                          usecols=['TIME_PERIOD', 'OBS_VALUE', 'DATA_TYPE_FM'],
+                          index_col=['TIME_PERIOD'],
+                          infer_datetime_format=True)
+
+yield_7y_ea.index = pd.to_datetime(yield_7y_ea.index)
+
+yield_7y_ea.rename(columns={'OBS_VALUE' : 'Y7Y'}, inplace=True)
+
+
+yield_7y_ea_m = yield_7y_ea.resample('M', loffset='1d').mean()
 
 # Yield 10Y
 key = 'B.U2.EUR.4F.G_N_A.SV_C_YM.SR_10Y'
@@ -169,8 +206,10 @@ yield_10y_ea_m = yield_10y_ea.resample('M', loffset='1d').mean()
 # Merge Yield Data
 start_yields_ea = max(
         min(yield_3m_ea_m.index),
+        min(yield_1y_ea_m.index),
         min(yield_2y_ea_m.index),
         min(yield_5y_ea_m.index),
+        min(yield_7y_ea_m.index),
         min(yield_10y_ea_m.index)
     )
 
@@ -179,8 +218,10 @@ start_yields_ea = max(
 
 end_yields_ea = min(
         max(yield_3m_ea_m.index),
+        max(yield_1y_ea_m.index),
         max(yield_2y_ea_m.index),
         max(yield_5y_ea_m.index),
+        max(yield_7y_ea_m.index),
         max(yield_10y_ea_m.index)
     )
 
@@ -188,8 +229,10 @@ end_yields_ea = min(
 
 yields_ea_m = [
     yield_3m_ea_m.loc[start_yields_ea:end_yields_ea, 'Y3M'],
+    yield_1y_ea_m.loc[start_yields_ea:end_yields_ea, 'Y1Y'],
     yield_2y_ea_m.loc[start_yields_ea:end_yields_ea, 'Y2Y'],
     yield_5y_ea_m.loc[start_yields_ea:end_yields_ea, 'Y5Y'],
+    yield_7y_ea_m.loc[start_yields_ea:end_yields_ea, 'Y7Y'],
     yield_10y_ea_m.loc[start_yields_ea:end_yields_ea, 'Y10Y']
 ]
 
@@ -202,7 +245,7 @@ yields_ea_m.to_csv('Yields_EA.csv')
 
 
 
-# Yieldcurve Factors
+# Yieldcurve Factors ECB
 os.chdir(r'C:\Users\alexa\Documents\Studium\MSc (WU)\Master Thesis\Analysis\Data')
 factors_ea = pd.read_csv('ECB_data_full.csv',
                          usecols=['DATA_TYPE_FM', 'TIME_PERIOD', 'OBS_VALUE'],
@@ -265,7 +308,13 @@ for t in beta_2_m.index:
     beta_2_m.loc[t, 'Curvature_Approx'] = curvat_approx
 
 
+# Yieldcurve Factors own Calculation (in R using ECB Spot Yields)
+os.chdir(r'C:\Users\alexa\Documents\Studium\MSc (WU)\Master Thesis\Analysis\Data')
 
+yields_ea_m_r = pd.read_csv('Yields_EA_R.csv',
+                            index_col=[0],
+                            parse_dates=True,
+                            infer_datetime_format=True)
 
 
 
@@ -274,7 +323,7 @@ for t in beta_2_m.index:
 ##### Plots
 os.chdir(r'C:\Users\alexa\Documents\Studium\MSc (WU)\Master Thesis\Analysis')
 
-# Factors
+# Factors ECB
 plt.figure(figsize=(15,10))
 plt.plot(beta_0_m.loc[:, 'Level Factor'], label='Level Factor', 
          color='b')
@@ -357,3 +406,81 @@ plt.show()
 
 for coeff in factors_ea_sub['DATA_TYPE_FM'].unique():
     factors_ea_sub.loc[factors_ea_sub['DATA_TYPE_FM'] == str(coeff)].plot()
+    
+    
+    
+    
+    
+    
+    
+# Plots Own Calculation
+os.chdir(r'C:\Users\alexa\Documents\Studium\MSc (WU)\Master Thesis\Analysis')
+# Factors
+plt.figure(figsize=(15,10))
+plt.plot(yields_ea_m_r['beta_0'],
+         label='Level Factor',
+         color='b')
+plt.plot(yields_ea_m_r['beta_1'],
+         label='Slope Factor',
+         color='orange',
+         linestyle='--')
+plt.plot(yields_ea_m_r['beta_2'],
+         label='Curvature Factor',
+         color='green',
+         linestyle=':')
+
+plt.legend()
+plt.savefig('Factors_Figure_EA_1.pdf', dpi=1000)
+plt.show()
+
+# Beta 0 
+plt.figure(figsize=(15,10))
+plt.plot(yields_ea_m_r['beta_0'],
+         label='Level Factor',
+         color='b')
+plt.plot(beta_0_m.loc[:, 'y(3) + y(24) + y(120)/3'], 
+         label='y(3) + y(24) + y(120)/3',
+         linestyle='--',
+         color='orange')
+plt.plot(infl_ea.loc['2004-10-01':], label='Inflation EA',
+         linestyle=':',
+         color='g')
+
+plt.legend()
+plt.savefig('Beta_0_Figure_EA_1.pdf', dpi=1000)
+plt.show()
+
+# Beta 1
+plt.figure(figsize=(15,10))
+plt.plot(yields_ea_m_r['beta_1'],
+         label='Slope Factor',
+         color='b')
+
+plt.plot(beta_1_m.loc[:, 'y(3) - y(120)'],
+         label='y(3) - y(120)',
+         color='orange',
+         linestyle='--')
+
+plt.legend()
+plt.savefig('Beta_1_Figure_EA_1.pdf', dpi=1000)
+plt.show()
+
+
+# Beta 2
+plt.figure(figsize=(15,10))
+plt.plot(yields_ea_m_r['beta_2'],
+         label='Curvature Factor',
+         color='c')
+
+plt.plot(beta_2_m.loc[:, 'Curvature_Approx'],
+         label='2 * y(24) - y(120) - y(3)',
+         color='red',
+         linestyle='--')
+
+plt.legend()
+plt.savefig('Beta_2_Figure_EA_1.pdf', dpi=1000)
+plt.show()
+
+
+
+

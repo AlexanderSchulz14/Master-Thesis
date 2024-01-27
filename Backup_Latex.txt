@@ -1,0 +1,164 @@
+\documentclass[12 pt, a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.15}
+\usepackage{tikz}
+\usepackage{tkz-tab}
+\usepackage{float}
+\usepackage{adjustbox}
+\usepackage{hyperref}
+\PassOptionsToPackage{hyphens}{url}\usepackage{hyperref}
+\usepackage{url}
+\makeatletter
+\g@addto@macro{\UrlBreaks}{\UrlOrds}
+\makeatother
+\usepackage{pdfpages}
+\usepackage[natbib, style=authoryear]{biblatex}
+\bibliography{bib.bib}
+
+\interfootnotelinepenalty=100000 
+
+\usepackage{graphicx} % Required for inserting images
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhead{} % clear all header fields
+\fancyhead[LE,RO]{}
+\fancyhead[LO,RE]{\slshape \leftmark}
+% \fancyhead[L]{\footnotesize{Linking the Yield Curve with the Macroeconomy - A Factor Model Approach}}
+
+
+
+
+
+\title{%Linking the Yield Curve with the Macroeconomy - \\
+%A Factor Model Approach
+    \textbf{Master Thesis} \\ [2em]
+    Modelling the Yield Curve - \\ 
+    Factoring in the Macroeconomy}
+\author{Alexander Schulz }
+
+
+\author{\Large{Alexander Schulz}\\[1em]
+\small{under the supervision of}\\[1em]
+\large{Michael Pfarrhofer, Ph.D.}}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+\pagebreak
+\newpage\null
+\thispagestyle{empty}
+\begin{center}
+    \textit{To Prof. Dr. Helmut Kramer, who not only taught me how to be a considerate economist, but, more importantly, what it means to be a loving father.}
+\end{center}
+
+\pagebreak
+\tableofcontents
+\thispagestyle{empty}
+\pagebreak
+\listoffigures
+\thispagestyle{empty}
+\listoftables
+\thispagestyle{empty}
+
+\clearpage
+\pagenumbering{arabic}
+
+\setlength{\parindent}{0em}
+\setlength{\parskip}{1em}
+
+
+\section{Introduction}
+\label{sec:intro}
+
+Over the past decade, people have become increasingly concerned about personal health. 
+Ones own health is constantly monitored and assessed using different metrics, while potential risks are forecasted and mitigated as good as possible. 
+% For this reason, various metrics have been developed and are used to approximate the health status of an individual. 
+For the masses, simplicity is key in this context as easy to understand metrics offer a good indication of one’s current health status. 
+In a similar fashion, economists, finance professionals and laypeople alike have some key metrics to assess the health of the economy. 
+Especially in times of turmoil, simple albeit highly relevant metrics often enter the center stage. 
+One of the most well-known and most studied among those key metrics is the yield curve. 
+Its various shapes, slopes and spreads are analysed, forecasted and interpreted in order to assess the health of the overall economy as well as the markets expectations of the future.
+Beware an inverted yield curve, which the market usually interprets as the onset of a recession, similar to a doctor facing elevated inflammation markers and inferring the onset of illness. 
+But analogous to a doctor, who is faced with an individual with various idiosyncratic characteristics, economic researchers are faced with a tremendous amount of information from which they try to infer a signal in order to predict future economic activity. 
+
+Though the yield curve is a key indicator for economic agents, it is often not well understood, either in a general sense and especially in regards to which factors determine the shapes and movements of the yield curve. 
+Ultimately, correctly assessing and predicting the impact of movements in the underlying factors on the yield curve enables central bank policymakers to calibrate their policies as well as giving asset managers the opportunity to position their protfolios in order to maximize returns. 
+But how is the yield curve related to the economy? 
+Is the yield curve a leading indicator for economic activity, or are economic variables the reason for shifts in the yield curve? 
+Could there even be a bidirectional link? 
+% One such key metric that is used by central bankers and hedge fund managers alike is the yield curve, where the slope, or even more simple, the spread, is used to assess the health of the overall economy as well as expectations about the future. 
+% An inverse yield curve is associated with an imminent recessions, while a positively sloped yield curve imdicates a healthy and strong economy. 
+This thesis is aimed at answering the outlined questions. 
+% On the one hand, the theoretical background of the yield curve is presented in order to understand the economic reasoning why it gained such popularity, especially given the fact that almost all recessions are preceded by a yield curve inversion. 
+% On the other hand, potential macroeconomic factors that drive yield curve movements are presented in the context of an empirical analysis. 
+Through a Nelson-Siegel decomposition of the yield curve, factors representing the level, slope and curvature are extracted \citep{nelson1987parsimonious}. 
+In a second step, following \citet{diebold2006forecasting}, a Bayesian VAR is estimated using said factors while also incorporating various economic variables in order to disentagle this messy relationship using distinct shocks and analysing the responses from each variable deducing potential interpretations regarding their relationship.
+
+The thesis is structured in the following way. 
+Chapter \ref{sec:lit_rev} offers an overview of the hitherto available literature,highlighting past findings regarding the yield curve's relevance and connection to macroeconomic factors. 
+Chapter \ref{sec:method} introduces the methodological approach as well as the data.
+% a chapter is dedicated to the theoretical background of the yield curve in general as well as introducing various modelling strategies. 
+The next section presents an empirical analysis of the US (Section \ref{sec:analysis_us}) \& Euro Area yield (Section \ref{sec:analysis_ea}) curve, where the relevance of macroeconomic variables as driver of yield curve movements is assessed. 
+Thereafter, a conclusion summarizing the main findings is provided. 
+
+% The last decade has seen a surge in personal health research/application. 
+
+
+
+
+
+
+% As mentioned before, one key variable seems to be the yield curve. 
+
+% This thesis aims at answering these questions. 
+
+
+% The thesis is structured in the following way. 
+% The first section gives a concise overview of the hitherto available literature. 
+ % Chapter 4 is concerned with the empirical analysis, where part 1 is focused on the US, while part 2 presents the findings for the Euro Area. 
+ % Finally, a conclusion is provided.
+
+\section{Literature Review}
+\label{sec:lit_rev}
+
+\section{Methodology and Data}
+\label{sec:method}
+
+\section{Analysis}
+\label{sec:analysis}
+
+\subsection{The Yield Curve and the Macroeconomy in the USA}
+\label{sec:analysis_us}
+
+\subsection{The Yield Curve and the Macroeconomy in the Euro Area}
+\label{sec:analysis_ea}
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+\addcontentsline{toc}{section}{References}
+\label{sec:references}
+\nocite{*}
+\printbibliography
+
+
+
+
+
+\pagebreak
+\addcontentsline{toc}{section}{Appendix}
+\section*{Appendix}
+\label{sec:appendix}
+
+
+
+\end{document}

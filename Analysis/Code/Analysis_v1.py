@@ -19,22 +19,164 @@ import yfinance as yf
 import fredapi as fred
 import filterpy # for Kalman Filter
 import nelson_siegel_svensson # Nelson-Siegel YC decomposition
-
+import io
 # Get Data
-# API
-fred_key = 'ef7244731efdde9698fef5d547b7094f'
+from Data_US import plot_data, get_adf, df_us
 
-fred = fred.Fred(api_key=fred_key)
+########## OLS sVAR ##########
+# Levels
+df_analysis_us = [
+    df_us['Level Factor'],
+    df_us['Slope Factor'],
+    df_us['Curvature Factor'],
+    df_us['INDPRO'],
+    df_us['Infl_US'],
+    df_us['TB_3M'],
+    df_us['ebp'],
+    df_us['S&P_500']
+]
 
-# Data
-gdp_us = fred.get_series('GDPC1')
-cpi_us = fred.get_series('CPIAUCSL') # convert to YoY rate
-ffr = fred.get_series('DFF') # convert daily to monthly!!!
-cap_util_us = fred.get_series('TCU')
-ts_10y3m_us = fred.get_series('T10Y3M')
-ts_10y2y_us = fred.get_series('T10Y2Y')
-# y_12m = fred.get_series('TY12MCD')
+df_analysis_us = pd.concat(df_analysis_us, axis=1)
 
+
+
+# Plot Data
+plot_data(df_analysis_us)
+
+
+
+# Stationarity Check
+get_adf(df_analysis_us)
+
+
+
+# Estimate sVAR
+model_us = VAR(df_analysis_us)
+print(model_us.select_order())
+
+result = model_us.fit(maxlags= 5, ic='aic')
+result.summary()
+
+# print(result.test_whiteness())
+print(result.is_stable())
+
+residuals = result.sigma_u
+resid_chol_decomp = np.linalg.cholesky(residuals)
+np.linalg.eigvals(resid_chol_decomp)
+
+
+
+# IRFs
+irfs_us = result.irf(20)
+plt.figure(figsize=(15,5))
+irfs_us.plot(orth=True, 
+             impulse='Level Factor',
+             signif=0.16)
+plt.show()
+
+plt.figure(figsize=(15,5))
+irfs_us.plot(orth=True, 
+             impulse='Slope Factor',
+             signif=0.16)
+plt.show()
+
+plt.figure(figsize=(15,5))
+irfs_us.plot(orth=True, 
+             impulse='Curvature Factor',
+             signif=0.16)
+plt.show()
+
+plt.figure(figsize=(15,5))
+irfs_us.plot(orth=True, 
+             impulse='INDPRO',
+             signif=0.16)
+plt.show()
+
+plt.figure(figsize=(15,5))
+irfs_us.plot(orth=True, 
+             impulse='Infl_US',
+             signif=0.16)
+plt.show()
+
+
+
+
+
+
+
+# Differenced Data
+df_analysis_us = [
+    df_us['Level Factor'],
+    df_us['Slope Factor'],
+    df_us['Curvature Factor'],
+    df_us['INDPRO_YoY'],
+    df_us['Infl_US'],
+    df_us['TB_3M'],
+    df_us['ebp'],
+    df_us['S&P_500_YoY']
+]
+
+df_analysis_us = pd.concat(df_analysis_us, axis=1)
+
+
+
+# Plot Data
+plot_data(df_analysis_us)
+
+
+
+# Stationarity Check
+get_adf(df_analysis_us)
+
+
+
+# Estimate sVAR
+model_us = VAR(df_analysis_us)
+print(model_us.select_order())
+
+result = model_us.fit(maxlags= 5, ic='aic')
+result.summary()
+
+# print(result.test_whiteness())
+print(result.is_stable())
+
+residuals = result.sigma_u
+resid_chol_decomp = np.linalg.cholesky(residuals)
+np.linalg.eigvals(resid_chol_decomp)
+
+
+
+# IRFs
+irfs_us = result.irf(20)
+plt.figure(figsize=(15,5))
+irfs_us.plot(orth=True, 
+             impulse='Level Factor',
+             signif=0.16)
+plt.show()
+
+plt.figure(figsize=(15,5))
+irfs_us.plot(orth=True, 
+             impulse='Slope Factor',
+             signif=0.16)
+plt.show()
+
+plt.figure(figsize=(15,5))
+irfs_us.plot(orth=True, 
+             impulse='Curvature Factor',
+             signif=0.16)
+plt.show()
+
+plt.figure(figsize=(15,5))
+irfs_us.plot(orth=True, 
+             impulse='INDPRO_YoY',
+             signif=0.16)
+plt.show()
+
+plt.figure(figsize=(15,5))
+irfs_us.plot(orth=True, 
+             impulse='Infl_US',
+             signif=0.16)
+plt.show()
 
 
 # # Get Period

@@ -1,6 +1,10 @@
 \documentclass[12 pt, a4paper]{article}
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
+\usepackage{geometry}
+\usepackage[english]{babel}
+\usepackage{ragged2e}
+\usepackage{blindtext}
 \usepackage{amsmath}
 \usepackage{graphicx}
 \usepackage{caption}
@@ -38,10 +42,13 @@
 
 \title{%Linking the Yield Curve with the Macroeconomy - \\
 %A Factor Model Approach
-    \textbf{Master Thesis} \\ [2em]
+    \textbf{Master Thesis}
+    \par\noindent\rule{\textwidth}{0.4pt}
+    \\ [1em]
     Modelling the Yield Curve - \\ 
     Factoring in the Macroeconomy}
-\author{Alexander Schulz }
+    
+\author{ \Large Alexander Schulz }
 
 
 \author{\Large{Alexander Schulz}\\[1em]
@@ -56,9 +63,16 @@
 \pagebreak
 \newpage\null
 \thispagestyle{empty}
+
+
+
 \begin{center}
+    \justifying
     \textit{To Prof. Dr. Helmut Kramer, who not only taught me how to be a considerate economist, but, more importantly, what it means to be a loving father.}
 \end{center}
+
+
+
 
 \pagebreak
 \tableofcontents
@@ -101,7 +115,7 @@ This thesis is aimed at answering the outlined questions.
 % On the one hand, the theoretical background of the yield curve is presented in order to understand the economic reasoning why it gained such popularity, especially given the fact that almost all recessions are preceded by a yield curve inversion. 
 % On the other hand, potential macroeconomic factors that drive yield curve movements are presented in the context of an empirical analysis. 
 Through a Nelson-Siegel decomposition of the yield curve, factors representing the level, slope and curvature are extracted \citep{nelson1987parsimonious}. 
-In a second step, following \citet{diebold2006forecasting}, a Bayesian VAR is estimated using said factors while also incorporating various economic variables in order to disentagle this messy relationship using distinct shocks and analysing the responses from each variable deducing potential interpretations regarding their relationship.
+In a second step, following \citet{diebold2006macroeconomy}, a Bayesian VAR is estimated using said factors while also incorporating various economic variables in order to disentagle this messy relationship using distinct shocks and analysing the responses from each variable deducing potential interpretations regarding their relationship.
 
 The thesis is structured in the following way. 
 Chapter \ref{sec:lit_rev} offers an overview of the hitherto available literature,highlighting past findings regarding the yield curve's relevance and connection to macroeconomic factors. 
@@ -130,6 +144,22 @@ Thereafter, a conclusion summarizing the main findings is provided.
 \section{Literature Review}
 \label{sec:lit_rev}
 
+This section aims at providing an overview of the hitherto available and relevant literature, focusing on identifying the potential one- or bi-directional link between the yield curve and the economy. 
+
+Asset-pricing models in the form of the CAPM have been the backbone of finance and financial economics ever since the 1960s \citep{perold2004capital}. 
+Presumably, due to its refining of the CAPM, one of the most well-known and applicable factor models in finance to date is the five factor model introduced by \citet{fama1992cross} and \citet{fama1993common}. 
+Factors such as the market $\beta$ or the size  $\beta$ factor, representing an approximation for the systematic (market) risk of a security and of a firms size, respectively, are key metrics widely used and heavily relied on in fields such as portfolio or risk management. 
+
+Though \citet{fama1993common} investigate the cross-sectional relationship between stock and bond returns, arguably, their model is primarily applied by equity investors. The relevance of the two bond market factors for (ex-post-realized) bond returns, maturity and default risk, are more stylized facts than actually useful for bond investors. 
+Fortunately, another factor model, which forms the backbone of factor models as applicable to fixed-income securities, chiefly regarding the importance of term structure of yields, has been the seminal work by \citet{nelson1987parsimonious}. 
+Through their simple yet highly applicable model, the authors have provided a framework, which not only forms the basis of this thesis's methodological approach, but whose value was and still is also 
+ recognized by researchers and professionals alike\footnote{An overview regarding the methodology adopted by central banks in order to model yield curves is provided by \citet{bis2005zero}}.
+Despite the fact that various authors have proposed extensions to the Nelson-Siegel model, e.g. works including \cite{svensson1994estimating} and \cite{soderlind1997new}, their empirical benefit has been negligible \citep{diebold2006forecasting}. 
+
+Among the central contributions regarding the yields-to-macro relationship have come from \citet{estrella1991term}, \citet{estrella1995term} and \citet{estrella1996yield}, respectively. Through their probit model approach ... 
+
+The main paper serving as an inspiration and template alike for this thesis is the seminal work by \citet{diebold2006macroeconomy}. 
+
 \section{Methodology and Data}
 \label{sec:method}
 
@@ -147,7 +177,7 @@ Thereafter, a conclusion summarizing the main findings is provided.
 
 \addcontentsline{toc}{section}{References}
 \label{sec:references}
-\nocite{*}
+% \nocite{*}
 \printbibliography
 
 

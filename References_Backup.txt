@@ -9,6 +9,14 @@
   publisher={Elsevier}
 }
 
+@article{bis2005zero,
+  title={Zero-coupon yield curves estimated by central banks},
+  author={BIS, MD},
+  journal={BIS papers},
+  volume={25},
+  year={2005}
+}
+
 @article{brousseau2002functional,
   title={The functional form of yield curves},
   author={Brousseau, Vincent},
@@ -77,6 +85,30 @@
   year={2007},
   publisher={Elsevier}
 }
+
+@article{fama1992cross,
+  title={The cross-section of expected stock returns},
+  author={Fama, Eugene F and French, Kenneth R},
+  journal={the Journal of Finance},
+  volume={47},
+  number={2},
+  pages={427--465},
+  year={1992},
+  publisher={Wiley Online Library}
+}
+
+@article{fama1993common,
+  title={Common risk factors in the returns on stocks and bonds},
+  author={Fama, Eugene F and French, Kenneth R},
+  journal={Journal of financial economics},
+  volume={33},
+  number={1},
+  pages={3--56},
+  year={1993},
+  publisher={Elsevier}
+}
+
+
 
 @article{Furlanetto_2017,
     author = {Furlanetto, Francesco and Ravazzolo, Francesco and Sarferaz, Samad},
@@ -195,6 +227,17 @@
   publisher={ECB Statistics Paper}
 }
 
+@article{perold2004capital,
+  title={The capital asset pricing model},
+  author={Perold, Andr{\'e} F},
+  journal={Journal of economic perspectives},
+  volume={18},
+  number={3},
+  pages={3--24},
+  year={2004},
+  publisher={American Economic Association}
+}
+
 @article{rudebusch1998measures,
   title={Do measures of monetary policy in a VAR make sense?},
   author={Rudebusch, Glenn D},
@@ -213,6 +256,24 @@
   pages={906--926},
   year={2008},
   publisher={Oxford University Press Oxford, UK}
+}
+
+@article{soderlind1997new,
+  title={New techniques to extract market expectations from financial instruments},
+  author={S{\"o}derlind, Paul and Svensson, Lars},
+  journal={Journal of Monetary Economics},
+  volume={40},
+  number={2},
+  pages={383--429},
+  year={1997},
+  publisher={Elsevier}
+}
+
+@misc{svensson1994estimating,
+  title={Estimating and interpreting forward interest rates: Sweden 1992-1994},
+  author={Svensson, Lars EO},
+  year={1994},
+  publisher={National bureau of economic research Cambridge, Mass., USA}
 }
 
 @article{wu2001monetary,

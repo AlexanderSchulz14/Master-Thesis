@@ -539,6 +539,18 @@
   publisher={MIT press}
 }
 
+@article{stock_watson_2001,
+Author = {Stock, James H. and W.Watson, Mark},
+Title = {Forecasting Output and Inflation: The Role of Asset Prices},
+Journal = {Journal of Economic Literature},
+Volume = {41},
+Number = {3},
+Year = {2003},
+Month = {September},
+Pages = {788-829},
+DOI = {10.1257/002205103322436197},
+URL = {https://www.aeaweb.org/articles?id=10.1257/002205103322436197}}
+
 @article{stock2003did,
   title={How did leading indicator forecasts perform during the 2001 recession?},
   author={Stock, James H and Watson, Mark W},

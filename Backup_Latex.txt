@@ -105,13 +105,13 @@ Beware an inverted yield curve, which the market usually interprets as the onset
 But analogous to a doctor, who is faced with an individual with various idiosyncratic characteristics, economic researchers are faced with a tremendous amount of information from which they try to infer a signal in order to predict future economic activity. 
 
 Though the yield curve is a key indicator for economic agents, it is often not well understood, either in a general sense and especially in regards to which factors determine the shapes and movements of the yield curve. 
-Ultimately, correctly assessing and predicting the impact of movements in the underlying factors on the yield curve enables central bank policymakers to calibrate their policies as well as giving asset managers the opportunity to position their protfolios in order to maximize returns. 
+Ultimately, correctly assessing and predicting the impact of movements in the underlying factors on the yield curve enables central bank policymakers to calibrate their policies as well as giving asset managers the opportunity to position their portfolios in order to maximize returns. 
 But how is the yield curve related to the economy? 
 Is the yield curve a leading indicator for economic activity, or are economic variables the reason for shifts in the yield curve? 
 Could there even be a bidirectional link? 
 % One such key metric that is used by central bankers and hedge fund managers alike is the yield curve, where the slope, or even more simple, the spread, is used to assess the health of the overall economy as well as expectations about the future. 
 % An inverse yield curve is associated with an imminent recessions, while a positively sloped yield curve imdicates a healthy and strong economy. 
-This thesis is aimed at answering the outlined questions. 
+This thesis is aimed at answering these questions. 
 % On the one hand, the theoretical background of the yield curve is presented in order to understand the economic reasoning why it gained such popularity, especially given the fact that almost all recessions are preceded by a yield curve inversion. 
 % On the other hand, potential macroeconomic factors that drive yield curve movements are presented in the context of an empirical analysis. 
 Through a Nelson-Siegel decomposition of the yield curve, factors representing the level, slope and curvature are extracted \citep{nelson1987parsimonious}. 
@@ -144,24 +144,83 @@ Thereafter, a conclusion summarizing the main findings is provided.
 \section{Literature Review}
 \label{sec:lit_rev}
 
-This section aims at providing an overview of the hitherto available and relevant literature, focusing on identifying the potential one- or bi-directional link between the yield curve and the economy. 
+This section aims at providing an overview of the hitherto available and relevant literature, focusing on identifying the potential one- or bi-directional link between the yield curve and the economy a distinction introduced by \citet{diebold2006macroeconomy}. 
 
-Asset-pricing models in the form of the CAPM have been the backbone of finance and financial economics ever since the 1960s \citep{perold2004capital}. 
-Presumably, due to its refining of the CAPM, one of the most well-known and applicable factor models in finance to date is the five factor model introduced by \citet{fama1992cross} and \citet{fama1993common}. 
-Factors such as the market $\beta$ or the size  $\beta$ factor, representing an approximation for the systematic (market) risk of a security and of a firms size, respectively, are key metrics widely used and heavily relied on in fields such as portfolio or risk management. 
+% Asset-pricing models in the form of the CAPM have been the backbone of finance and financial economics ever since the 1960s \citep{perold2004capital}. 
+% Presumably, due to its refining of the CAPM, one of the most well-known and applicable factor models in finance to date is the five factor model introduced by \citet{fama1992cross} and \citet{fama1993common}. 
+% Factors such as the market $\beta$ or the size  $\beta$ factor, representing an approximation for the systematic (market) risk of a security and of a firms size, respectively, are key metrics widely used and heavily relied upon in fields such as portfolio or risk management. 
 
-Though \citet{fama1993common} investigate the cross-sectional relationship between stock and bond returns, arguably, their model is primarily applied by equity investors. The relevance of the two bond market factors for (ex-post-realized) bond returns, maturity and default risk, are more stylized facts than actually useful for bond investors. 
-Fortunately, another factor model, which forms the backbone of factor models as applicable to fixed-income securities, chiefly regarding the importance of term structure of yields, has been the seminal work by \citet{nelson1987parsimonious}. 
-Through their simple yet highly applicable model, the authors have provided a framework, which not only forms the basis of this thesis's methodological approach, but whose value was and still is also 
- recognized by researchers and professionals alike\footnote{An overview regarding the methodology adopted by central banks in order to model yield curves is provided by \citet{bis2005zero}}.
-Despite the fact that various authors have proposed extensions to the Nelson-Siegel model, e.g. works including \cite{svensson1994estimating} and \cite{soderlind1997new}, their empirical benefit has been negligible \citep{diebold2006forecasting}. 
+% Though \citet{fama1993common} investigate the cross-sectional relationship between stock and bond returns, arguably, their model is primarily applied by equity investors. The relevance of the two bond market factors for (ex-post-realized) bond returns, maturity and default risk, are more stylized facts than actually useful for bond investors. 
+% Fortunately, another factor model, which forms the backbone of factor models as applicable to fixed-income securities, chiefly regarding the importance of term structure of yields, has been the seminal work by \citet{nelson1987parsimonious}. 
+% Decomposing the well studied albeit the often not-so-well understood yield curve into three factors paved the way for a more deep understanding not only of the term structure of interest rates per se, but also its relationship to other domains such as the macroeconomy. 
+% Through their simple yet highly applicable model, the authors have provided a framework, which not only forms the basis of this thesis's methodological approach, but whose value was and still is also 
+%  recognized by researchers and professionals alike\footnote{An overview regarding the methodology adopted by central banks in order to model yield curves is provided by \citet{bis2005zero}}.
+% Despite the fact that various authors have proposed extensions to the Nelson-Siegel model, e.g. works including \cite{svensson1994estimating} and \cite{soderlind1997new}, their empirical benefit has been negligible \citep{diebold2006forecasting}, which is why countless researchers as well as this thesis harnesses this comparatively simple modelling strategy. 
 
-Among the central contributions regarding the yields-to-macro relationship have come from \citet{estrella1991term}, \citet{estrella1995term} and \citet{estrella1996yield}, respectively. Through their probit model approach ... 
 
-The main paper serving as an inspiration and template alike for this thesis is the seminal work by \citet{diebold2006macroeconomy}. 
+% Note that the term spread is the estimated beta_1 factor!!! (-1 * beta_1 to be precise)
+Some of the central contributions regarding the yields-to-macro relationship have come from \citet{harvey1988real}, who shows that the expected real term structure contains information about future consumption growth.
+\citet{estrella1991term}, \citet{estrella1995term} and \citet{estrella1996yield}, use probit model approach, modelling the probability of a recession as a function of the term spread, through which the authors have provided some remarkable results corroborating the hypothesis in regard to the relevance of the yield curve for (future) macroeconomic activity, at least for the US and other major European economies such as Germany, the UK and France.
+In a similar fashion, \citet{bernard1996} extend the analysis to other major economies and confirm the finding that the term spread offers significant information regarding future recessions, also in countries such as Canada, Belgium and the Netherlands. Solely for Japan the significance is limited, which can possibly be attributed to differences in financial regulation and the fact that interest rates in Japan did not fully reflect market participants expectations of the future path of the economy \citep{bernard1996}. 
+In this context, \citet{evgenidis2018yield} offer a meta-analysis of the yields-to-macro view, again focusing on the yield spread's ability to forecast economic activity. Although they again corroborate the findings of the previous 30 years, they note that the modelling strategy should take non-linearities into account as well as underlining the importance of monetary policy variables, as some predictive power of the yield spread is attributed to expectations about future monetary policy. The authors also note that there still is no widely accepted theory explaining the usefulness of the yield curve. 
+Apart from these promising studies affirming one's confidence on the yields-to-macro view, authors such as \citet{dotsey1998predictive} and \citet{stock_watson_2001} note that yields (spreads) have somewhat lost their predictive ability ever since the 1980s. 
+
+On the spectrum of authors leaning on a macro-to-yields approach, central research has come from \citet{evans1998monetary}, \citet{ang2003no} and \citet{evans2007economic}, all using some variation of a VAR framework. 
+
+By using three different identification strategies within a VAR setting, \citet{evans1998monetary} find that monetary policy shocks primarily  have a significant effect on short-term interest rates while also reducing expected inflation, implying a rise in the real interest rate. 
+The authors interpret this as monetary policy having a significant effect on the yield curve through a liquidity, rather than an expected inflation effect. 
+Though delivering promising results of a potential macro-to-yields relationship, one key weakness is the sole focus on monetary policy shocks alone, whilst excluding other macro variables. 
+Counteracting these shortcomings and extending their previous research, \citet{evans2007economic} include other macro variables, such as technology, fiscal policy and preferences for current consumption, predominantly derived from previous research on DSGE models. As before, they conclude that, apart from fiscal policy shocks, macroeconomic factors such as technology are able to explain a large part of yields movements along the short- to medium- end of the curve. 
+
+
+\citet{ang2003no} extend this research. By including multiple macro variables into a multi-factor model of the term structure, using the assumption of no-arbitrage as identifying restrictions, they find that macro variables explain a tremendous amount of the variation in bond yields, especially at the short-end of the curve, where the main drivers are shocks to inflation. This is consistent with the previous findings by \citet{evans1998monetary}. 
+The authors also conclude that incorporating macro factors in latent factor term structure models enhances out-of-sample forecasts. 
+
+Taking the stance of the opposite direction of causality, i.e. yields-to-macro, \citet{ang2006does} offer a comparison to previous research of \citet{estrella1991term} etc. 
+Through estimating a relatively simple VAR only including a set of yields and GDP growth, they conclude that the nominal short rate dominates the slope of the yield curve in predicting future economic activity. 
+% \citet{evans2007economic}
+% \citet{evans1998monetary}
+
+Some other notable contributions in the realm of linking the macroeconomy and the yield curve have come from \citet{dewachter2006macro} and \citet{rudebusch2008macro}. 
+Both sets of authors extend the latent factor model of the term structure with macroeconomic factors. 
+The former specifically reference to \citet{ang2003no} in the context of a possible model misspecification, since previous research has apparently failed to correctly model the long end of the yield curve. 
+Through their slightly modified approach, the authors introduce long-run inflation expectations in their model and show that not only the short-end of the yield curve, but also the longer maturities are indeed driven by macroeconomic variables. 
+They also suggest interesting and seemingly plausible interpretations to the latent factors, chiefly among them finding that the level factor is closely related to the aforementioned long-run inflation expectations.
+By combining a standard no-arbitrage latent factor term structure models, where the short-term interest rate is modelled as a function of latent factors often interpreted as a level or slope factor
+% using only the obtained level and slope factors, 
+with a small scale macro model, assuming that the short-term rate is represented as a monetary policy reaction functions, such as the well known developed by \citet{taylor1993discretion}, the latter are able to combine the finance view with that of the economists. Obtaining promising results, \citet{rudebusch2008macro} offer insightful and intuitive interpretations, e.g. how the level factor and the central banks inflation target are linked, that underline the significance of a holistic approach, i.e. combining the finance with the macroeconomic view on interest rates to get a more comprehensive understanding of the relationship. 
+
+% in the form of a latent factor model of the short-term rate with that of the economists view, who primarily model the . 
+% both sets of authors extend this model with macroeconomic variables. 
+
+Among the major contributions regarding the application of the \citet{nelson1987parsimonious} method in a macroeconometric framework are \citet{diebold2006forecasting}. Since other prominent theoretical models of the yield curve, chiefly among them are the no-arbitrage as well as equilibrium models, fail to provide the tools necessary for accurate predictions, the authors try to fill this gap using a Nelson-Siegel decomposition.
+More precisely, the authors compare the term structure forecasting performance of said  strategy with that of various benchmark forecasts (e.g. random walk) in order to test their hypothesis that a Nelson-Siegel approach yields superior out-of-sample forecasting results and is thus suitable for this task. 
+Through decomposing a set of yields, representing the term structure, into three parameters, which are then assumed to be evolving as an AR(1) over time, \citet{diebold2006forecasting} obtain forecasts of the yield curve based on the forecasts of said factors.
+The authors find that this approach appears to yield superior forecasts, especially at longer horizons of one year and beyond.
+Their promising results are one of the main reasons, why a Nelson-Siegel factor model approach has been chosen for this thesis.
+Additionally, another main contribution of the authors is their theoretical as well as empirical argumentation regarding the interpretation of the Nelson-Siegel factor representing the level, slope and curvature. This interpretation is conveniently used in Section \ref{sec:analysis} to get a first glimpse how well the estimated factors approximate their theoretical counterparts. 
+
+One of the central papers serving as an inspiration and template alike for this thesis is the seminal work by \citet{diebold2006macroeconomy}. 
+Extending upon the bipartite available literature at that time, the authors are among the most significant to investigate the joint dynamics of both macro and financial variables (level, slope and curvature factors representing the yield curve). 
+They build upon the approach used by \citet{diebold2006forecasting}, using a state-space model, which simultaneously estimates the yield curve for each point in time as well as the dynamics of other variables. Through this one-step approach the authors investigate the relationship between the macroeconomy and yields, laying forth the research question of this thesis, how bond yields and the macroeconomy are linked and, more interestingly, if there even is a bi-directional relationship. 
+\citet{diebold2006macroeconomy} conclude that there is strong evidence for a macro-to yield effect and a somewhat weaker evidence for the yield curve to affect (future) macroeconomic dynamics. 
+
+Using the same two-step approach as in this thesis, some interesting contributions for emerging economies such as India and Chile, have come from \citet{kanjilal2011macroeconomic} and \citet{morales2010real}, respectively. 
+Both authors find evidence of a potential bi-directional link between macroeconomic variables and the yield curve. 
+Interestingly, \citet{kanjilal2011macroeconomic} finds a stronger evidence for the yields-to-macro direction, which supports the literature by authors such as \citet{estrella1991term} and somewhat contrasts the findings by \citet{diebold2006macroeconomy}. 
+Suitably for this thesis, \citet{morales2010real} compares the two-step estimation introduced by \citet{diebold2006forecasting} with the more complicated state space representation (one-step estimation process) by \citet{diebold2006macroeconomy} and concludes that the simplified estimation methodology does not contradict the basic intuition of the results. 
+
+Some of the latest contributions in the corresponding literature have mainly focused on how a Nelson-Siegel approach can be used in a machine learning framework, where \citet{pedersen2019survey} offers a comprehensive overview. 
+
+
 
 \section{Methodology and Data}
 \label{sec:method}
+
+A comprehensive overview of the potential methodological approaches is offered in \citet{diebold2013yield}. 
+
+
+
 
 \section{Analysis}
 \label{sec:analysis}
@@ -169,25 +228,28 @@ The main paper serving as an inspiration and template alike for this thesis is t
 \subsection{The Yield Curve and the Macroeconomy in the USA}
 \label{sec:analysis_us}
 
+
 \subsection{The Yield Curve and the Macroeconomy in the Euro Area}
 \label{sec:analysis_ea}
+
+
 
 \section{Conclusion}
 \label{sec:conclusion}
 
+
+
+\pagebreak
 \addcontentsline{toc}{section}{References}
 \label{sec:references}
 % \nocite{*}
 \printbibliography
 
-
-
-
-
 \pagebreak
 \addcontentsline{toc}{section}{Appendix}
-\section*{Appendix}
 \label{sec:appendix}
+\section*{Appendix}
+
 
 
 

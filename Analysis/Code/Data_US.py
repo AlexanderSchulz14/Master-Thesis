@@ -9,6 +9,7 @@ import seaborn as sns
 
 sns.set_theme(style="darkgrid")
 from mpl_toolkits.mplot3d import Axes3D
+from tabulate import tabulate
 
 # import plotly.graph_objects as go
 import copy
@@ -313,3 +314,15 @@ plt.show()
 
 # Correlation
 df_us["Curvature Factor"].corr(df_us["2 * y(24) - y(120) - y(3)"])
+
+
+# Tables
+yields_us_summary = df_us[yield_cols_to_use[0:17]].describe()
+yields_us_summary = yields_us_summary.loc[
+    ["mean", "std", "min", "max"]
+].T  # .T -> use transpose of summary statistics df
+
+factors_us_summaries = df_us[yield_cols_to_use[17:20]].describe()
+factors_us_summaries = factors_us_summaries.loc[
+    ["mean", "std", "min", "max"]
+].T  # .T -> use transpose of summary statistics df

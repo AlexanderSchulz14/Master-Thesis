@@ -58,7 +58,11 @@ ea_rate_3m.rename("EA_Rate_3M", inplace=True)
 # Stock Market
 eustx_50 = yf.download("^GDAXI", start="1990-01-01", end="2024-01-01")
 
-eustx_50_m = eustx_50.resample("M", loffset="1d").mean()
+eustx_50_m = eustx_50["Close"].resample("M", loffset="1d").mean()
+eustx_50_m.name = "EUSTX_50"
+
+eustx_50_m_ret = eustx_50_m.pct_change(periods=12).dropna() * 100
+eustx_50_m_ret.name = "EUSTX_50_YoY"
 
 
 # Financial Stress (VSTOXX) -> geht nur bis 2016!
@@ -205,7 +209,7 @@ yield_10y_ea.rename(columns={"OBS_VALUE": "Y10Y"}, inplace=True)
 yield_10y_ea_m = yield_10y_ea.resample("M", loffset="1d").mean()
 
 
-# Merge Yield Data
+# Merge Yield Data for Nelson-Siegel decomposition in R
 start_yields_ea = max(
     min(yield_3m_ea_m.index),
     min(yield_1y_ea_m.index),
@@ -268,9 +272,9 @@ beta_0_m = beta_0.resample("M", loffset="1d").mean()
 # Beta 0 Approximation
 beta_0_m["y(3) + y(24) + y(120)/3"] = np.nan
 for t in beta_0_m.index:
-    yield_3m = yield_3m_ea_m.loc[t, "OBS_VALUE"]
-    yield_2y = yield_2y_ea_m.loc[t, "OBS_VALUE"]
-    yield_10y = yield_10y_ea_m.loc[t, "OBS_VALUE"]
+    yield_3m = yield_3m_ea_m.loc[t, "Y3M"]
+    yield_2y = yield_2y_ea_m.loc[t, "Y2Y"]
+    yield_10y = yield_10y_ea_m.loc[t, "Y10Y"]
 
     beta_0_m.loc[t, "y(3) + y(24) + y(120)/3"] = (yield_3m + yield_2y + yield_10y) / 3
 
@@ -288,7 +292,7 @@ beta_1_m = beta_1.resample("M", loffset="1d").mean()
 beta_1_m["y(3) - y(120)"] = np.nan
 
 for t in beta_1_m.index:
-    spread = yield_3m_ea_m.loc[t, "OBS_VALUE"] - yield_10y_ea_m.loc[t, "OBS_VALUE"]
+    spread = yield_3m_ea_m.loc[t, "Y3M"] - yield_10y_ea_m.loc[t, "Y10Y"]
     beta_1_m.loc[t, "y(3) - y(120)"] = spread
 
 
@@ -306,9 +310,9 @@ beta_2_m["Curvature_Approx"] = np.nan
 
 for t in beta_2_m.index:
     curvat_approx = (
-        2 * yield_2y_ea_m.loc[t, "OBS_VALUE"]
-        - yield_10y_ea_m.loc[t, "OBS_VALUE"]
-        - yield_3m_ea_m.loc[t, "OBS_VALUE"]
+        2 * yield_2y_ea_m.loc[t, "Y2Y"]
+        - yield_10y_ea_m.loc[t, "Y10Y"]
+        - yield_3m_ea_m.loc[t, "Y3M"]
     )
     beta_2_m.loc[t, "Curvature_Approx"] = curvat_approx
 
@@ -320,6 +324,35 @@ yields_ea_m_r = pd.read_csv(
     "Yields_EA_R.csv", index_col=[0], parse_dates=True, infer_datetime_format=True
 )
 
+
+# Merge EA Data
+start_ea = max(
+    min(ind_pro_ea.index),
+    min(infl_ea.index),
+    min(ea_rate_3m.index),
+    min(eustx_50_m_ret.index),
+    min(yields_ea_m_r.index),
+)
+
+
+end_ea = min(
+    max(ind_pro_ea.index),
+    max(infl_ea.index),
+    max(ea_rate_3m.index),
+    max(eustx_50_m_ret.index),
+    max(yields_ea_m_r.index),
+)
+
+
+df_ea = [
+    ind_pro_ea[start_ea:end_ea],
+    infl_ea[start_ea:end_ea],
+    ea_rate_3m[start_ea:end_ea],
+    eustx_50_m_ret[start_ea:end_ea],
+    yields_ea_m_r[start_ea:end_ea],
+]
+
+df_ea = pd.concat(df_ea, axis=1).dropna()
 
 ##### Plots
 os.chdir(r"C:\Users\alexa\Documents\Studium\MSc (WU)\Master Thesis\Analysis")

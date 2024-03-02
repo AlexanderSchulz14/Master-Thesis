@@ -17,44 +17,42 @@ from scipy.stats import pearsonr
 import requests as req
 import yfinance as yf
 import fredapi as fred
-import filterpy # for Kalman Filter
-import nelson_siegel_svensson # Nelson-Siegel YC decomposition
+import filterpy  # for Kalman Filter
+import nelson_siegel_svensson  # Nelson-Siegel YC decomposition
 import io
+
 # Get Data
 from Data_US import plot_data, get_adf, df_us
 
 ########## OLS sVAR ##########
 # Levels
 df_analysis_us = [
-    df_us['Level Factor'],
-    df_us['Slope Factor'],
-    df_us['Curvature Factor'],
-    df_us['INDPRO'],
-    df_us['Infl_US'],
-    df_us['TB_3M'],
-    df_us['ebp'],
-    df_us['S&P_500']
+    df_us["Level Factor"],
+    df_us["Slope Factor"],
+    df_us["Curvature Factor"],
+    df_us["INDPRO"],
+    df_us["Infl_US"],
+    df_us["TB_3M"],
+    df_us["ebp"],
+    df_us["S&P_500"],
 ]
 
 df_analysis_us = pd.concat(df_analysis_us, axis=1)
-
 
 
 # Plot Data
 plot_data(df_analysis_us)
 
 
-
 # Stationarity Check
 get_adf(df_analysis_us)
-
 
 
 # Estimate sVAR
 model_us = VAR(df_analysis_us)
 print(model_us.select_order())
 
-result = model_us.fit(maxlags= 5, ic='aic')
+result = model_us.fit(maxlags=5, ic="aic")
 result.summary()
 
 # print(result.test_whiteness())
@@ -65,76 +63,57 @@ resid_chol_decomp = np.linalg.cholesky(residuals)
 np.linalg.eigvals(resid_chol_decomp)
 
 
-
 # IRFs
 irfs_us = result.irf(20)
-plt.figure(figsize=(15,5))
-irfs_us.plot(orth=True, 
-             impulse='Level Factor',
-             signif=0.16)
+plt.figure(figsize=(15, 5))
+irfs_us.plot(orth=True, impulse="Level Factor", signif=0.16)
 plt.show()
 
-plt.figure(figsize=(15,5))
-irfs_us.plot(orth=True, 
-             impulse='Slope Factor',
-             signif=0.16)
+plt.figure(figsize=(15, 5))
+irfs_us.plot(orth=True, impulse="Slope Factor", signif=0.16)
 plt.show()
 
-plt.figure(figsize=(15,5))
-irfs_us.plot(orth=True, 
-             impulse='Curvature Factor',
-             signif=0.16)
+plt.figure(figsize=(15, 5))
+irfs_us.plot(orth=True, impulse="Curvature Factor", signif=0.16)
 plt.show()
 
-plt.figure(figsize=(15,5))
-irfs_us.plot(orth=True, 
-             impulse='INDPRO',
-             signif=0.16)
+plt.figure(figsize=(15, 5))
+irfs_us.plot(orth=True, impulse="INDPRO", signif=0.16)
 plt.show()
 
-plt.figure(figsize=(15,5))
-irfs_us.plot(orth=True, 
-             impulse='Infl_US',
-             signif=0.16)
+plt.figure(figsize=(15, 5))
+irfs_us.plot(orth=True, impulse="Infl_US", signif=0.16)
 plt.show()
-
-
-
-
-
 
 
 # Differenced Data
 df_analysis_us = [
-    df_us['Level Factor'],
-    df_us['Slope Factor'],
-    df_us['Curvature Factor'],
-    df_us['INDPRO_YoY'],
-    df_us['Infl_US'],
-    df_us['TB_3M'],
-    df_us['ebp'],
-    df_us['S&P_500_YoY']
+    df_us["Level Factor"],
+    df_us["Slope Factor"],
+    df_us["Curvature Factor"],
+    df_us["INDPRO_YoY"],
+    df_us["Infl_US"],
+    df_us["TB_3M"],
+    df_us["ebp"],
+    df_us["S&P_500_YoY"],
 ]
 
 df_analysis_us = pd.concat(df_analysis_us, axis=1)
-
 
 
 # Plot Data
 plot_data(df_analysis_us)
 
 
-
 # Stationarity Check
 get_adf(df_analysis_us)
-
 
 
 # Estimate sVAR
 model_us = VAR(df_analysis_us)
 print(model_us.select_order())
 
-result = model_us.fit(maxlags= 5, ic='aic')
+result = model_us.fit(maxlags=5, ic="aic")
 result.summary()
 
 # print(result.test_whiteness())
@@ -145,37 +124,26 @@ resid_chol_decomp = np.linalg.cholesky(residuals)
 np.linalg.eigvals(resid_chol_decomp)
 
 
-
 # IRFs
 irfs_us = result.irf(20)
-plt.figure(figsize=(15,5))
-irfs_us.plot(orth=True, 
-             impulse='Level Factor',
-             signif=0.16)
+plt.figure(figsize=(15, 5))
+irfs_us.plot(orth=True, impulse="Level Factor", signif=0.16)
 plt.show()
 
-plt.figure(figsize=(15,5))
-irfs_us.plot(orth=True, 
-             impulse='Slope Factor',
-             signif=0.16)
+plt.figure(figsize=(15, 5))
+irfs_us.plot(orth=True, impulse="Slope Factor", signif=0.16)
 plt.show()
 
-plt.figure(figsize=(15,5))
-irfs_us.plot(orth=True, 
-             impulse='Curvature Factor',
-             signif=0.16)
+plt.figure(figsize=(15, 5))
+irfs_us.plot(orth=True, impulse="Curvature Factor", signif=0.16)
 plt.show()
 
-plt.figure(figsize=(15,5))
-irfs_us.plot(orth=True, 
-             impulse='INDPRO_YoY',
-             signif=0.16)
+plt.figure(figsize=(15, 5))
+irfs_us.plot(orth=True, impulse="INDPRO_YoY", signif=0.16)
 plt.show()
 
-plt.figure(figsize=(15,5))
-irfs_us.plot(orth=True, 
-             impulse='Infl_US',
-             signif=0.16)
+plt.figure(figsize=(15, 5))
+irfs_us.plot(orth=True, impulse="Infl_US", signif=0.16)
 plt.show()
 
 
@@ -187,14 +155,11 @@ plt.show()
 #                min(ts_10y2y_us.index))
 
 
-
 # end_us = min(max(gdp_us.index),
 #                max(infl_us.index),
 #                max(ffr_m.index),
 #                max(cap_util_us.index),
 #                max(ts_10y2y_us.index))
-
-
 
 
 # # Merge Data
@@ -230,16 +195,15 @@ plt.show()
 # fig.show()
 
 
-
 # Nelson Siegel Decomposition playing around
-# maturities_to_use = ['1m', '3m', 
-#                      '6m', '12m', 
+# maturities_to_use = ['1m', '3m',
+#                      '6m', '12m',
 #                      '24m', '60m',
 #                      '90m', '120m']
 
 
-# maturities_to_use = ['3m', '6m', 
-#                      '9m', '12m', 
+# maturities_to_use = ['3m', '6m',
+#                      '9m', '12m',
 #                      '15m', '18m',
 #                      '21m', '24m',
 #                      '30m', '36m',
@@ -256,8 +220,6 @@ plt.show()
 # test_data = yields_us_sub.loc[date, maturities_to_use]
 
 
-
-
 # t = np.array(maturities_float_year)
 # y = test_data.values
 
@@ -270,28 +232,25 @@ plt.show()
 # beta0_ls = {}
 
 # for date in yields_us_sub.index:
-    
+
 #     try:
 #         decomp_data = yields_us_sub.loc[date, maturities_to_use]
-        
+
 #         t = np.array(maturities_float_year)
 #         y = decomp_data.values
-        
+
 #         curve, status = calibrate_ns_ols(t, y, tau0=1.0)
 #         assert status.success
 #         print(curve.beta0)
 #         beta0_ls[date] = curve.beta0
 #         # yields_us_sub.loc[date, 'beta0'] = curve.beta0
-        
+
 #     except:
 #         errors.append(date)
 #         # yields_us_sub.loc[date, 'beta0'] = 'NA'
-    
-    
-    
+
+
 #     sorted(beta0_ls.items(), key=lambda x:x[1], reverse=True)
-
-
 
 
 # keys = list(beta0_ls.keys())
@@ -305,10 +264,8 @@ plt.show()
 # plt.show()
 
 
-
 # # Stationarity Check
 # get_adf(df_us)
-
 
 
 # # VAR
@@ -335,10 +292,7 @@ plt.show()
 # np.linalg.eigvals(resid_chol_decomp)
 
 
-
 # # IRFs
 # irfs_us = result.irf(20)
 # irfs_us.plot(orth=True, signif=0.16)
 # plt.show()
-
-

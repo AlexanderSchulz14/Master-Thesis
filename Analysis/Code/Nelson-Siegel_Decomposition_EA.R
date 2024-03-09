@@ -14,9 +14,31 @@ setwd('C:/Users/alexa/Documents/Studium/MSc (WU)/Master Thesis/Analysis/Data')
 yields_ea <- read_csv('Yields_EA.csv')
 
 # Yields to use
-cols_ea <- c('Y3M', 'Y1Y', 'Y2Y', 'Y7Y', 'Y5Y', 'Y10Y')
+cols_ea <- c('Y3M', 
+             'Y6M',
+             'Y9M',
+             'Y1Y', 
+             'Y2Y',
+             'Y3Y',
+             'Y4Y',
+             'Y5Y',
+             'Y6Y',
+             'Y7Y', 
+             'Y8Y', 
+             'Y10Y')
 
-maturities_ea <- c(0.25, 1, 2, 5, 7, 10)
+maturities_ea <- c(0.25, 
+                   0.5,
+                   0.75,
+                   1, 
+                   2, 
+                   3,
+                   4,
+                   5,
+                   6,
+                   7,
+                   8,
+                   10)
 
 yields_ea$beta_0 <- NA
 yields_ea$beta_1 <- NA

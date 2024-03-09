@@ -107,6 +107,44 @@ yield_3m_ea.rename(columns={"OBS_VALUE": "Y3M"}, inplace=True)
 
 yield_3m_ea_m = yield_3m_ea.resample("M", loffset="1d").mean()
 
+# Yield 6M
+key = "B.U2.EUR.4F.G_N_A.SV_C_YM.SR_6M"
+
+request_url = entrypoint + "/" + resource + "/" + flowRef + "/" + key + form
+response = req.get(request_url)
+
+yield_6m_ea = pd.read_csv(
+    io.StringIO(response.text),
+    usecols=["TIME_PERIOD", "OBS_VALUE", "DATA_TYPE_FM"],
+    index_col=["TIME_PERIOD"],
+    infer_datetime_format=True,
+)
+
+yield_6m_ea.index = pd.to_datetime(yield_6m_ea.index)
+
+yield_6m_ea.rename(columns={"OBS_VALUE": "Y6M"}, inplace=True)
+
+yield_6m_ea_m = yield_6m_ea.resample("M", loffset="1d").mean()
+
+# Yield 9M
+key = "B.U2.EUR.4F.G_N_A.SV_C_YM.SR_9M"
+
+request_url = entrypoint + "/" + resource + "/" + flowRef + "/" + key + form
+response = req.get(request_url)
+
+yield_9m_ea = pd.read_csv(
+    io.StringIO(response.text),
+    usecols=["TIME_PERIOD", "OBS_VALUE", "DATA_TYPE_FM"],
+    index_col=["TIME_PERIOD"],
+    infer_datetime_format=True,
+)
+
+yield_9m_ea.index = pd.to_datetime(yield_9m_ea.index)
+
+yield_9m_ea.rename(columns={"OBS_VALUE": "Y9M"}, inplace=True)
+
+yield_9m_ea_m = yield_9m_ea.resample("M", loffset="1d").mean()
+
 # Yield 1Y
 key = "B.U2.EUR.4F.G_N_A.SV_C_YM.SR_1Y"
 
@@ -148,6 +186,46 @@ yield_2y_ea.rename(columns={"OBS_VALUE": "Y2Y"}, inplace=True)
 
 yield_2y_ea_m = yield_2y_ea.resample("M", loffset="1d").mean()
 
+# Yield 3Y
+key = "B.U2.EUR.4F.G_N_A.SV_C_YM.SR_3Y"
+
+request_url = entrypoint + "/" + resource + "/" + flowRef + "/" + key + form
+response = req.get(request_url)
+
+yield_3y_ea = pd.read_csv(
+    io.StringIO(response.text),
+    usecols=["TIME_PERIOD", "OBS_VALUE", "DATA_TYPE_FM"],
+    index_col=["TIME_PERIOD"],
+    infer_datetime_format=True,
+)
+
+yield_3y_ea.index = pd.to_datetime(yield_3y_ea.index)
+
+yield_3y_ea.rename(columns={"OBS_VALUE": "Y3Y"}, inplace=True)
+
+
+yield_3y_ea_m = yield_3y_ea.resample("M", loffset="1d").mean()
+
+# Yield 4Y
+key = "B.U2.EUR.4F.G_N_A.SV_C_YM.SR_4Y"
+
+request_url = entrypoint + "/" + resource + "/" + flowRef + "/" + key + form
+response = req.get(request_url)
+
+yield_4y_ea = pd.read_csv(
+    io.StringIO(response.text),
+    usecols=["TIME_PERIOD", "OBS_VALUE", "DATA_TYPE_FM"],
+    index_col=["TIME_PERIOD"],
+    infer_datetime_format=True,
+)
+
+yield_4y_ea.index = pd.to_datetime(yield_4y_ea.index)
+
+yield_4y_ea.rename(columns={"OBS_VALUE": "Y4Y"}, inplace=True)
+
+
+yield_4y_ea_m = yield_4y_ea.resample("M", loffset="1d").mean()
+
 # Yield 5Y
 key = "B.U2.EUR.4F.G_N_A.SV_C_YM.SR_5Y"
 
@@ -168,6 +246,26 @@ yield_5y_ea.rename(columns={"OBS_VALUE": "Y5Y"}, inplace=True)
 
 yield_5y_ea_m = yield_5y_ea.resample("M", loffset="1d").mean()
 
+# Yield 6Y
+key = "B.U2.EUR.4F.G_N_A.SV_C_YM.SR_6Y"
+
+request_url = entrypoint + "/" + resource + "/" + flowRef + "/" + key + form
+response = req.get(request_url)
+
+yield_6y_ea = pd.read_csv(
+    io.StringIO(response.text),
+    usecols=["TIME_PERIOD", "OBS_VALUE", "DATA_TYPE_FM"],
+    index_col=["TIME_PERIOD"],
+    infer_datetime_format=True,
+)
+
+yield_6y_ea.index = pd.to_datetime(yield_6y_ea.index)
+
+yield_6y_ea.rename(columns={"OBS_VALUE": "Y6Y"}, inplace=True)
+
+
+yield_6y_ea_m = yield_6y_ea.resample("M", loffset="1d").mean()
+
 # Yield 7Y
 key = "B.U2.EUR.4F.G_N_A.SV_C_YM.SR_7Y"
 
@@ -187,6 +285,26 @@ yield_7y_ea.rename(columns={"OBS_VALUE": "Y7Y"}, inplace=True)
 
 
 yield_7y_ea_m = yield_7y_ea.resample("M", loffset="1d").mean()
+
+# Yield 8Y
+key = "B.U2.EUR.4F.G_N_A.SV_C_YM.SR_8Y"
+
+request_url = entrypoint + "/" + resource + "/" + flowRef + "/" + key + form
+response = req.get(request_url)
+
+yield_8y_ea = pd.read_csv(
+    io.StringIO(response.text),
+    usecols=["TIME_PERIOD", "OBS_VALUE", "DATA_TYPE_FM"],
+    index_col=["TIME_PERIOD"],
+    infer_datetime_format=True,
+)
+
+yield_8y_ea.index = pd.to_datetime(yield_8y_ea.index)
+
+yield_8y_ea.rename(columns={"OBS_VALUE": "Y8Y"}, inplace=True)
+
+
+yield_8y_ea_m = yield_8y_ea.resample("M", loffset="1d").mean()
 
 # Yield 10Y
 key = "B.U2.EUR.4F.G_N_A.SV_C_YM.SR_10Y"
@@ -212,30 +330,48 @@ yield_10y_ea_m = yield_10y_ea.resample("M", loffset="1d").mean()
 # Merge Yield Data for Nelson-Siegel decomposition in R
 start_yields_ea = max(
     min(yield_3m_ea_m.index),
+    min(yield_6m_ea_m.index),
+    min(yield_9m_ea_m.index),
     min(yield_1y_ea_m.index),
     min(yield_2y_ea_m.index),
+    min(yield_3y_ea_m.index),
+    min(yield_4y_ea_m.index),
     min(yield_5y_ea_m.index),
+    min(yield_6y_ea_m.index),
     min(yield_7y_ea_m.index),
+    min(yield_8y_ea_m.index),
     min(yield_10y_ea_m.index),
 )
 
 
 end_yields_ea = min(
     max(yield_3m_ea_m.index),
+    max(yield_6m_ea_m.index),
+    max(yield_9m_ea_m.index),
     max(yield_1y_ea_m.index),
     max(yield_2y_ea_m.index),
+    max(yield_3y_ea_m.index),
+    max(yield_4y_ea_m.index),
     max(yield_5y_ea_m.index),
+    max(yield_6y_ea_m.index),
     max(yield_7y_ea_m.index),
+    max(yield_8y_ea_m.index),
     max(yield_10y_ea_m.index),
 )
 
 
 yields_ea_m = [
     yield_3m_ea_m.loc[start_yields_ea:end_yields_ea, "Y3M"],
+    yield_6m_ea_m.loc[start_yields_ea:end_yields_ea, "Y6M"],
+    yield_9m_ea_m.loc[start_yields_ea:end_yields_ea, "Y9M"],
     yield_1y_ea_m.loc[start_yields_ea:end_yields_ea, "Y1Y"],
     yield_2y_ea_m.loc[start_yields_ea:end_yields_ea, "Y2Y"],
+    yield_3y_ea_m.loc[start_yields_ea:end_yields_ea, "Y3Y"],
+    yield_4y_ea_m.loc[start_yields_ea:end_yields_ea, "Y4Y"],
     yield_5y_ea_m.loc[start_yields_ea:end_yields_ea, "Y5Y"],
+    yield_6y_ea_m.loc[start_yields_ea:end_yields_ea, "Y6Y"],
     yield_7y_ea_m.loc[start_yields_ea:end_yields_ea, "Y7Y"],
+    yield_8y_ea_m.loc[start_yields_ea:end_yields_ea, "Y8Y"],
     yield_10y_ea_m.loc[start_yields_ea:end_yields_ea, "Y10Y"],
 ]
 

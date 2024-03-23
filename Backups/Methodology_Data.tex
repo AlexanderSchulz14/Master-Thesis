@@ -1,0 +1,189 @@
+\section{Methodology and Data}
+\label{sec:method}
+
+This section is aimed at outlining the methodology applied in this thesis. After giving a comprehensive primer on the aforementioned model of the yield curve established by \citet{nelson1987parsimonious}, the identification strategy for the yield curve model containing macroeconomic variables is introduced. Lastly, an overview of the data and its sources is offered. 
+
+The first of the two-step methodological approach applied in this thesis involves modelling the yield curve using the Nelson-Siegel three factor model. 
+The genius of the Nelson-Siegel decomposition lies within its flexibility as well as its parsimony. 
+Based on a set of observable yields, the model is able to capture a wide range of yield curve shapes. 
+Additionally, one of its core strength is its ability to enable analysts to inter- and extrapolate between yields within the sample, thus providing yields for all maturities along the curve.
+What is more, though it does not explicitly ensure the absence of arbitrage, \citet{coroneo2011arbitrage} show that the Nelson-Siegel model aligns with the assumption of no-arbitrage. 
+Given these highly promising attributes, the Nelson-Siegel approach appears to be well-suited for the task at hand.
+
+Following the representation of \citet{diebold2006macroeconomy}, the yield curve at any time $t$ is thus represented as the \citet{nelson1987parsimonious} model:
+
+\usetagform{fn}
+\begin{equation}
+\label{eq:NS_basic}
+    y_{t}(\tau)=\beta_{1t}+\beta_{2t}\left(\frac{1-\mathrm{e}^{-\lambda \tau}}{\lambda \tau}\right)+\beta_{3t}\left(\frac{1-\mathrm{e}^{-\lambda \tau}}{\lambda \tau}-\mathrm{e}^{-\lambda \tau}\right),
+\end{equation}
+\footnotetext{Mathematically, this representation can be thought of as a constant plus a Laguerre function \citep{nelson1987parsimonious}}
+
+where $t=1,\ldots, T$, $y_{t}(\tau)$ is a set of $N$ yields, each with a maturity $\tau$, used for the decomposition, $\beta_{1t}$, $\beta_{2t}$, $\beta_{3t}$ and $\lambda$ are the parameters to be estimated. 
+The regressors are also known as the factor loadings of the $\beta$ coefficients, where $\lambda$ shows their rate of decay. 
+These factor loadings are central for ensuring the flexibility to represent various yield curve shapes. 
+The loading on $\beta_{1t}$ is 1 for all maturities and is thus, interpreted as the long-term factor, while the loading on the second factor, $\beta_{2t}$ starts at 1 and decays monotonically towards 0, and thus can be viewed as a short-term factor. Finally, the loading on the third factor, $\beta_{3t}$, starts at 0, increases, but then decays back to 0, hence, it may be thought of as the medium-term factor \citep{diebold2006forecasting}. The contribution of each factor loading to the overall shape of the estimated yield curve is then given by each respective factor, e.g., $\beta_{1t}$ shows the contribution of the long-term factor, $\beta_{2t}$ that of the short-term component, while $\beta_{3t}$ illustrates the contribution of the medium-term component\citep{nelson1987parsimonious}. 
+
+As described in \citet{nelson1987parsimonious}, the estimation can be conducted in the following way. For a provisional value $\lambda$, sample values for the factor loadings are calculated. Based thereupon, the best-fitting values of the $\beta$ coefficients are estimated. This procedure is repeated over a grid of values for $\lambda$, yielding the overall best-fitting values for $\lambda$, $\beta_{1t}$, $\beta_{2t}$ and $\beta_{3t}$. 
+
+Conveniently, as demonstrated by \citet{diebold2006forecasting}, the factors $\beta_{1t}$, $\beta_{2t}$ and $\beta_{3t}$ can have an economically meaningful interpretations, i.e. they are the time-varying level, slope\footnote{As shown by \citet{diebold2006forecasting}, $\beta_{2t}$, and hence $S_{t}$, equals the negative slope, i.e., short minus long yields} and curvature factors, $L_{t}$, $S_{t}$, $C_{t}$, respectively.
+
+
+Thus, the estimated model\footnote{The estimation of the yield curve factors is conducted using the Nelson.Siegel method from the R package \href{https://cran.r-project.org/web/packages/YieldCurve/index.html}{YieldCurve}} of the yield curve used in this thesis is represented by:
+
+\usetagform{default}
+\begin{equation}
+\label{eq:NS_factor_interpretation}
+    y_{t}(\tau)=L_{t}+S_{t}\left(\frac{1-\mathrm{e}^{-\lambda \tau}}{\lambda \tau}\right)+C_{t}\left(\frac{1-\mathrm{e}^{-\lambda \tau}}{\lambda \tau}-\mathrm{e}^{-\lambda \tau}\right),
+\end{equation}
+
+In a more comprehensive vector representation, the estimation of the factors is done using the following system of linear equations, where each row corresponds to equation \ref{eq:NS_factor_interpretation} with a specific yield $y_{t}$ and a corresponding maturity $\tau_{N}$ as well as an error term $\varepsilon_{t}(\tau_{N})$:
+
+\usetagform{fn}
+\begin{equation}
+\left(\begin{array}{c}
+y_t\left(\tau_1\right) \\
+y_t\left(\tau_2\right) \\
+\vdots \\
+y_t\left(\tau_N\right)
+\end{array}\right)=\left(\begin{array}{ccc}
+1 & \frac{1-\mathrm{e}^{-\tau_1 \lambda}}{\tau_1 \lambda} & \frac{1-\mathrm{e}^{-\tau_1 \lambda}}{\tau_1 \lambda}-\mathrm{e}^{-\tau_1 \lambda} \\
+1 & \frac{1-\mathrm{e}^{-\tau_2 \lambda}}{\tau_2 \lambda} & \frac{1-\mathrm{e}^{-\tau_2 \lambda}}{\tau_2 \lambda}-\mathrm{e}^{-\tau_2 \lambda} \\
+\vdots & \vdots & \vdots \\
+1 & \frac{1-\mathrm{e}^{-\tau_N \lambda}}{\tau_N \lambda} & \frac{1-\mathrm{e}^{-\tau_N \lambda}}{\tau_N \lambda}-\mathrm{e}^{-\tau_N \lambda}
+\end{array}\right)\left(\begin{array}{c}
+L_t \\
+S_t \\
+C_t
+\end{array}\right)+\left(\begin{array}{c}
+\varepsilon_t\left(\tau_1\right) \\
+\varepsilon_t\left(\tau_2\right) \\
+\vdots \\
+\varepsilon_t\left(\tau_N\right)
+\end{array}\right)
+\end{equation}
+\footnotetext{This corresponds to the measurement equation in \citet{diebold2006macroeconomy}}
+
+Thus, for each time period $t$, a level, slope and curvature factor is estimated based on the prevailing yields contained in vector $y_{t}$ with distinct maturities $\tau_{N}$. 
+Consequently, the $L_{t}$, $S_{t}$ and $C_{t}$ factors are assumed to be an approximate representation of the yield curve at any given time $t$ and, together with the macroeconomic variables, are included in a VAR(p) model aimed at studying the link between the economy and the yield curve. 
+
+
+
+\textbf{VAR description + variable ordering $\Rightarrow$ ecbwp1276}
+
+Aforesaid VAR(p) model forms the second step of the analysis and is represented in the following way:
+% After the extraction of the three factors, the corresponding time series of the factors are included in a 
+\usetagform{default}
+\begin{equation}
+\mathbf{Y}_t=\mathbf{c}+%\sum_{i=1}^p 
+\mathbf{A}_p \mathbf{Y}_{t-p}+\mathbf{\varepsilon_t}, \ \mathbf{\varepsilon_t} \sim \mathcal{N}\left(0, \Sigma_{\varepsilon}\right),
+\end{equation}
+where $Y_{t}$ denotes the $(K \times 1)$ matrix containing $K$ endogenous variables, $c$ is a $(K \times 1)$ vector of intercept terms, $p$ denotes the maximum lag length, $A_{p}$ is a $(K \times K)$ matrix of the autoregressive coefficients for lag length $p$ and $\varepsilon_{t}$ is a $(K \times 1)$ matrix of the reduced-form error terms. 
+
+The identification strategy is based on a structural VAR approach using recursive restrictions via a Cholesky decomposition of the variance-covariance matrix of the reduced for errors $\Sigma_{\varepsilon}$. Largely following the notation of \citet{kilian2017structural}, the representation of the structural VAR, ignoring the intercept vector $c$, as well as the relationship between the reduced-form and structural form can be seen by:
+
+\usetagform{default}
+\begin{equation}
+    \begin{split}
+   \mathbf{B}_{0}\mathbf{Y}_t= \mathbf{B}_p \mathbf{Y}_{t-p}+\mathbf{\omega_t}, \ \mathbf{\omega_{t}} \sim \mathcal{N}\left(0, \mathbf{I}\right), \\
+   % \\
+    \underbrace{\mathbf{B}^{-1}_{0}\mathbf{B}_{0}}_{\mathbf{I}}\mathbf{Y}_t= \underbrace{\mathbf{B}^{-1}_{0}\mathbf{B}_p}_{\mathbf{A_p}} \mathbf{Y}_{t-p}+\underbrace{\mathbf{B}^{-1}_{0}\mathbf{\omega_t}}_{\mathbf{\varepsilon_{t}}},
+    \end{split} 
+\end{equation}
+
+where the identification of the structural shocks depends upon identifying the matrix $B^{-1}_{0}$. 
+
+% \begin{equation}
+% \underbrace{\left[\begin{array}{c}
+% \varepsilon_t^{\tilde{y}} \\
+% \varepsilon_t^\pi \\
+% \varepsilon_t^i
+% \end{array}\right]}_{\boldsymbol{\varepsilon}_{\boldsymbol{t}}}=\underbrace{\left[\begin{array}{lll}
+% b_0^{11} & b_0^{12} & b_0^{13} \\
+% b_0^{21} & b_0^{22} & b_0^{23} \\
+% b_0^{31} & b_0^{32} & b_0^{33}
+% \end{array}\right]}_{\boldsymbol{B}_0^{-1}} \underbrace{\left[\begin{array}{c}
+% e_t^{\tilde{y}} \\
+% e_t^\pi \\
+% e_t^i
+% \end{array}\right]}_{\boldsymbol{e}_{\boldsymbol{t}}}
+% \end{equation}
+
+In the analysis of section \ref{sec:analysis}, there are $K=8$ variables, where the relevant macroeconomic variables are industrial production ($IP_t$), inflation ($\pi_t$), a short-term interest rate ($i_t$), an indicator for financial stress ($FS_t$) and a variable representing the stock market ($M_t$).
+The variables representing the yield curve are the three factors obtained via the Nelson-Siegel decomposition ($L_t, S_t, C_t$). 
+Drawing from \citet{martins2010level}, who argue that financial variables may more prone to be affected instantaneously by shocks to the macroeconomy while the latter may react more slowly to shocks to the former, the variables are ordered from the most exogenous to the least exogenous. Thus, vector $Y^{\mathrm{T}}_{t} =$ 
+$\left[ 
+\begin{array}{cccccccc}
+     IP_{t}, &  \pi_{t}, & i_{t}, & FS_{t}, & L_{t}, & S_{t}, & C_{t}, & M_{t} 
+\end{array}
+\right]$. While the macro variables being ordered first seems reasonable given the fact that they often tend to react in a lagged manner, the stock market being ordered last broadly follows \citet{kilian2009impact}, assuming that the stock market reacts to shocks to each variable contemporaneously, which seems reasonable as it is generally assumed that stock prices encompass all relevant information at any time $t$ and that they instantaneously incorporate any new information available\footnote{see, for example, \citet{pearce1984stock, beaudry2006stock, ormos2011impacts} for a discussion about the response of stock prices to economic news}, while it does affect said variables only with a delay of at least one period.
+
+
+% \textbf{RESEARCH and CITE papers that show that macro variables react slowly and stock market reacts instantaneously!!!}
+
+\textbf{Structural VAR form $\Rightarrow$ Kilian, Park (2009), p. 4 ff}
+
+\textbf{SHOW Cholesky decomposition as identification strategy}. 
+
+After the estimation of the VAR(p) model, the orthogonal shocks are used to identify the relationship between the macroeconomy and the yield curve. They can be represented in the following way:
+
+% \begin{equation}
+% \left(\begin{array}{l}
+% u_t^p \\
+% u_t^{g d p} \\
+% u_t^m \\
+% u_t^i \\
+% u_t \\
+% u_t \\
+% u_t \\
+% u_t
+% \end{array}\right)=\left[\begin{array}{cccccccc}
+% b_0^{11} & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+% b_0^{21} & b_0^{22} & 0 & 0  & 0 & 0 & 0 & 0\\
+% b_0^{31} & b_0^{32} & b_0^{33} & 0 & 0 & 0 & 0 & 0\\
+% b_0^{41} & b_0^{42} & b_0^{43} & b_0^{44} & 0 & 0 & 0 & 0 \\
+% b_0^{41} & b_0^{42} & b_0^{43} & b_0^{44} & 0 & 0 & 0 & 0 \\
+% b_0^{41} & b_0^{42} & b_0^{43} & b_0^{44} & 0 & 0 & 0 & 0 \\
+% b_0^{41} & b_0^{42} & b_0^{43} & b_0^{44} & 0 & 0 & 0 & 0 \\
+% b_0^{41} & b_0^{42} & b_0^{43} & b_0^{44} & 0 & 0 & 0 & 0 \\
+% \end{array}\right]\left(\begin{array}{l}
+% w_{1 t} \\
+% w_{2 t} \\
+% w_{3 t} \\
+% w_{4 t} \\
+% w_{5 t} \\
+% w_{6 t} \\
+% w_{7 t} \\
+% w_{8 t} \\
+
+% \end{array}\right)
+% \end{equation}
+
+% \usetagform{default}
+% \begin{equation}
+%     \left(\begin{array}{c}
+% L_t-\mu_L \\
+% S_t-\mu_S \\
+% C_t-\mu_C
+% \end{array}\right)=\left(\begin{array}{lll}
+% a_{11} & a_{12} & a_{13} \\
+% a_{21} & a_{22} & a_{23} \\
+% a_{31} & a_{32} & a_{33}
+% \end{array}\right)\left(\begin{array}{c}
+% L_{t-1}-\mu_L \\
+% S_{t-1}-\mu_S \\
+% C_{t-1}-\mu_C
+% \end{array}\right)+\left(\begin{array}{c}
+% \eta_t(L) \\
+% \eta_t(S) \\
+% \eta_t(C)
+% \end{array}\right),
+% \end{equation}
+
+A comprehensive overview of the potential methodological approaches is offered in \citet{diebold2013yield}. 
+
+The sample for the United States contains monthly data ranging from January 1973 to December 2022. Except for data on US yields, the excess bond premium and the S\&P 500 stock market index, all data has been obtained from the \href{https://fred.stlouisfed.org/}{FRED}. A more detailed description of the data and its sources is provided in the Appendix \ref{sec:appendix}. 
+
+Of the highest significance for any analysis involving a Nelson-Siegel decomposition are the yields data. So far, the literature, heavily focused on the US, has primarily used unsmoothed \citet{fama1987information} Treasury forward rates obtained via the CRSP\footnote{\url{https://www.crsp.org/}}, which are then converted to unsmoothed Fama-Bliss zero yields. This thesis uses zero-coupon US Treasury yields obtained via a novel and improved approach kindly provided by \citet{liu2021reconstructing}. Following \citet{diebold2006macroeconomy}, the maturities used are 3, 6, 9, 12, 15, 18, 21, 24, 30, 36, 48, 60, 72, 84, 96, 108 and 120 months. 
+
+The data used for the analysis of the Euro Area consists of monthly data, spanning from October 2004 to December 2022. Again, the bulk of the dataset containing macro variables has been obtained via the \href{https://fred.stlouisfed.org/}{FRED}. Solely the Eurostoxx 50 as well as the VSTOXX indices, have been obtained via \href{https://finance.yahoo.com/}{Yahoo Finance} and the Bloomberg Terminal, respectively. The Euro Area yield curve data consists of spot rates derived from bonds with finite maturity denominated in EUR and issued by a euro area central government with an (issuer) rating of triple A. The data has been obtained via the \href{https://www.ecb.europa.eu/stats/financial_markets_and_interest_rates/euro_area_yield_curves/html/index.en.html}{ECB} and, due to somewhat limited data availability, includes yields with maturities of 3, 6, 9, 12, 24, 36, 48, 60, 72, 84, 96 and 120 months. 

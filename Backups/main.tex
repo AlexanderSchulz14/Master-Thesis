@@ -1,0 +1,133 @@
+\documentclass[12 pt, a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[left=3cm, right=3cm, top=4cm, bottom=4cm]{geometry}
+% \usepackage[doublespacing]{setspace}
+\setlength{\footnotesep}{\baselineskip}
+\usepackage[english]{babel}
+\usepackage{graphicx}
+\usepackage{appendix}
+\usepackage{ragged2e}
+\usepackage{blindtext}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\newtagform{fn}{(}{)\footnotemark}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.15}
+\usepackage{tikz}
+\usepackage{tkz-tab}
+\usepackage{float}
+\usepackage{adjustbox}
+\usepackage{hyperref}
+\PassOptionsToPackage{hyphens}{url}\usepackage{hyperref}
+\usepackage{url}
+\makeatletter
+\g@addto@macro{\UrlBreaks}{\UrlOrds}
+\makeatother
+\usepackage{pdfpages}
+\usepackage[natbib, style=authoryear]{biblatex}
+\bibliography{References/bib}
+
+\interfootnotelinepenalty=100000 
+
+\usepackage{graphicx} % Required for inserting images
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhead{} % clear all header fields
+\fancyhead[LE,RO]{}
+\fancyhead[LO,RE]{\slshape \leftmark}
+% \fancyhead[L]{\footnotesize{Linking the Yield Curve with the Macroeconomy - A Factor Model Approach}}
+
+
+
+
+
+\title{%Linking the Yield Curve with the Macroeconomy - \\
+%A Factor Model Approach
+    \textbf{Master Thesis}
+    \par\noindent\rule{\textwidth}{0.4pt}
+    \\ [1em]
+    Modelling the Yield Curve - \\ 
+    Factoring in the Macroeconomy}
+    
+\author{ \Large Alexander Schulz }
+
+
+\author{\Large{Alexander Schulz}\\[1em]
+\small{under the supervision of}\\[1em]
+\large{Michael Pfarrhofer, Ph.D.}}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+\pagebreak
+\newpage\null
+\thispagestyle{empty}
+
+
+\begin{center}
+    \justifying
+    \textit{To Prof. Dr. Helmut Kramer, who not only taught me how to be a considerate economist, but, more importantly, what it means to be a loving father.}
+\end{center}
+
+
+
+
+\pagebreak
+\tableofcontents
+\thispagestyle{empty}
+\pagebreak
+\listoffigures
+\thispagestyle{empty}
+\listoftables
+\thispagestyle{empty}
+
+\clearpage
+\pagenumbering{arabic}
+
+\setlength{\parindent}{0em}
+\setlength{\parskip}{1em}
+
+
+\newpage
+\input{Chapters/Intro}
+
+
+
+\input{Chapters/Lit_Review}
+
+
+\newpage
+\input{Chapters/Methodology_Data}
+
+
+\newpage
+\input{Chapters/Analysis}
+
+
+\pagebreak
+\input{Chapters/Conclusion}
+
+
+
+\pagebreak
+\addcontentsline{toc}{section}{References}
+\label{sec:references}
+% \nocite{*}
+\printbibliography
+
+
+
+\pagebreak
+% \addcontentsline{toc}{section}{Appendix}
+\appendix
+\newpage
+\input{Chapters/Appendix}
+
+
+\end{document}

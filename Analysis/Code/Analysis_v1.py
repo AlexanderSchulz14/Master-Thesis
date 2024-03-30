@@ -98,7 +98,30 @@ df_analysis_us = [
     df_us["S&P_500_YoY"],
 ]
 
+df_analysis_us = [
+    df_us["INDPRO_YoY"],
+    df_us["Infl_US"],
+    df_us["TB_3M"],
+    df_us["ebp"],
+    df_us["Level Factor"],
+    df_us["Slope Factor"],
+    df_us["Curvature Factor"],
+    df_us["S&P_500_YoY"],
+]
+
+
 df_analysis_us = pd.concat(df_analysis_us, axis=1)
+
+df_analysis_us.rename(
+    columns={
+        "INDPRO_YoY": "IP",
+        "Level Factor": "L",
+        "Slope Factor": "S",
+        "Curvature Factor": "C",
+        "S&P_500_YoY": "S&P_500",
+    },
+    inplace=True,
+)
 
 
 # Plot Data
@@ -125,6 +148,21 @@ np.linalg.eigvals(resid_chol_decomp)
 
 
 # IRFs
+irfs_us = result.irf(20)
+plt.figure(figsize=(30, 15))
+irfs_us.plot(
+    orth=True,
+    signif=0.16,
+    subplot_params={
+        "fontsize": 8,
+        #  "wspace" : 0.8,
+        #  "hspace" : 0.8,
+        #  "left" : 0.01
+    },
+)
+plt.savefig("IRF_US.pdf", dpi=1000)
+plt.show()
+
 irfs_us = result.irf(20)
 plt.figure(figsize=(15, 5))
 irfs_us.plot(orth=True, impulse="Level Factor", signif=0.16)

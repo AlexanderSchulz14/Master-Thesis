@@ -406,13 +406,13 @@ beta_0.rename(columns={"OBS_VALUE": "Level Factor"}, inplace=True)
 beta_0_m = beta_0.resample("M", loffset="1d").mean()
 
 # Beta 0 Approximation
-beta_0_m["y(3) + y(24) + y(120)/3"] = np.nan
+beta_0_m["(y(3) + y(24) + y(120))/3"] = np.nan
 for t in beta_0_m.index:
     yield_3m = yield_3m_ea_m.loc[t, "Y3M"]
     yield_2y = yield_2y_ea_m.loc[t, "Y2Y"]
     yield_10y = yield_10y_ea_m.loc[t, "Y10Y"]
 
-    beta_0_m.loc[t, "y(3) + y(24) + y(120)/3"] = (yield_3m + yield_2y + yield_10y) / 3
+    beta_0_m.loc[t, "(y(3) + y(24) + y(120))/3"] = (yield_3m + yield_2y + yield_10y) / 3
 
 
 # Beta 1 - Slope Factor
@@ -521,7 +521,7 @@ plt.figure(figsize=(15, 10))
 plt.plot(beta_0_m.loc[:, "Level Factor"], label="Level Factor", color="b")
 
 plt.plot(
-    beta_0_m.loc[:, "y(3) + y(24) + y(120)/3"],
+    beta_0_m.loc[:, "(y(3) + y(24) + y(120))/3"],
     label="y(3) + y(24) + y(120)/3",
     linestyle="--",
     color="orange",
@@ -588,8 +588,8 @@ plt.show()
 plt.figure(figsize=(15, 10))
 plt.plot(yields_ea_m_r["beta_0"], label="Level Factor", color="b")
 plt.plot(
-    beta_0_m.loc[:, "y(3) + y(24) + y(120)/3"],
-    label="y(3) + y(24) + y(120)/3",
+    beta_0_m.loc[:, "(y(3) + y(24) + y(120))/3"],
+    label="(y(3) + y(24) + y(120))/3",
     linestyle="--",
     color="orange",
 )

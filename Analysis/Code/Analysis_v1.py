@@ -334,3 +334,7 @@ plt.show()
 # irfs_us = result.irf(20)
 # irfs_us.plot(orth=True, signif=0.16)
 # plt.show()
+
+pearsonr(df_us.loc[:"1999", "Slope Factor"], df_us.loc[:"1999", "Curvature Factor"])
+
+pearsonr(df_us.loc["2000":, "Slope Factor"], df_us.loc["2000":, "Curvature Factor"])

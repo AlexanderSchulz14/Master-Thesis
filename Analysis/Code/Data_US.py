@@ -163,10 +163,10 @@ yields_us_sub_r.rename(
 
 # Get Approximations for Coefficients (see Diebold et al. (2006))
 # Beta 0 - Level Factor
-yields_us_sub_r["y(3) + y(24) + y(120)/3"] = np.nan
+yields_us_sub_r["(y(3) + y(24) + y(120))/3"] = np.nan
 for t in yields_us_sub_r.index:
     result_beta_0 = get_beta_0_approx(yields_us_sub_r, t)
-    yields_us_sub_r.loc[t, "y(3) + y(24) + y(120)/3"] = result_beta_0
+    yields_us_sub_r.loc[t, "(y(3) + y(24) + y(120))/3"] = result_beta_0
 
 
 # Beta 1 - Slope Factor
@@ -201,7 +201,7 @@ yield_cols_to_use = [
     "Level Factor",
     "Slope Factor",
     "Curvature Factor",
-    "y(3) + y(24) + y(120)/3",
+    "(y(3) + y(24) + y(120))/3",
     "y(3) - y(120)",
     "2 * y(24) - y(120) - y(3)",
 ]
@@ -275,7 +275,7 @@ plt.show()
 # Beta 0 Level Factor & Inflation
 plt.figure(figsize=(15, 10))
 sns.lineplot(
-    df_us[["Level Factor", "y(3) + y(24) + y(120)/3", "Infl_US"]],
+    df_us[["Level Factor", "(y(3) + y(24) + y(120))/3", "Infl_US"]],
     legend="auto",
     palette=["blue", "orange", "green"],
 )
@@ -285,14 +285,14 @@ plt.savefig("Beta_0_Figure.pdf", dpi=1000)
 plt.show()
 
 # Correlation
-df_us["Level Factor"].corr(df_us["y(3) + y(24) + y(120)/3"])
+df_us["Level Factor"].corr(df_us["(y(3) + y(24) + y(120))/3"])
 
 df_us["Level Factor"].corr(df_us["Infl_US"])
 
 
 # Beta 1 Slope Factor
 plt.figure(figsize=(15, 10))
-sns.lineplot(df_us[["Slope Factor", "y(3) - y(120)"]])
+sns.lineplot(df_us[["Slope Factor", "y(3) - y(120)", "INDPRO_YoY"]])
 plt.legend(loc="lower right")
 
 plt.savefig("Beta_1_Figure.pdf", dpi=1000)
@@ -300,6 +300,7 @@ plt.show()
 
 # Correlation
 df_us["Slope Factor"].corr(df_us["y(3) - y(120)"])
+df_us["Slope Factor"].corr(df_us["INDPRO_YoY"])
 
 
 # Beta 2 - Curvature Factor

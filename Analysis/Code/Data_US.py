@@ -69,6 +69,9 @@ inv_us.rename("Inv_US", inplace=True)
 cap_util_us = fred.get_series("TCU")
 cap_util_us.rename("CU_US", inplace=True)
 
+cap_util_us_diff = cap_util_us.pct_change(periods=12).dropna() * 100
+cap_util_us_diff.name = "CU_US_YoY"
+
 
 # FFR
 ffr = fred.get_series("DFF")
@@ -214,7 +217,7 @@ start_us = max(
     min(ind_pro_us_diff.index),
     min(infl_us.index),
     min(ffr_m.index),
-    # min(cap_util_us.index),
+    min(cap_util_us_diff.index),
     min(yields_us_sub_r.index),
     min(tb_3m.index),
     min(sp_500_1_m.index),
@@ -231,7 +234,7 @@ end_us = min(
     max(ind_pro_us_diff.index),
     max(infl_us.index),
     max(ffr_m.index),
-    # max(cap_util_us.index),
+    max(cap_util_us_diff.index),
     max(yields_us_sub_r.index),
     max(tb_3m.index),
     max(sp_500_1_m.index),
@@ -249,7 +252,7 @@ df_us = [
     ind_pro_us_diff[start_us:end_us],
     infl_us[start_us:end_us],
     ffr_m[start_us:end_us],
-    # cap_util_us[start_us:end_us],
+    cap_util_us_diff[start_us:end_us],
     yields_us_sub_r.loc[start_us:end_us, yield_cols_to_use],
     tb_3m[start_us:end_us],
     sp_500_1_m.loc[start_us:end_us],
@@ -327,3 +330,27 @@ factors_us_summaries = df_us[yield_cols_to_use[17:20]].describe()
 factors_us_summaries = factors_us_summaries.loc[
     ["mean", "std", "min", "max"]
 ].T  # .T -> use transpose of summary statistics df
+
+
+# HP Filter
+# INDPRO
+cycle, trend = hpfilter(df_us["INDPRO"])
+ip_hp = df_us["INDPRO"] - trend
+
+plt.figure(figsize=(15, 10))
+plt.plot(df_us["INDPRO_YoY"], label="INDPRO")
+plt.plot(ip_hp, label="INDPRO_HP")
+plt.legend()
+plt.show()
+
+pearsonr(df_us["Slope Factor"], ip_hp)
+
+# Inflation
+cycle, trend = hpfilter(cpi_us)
+cpi_hp = cpi_us - trend
+
+plt.figure(figsize=(15, 10))
+plt.plot(df_us["Infl_US"], label="Inflation")
+plt.plot(cpi_hp[start_us:end_us], label="CPI_HP")
+plt.legend()
+plt.show()

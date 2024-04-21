@@ -335,6 +335,29 @@ plt.show()
 # irfs_us.plot(orth=True, signif=0.16)
 # plt.show()
 
+
+# Correlation
+# Factor Plots
 pearsonr(df_us.loc[:"1999", "Slope Factor"], df_us.loc[:"1999", "Curvature Factor"])
 
 pearsonr(df_us.loc["2000":, "Slope Factor"], df_us.loc["2000":, "Curvature Factor"])
+
+
+pearsonr(df_us["Level Factor"], df_us["(y(3) + y(24) + y(120))/3"])
+pearsonr(df_us["Level Factor"], df_us["Infl_US"])
+
+pearsonr(df_us["Slope Factor"], df_us["y(3) - y(120)"])
+pearsonr(df_us["Slope Factor"], df_us["INDPRO"])
+pearsonr(df_us["Slope Factor"], df_us["INDPRO_YoY"])
+pearsonr(df_us["Slope Factor"], df_us["CU_US_YoY"])
+
+plt.figure(figsize=(15, 10))
+plt.plot(df_us["INDPRO_YoY"], label="INDPRO")
+plt.plot(df_us["Slope Factor"] * -1, label="Slope Factor")
+plt.legend()
+plt.show()
+
+pearsonr(df_us["Slope Factor"], ip_hp)
+
+
+pearsonr(df_us["Curvature Factor"], df_us["2 * y(24) - y(120) - y(3)"])

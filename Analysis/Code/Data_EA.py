@@ -629,3 +629,9 @@ plt.plot(
 plt.legend()
 plt.savefig("Beta_2_Figure_EA_1.pdf", dpi=1000)
 plt.show()
+
+
+
+########## Analysis ##########
+# Correlations
+# Factor Plots

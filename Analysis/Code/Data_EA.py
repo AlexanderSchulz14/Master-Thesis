@@ -37,7 +37,9 @@ import sdmx
 
 ##### Data
 # Industrial Production
-ind_pro_ea = fred.get_series("EA19PRINTO01GYSAM")
+# FRED: EA19PRINTO01GYSAM
+# OECD: OECDPRINTO01GYSAM
+ind_pro_ea = fred.get_series("OECDPRINTO01GYSAM")
 ind_pro_ea.rename("INDPRO_EA", inplace=True)
 
 
@@ -574,10 +576,18 @@ for coeff in factors_ea_sub["DATA_TYPE_FM"].unique():
 os.chdir(r"C:\Users\alexa\Documents\Studium\MSc (WU)\Master Thesis\Analysis")
 # Factors
 plt.figure(figsize=(15, 10))
-plt.plot(yields_ea_m_r["beta_0"], label="Level Factor", color="b")
-plt.plot(yields_ea_m_r["beta_1"], label="Slope Factor", color="orange", linestyle="--")
+plt.plot(yields_ea_m_r.loc[start_ea:end_ea, "beta_0"], label="Level Factor", color="b")
 plt.plot(
-    yields_ea_m_r["beta_2"], label="Curvature Factor", color="green", linestyle=":"
+    yields_ea_m_r.loc[start_ea:end_ea, "beta_1"],
+    label="Slope Factor",
+    color="orange",
+    linestyle="--",
+)
+plt.plot(
+    yields_ea_m_r.loc[start_ea:end_ea, "beta_2"],
+    label="Curvature Factor",
+    color="green",
+    linestyle=":",
 )
 
 plt.legend()
@@ -586,14 +596,14 @@ plt.show()
 
 # Beta 0
 plt.figure(figsize=(15, 10))
-plt.plot(yields_ea_m_r["beta_0"], label="Level Factor", color="b")
+plt.plot(yields_ea_m_r.loc[start_ea:end_ea, "beta_0"], label="Level Factor", color="b")
 plt.plot(
-    beta_0_m.loc[:, "(y(3) + y(24) + y(120))/3"],
+    beta_0_m.loc[start_ea:end_ea, "(y(3) + y(24) + y(120))/3"],
     label="(y(3) + y(24) + y(120))/3",
     linestyle="--",
     color="orange",
 )
-plt.plot(infl_ea.loc["2004-10-01":], label="Inflation EA", linestyle=":", color="g")
+plt.plot(infl_ea.loc[start_ea:end_ea], label="Inflation EA", linestyle=":", color="g")
 
 plt.legend()
 plt.savefig("Beta_0_Figure_EA_1.pdf", dpi=1000)
@@ -601,14 +611,16 @@ plt.show()
 
 # Beta 1
 plt.figure(figsize=(15, 10))
-plt.plot(yields_ea_m_r["beta_1"], label="Slope Factor", color="b")
+plt.plot(yields_ea_m_r.loc[start_ea:end_ea, "beta_1"], label="Slope Factor", color="b")
 
 plt.plot(
-    beta_1_m.loc[:, "y(3) - y(120)"],
+    beta_1_m.loc[start_ea:end_ea, "y(3) - y(120)"],
     label="y(3) - y(120)",
     color="orange",
     linestyle="--",
 )
+
+# plt.plot(df_ea.loc[start_ea:end_ea, "INDPRO_EA"], label="INDRPO_EA_YoY", linestyle=":")
 
 plt.legend()
 plt.savefig("Beta_1_Figure_EA_1.pdf", dpi=1000)
@@ -617,10 +629,12 @@ plt.show()
 
 # Beta 2
 plt.figure(figsize=(15, 10))
-plt.plot(yields_ea_m_r["beta_2"], label="Curvature Factor", color="c")
+plt.plot(
+    yields_ea_m_r.loc[start_ea:end_ea, "beta_2"], label="Curvature Factor", color="c"
+)
 
 plt.plot(
-    beta_2_m.loc[:, "Curvature_Approx"],
+    beta_2_m.loc[start_ea:end_ea, "Curvature_Approx"],
     label="2 * y(24) - y(120) - y(3)",
     color="red",
     linestyle="--",
@@ -631,7 +645,61 @@ plt.savefig("Beta_2_Figure_EA_1.pdf", dpi=1000)
 plt.show()
 
 
-
 ########## Analysis ##########
 # Correlations
 # Factor Plots
+# Level Factor
+pearsonr(
+    yields_ea_m_r.loc[start_ea:end_ea, "beta_0"],
+    beta_0_m.loc[start_ea:end_ea, "(y(3) + y(24) + y(120))/3"],
+)
+
+pearsonr(df_ea.loc[start_ea:end_ea, "beta_0"], df_ea.loc[start_ea:end_ea, "Infl_EA"])
+
+
+plt.figure(figsize=(15, 10))
+plt.plot(df_ea.loc[start_ea:end_ea, "Infl_EA"], label="Inflation EA", color="c")
+
+plt.plot(
+    df_ea.loc[start_ea:end_ea, "beta_0"],
+    label="Level",
+    color="red",
+    linestyle="--",
+)
+
+plt.legend()
+plt.show()
+
+
+# SLope Factor
+pearsonr(
+    yields_ea_m_r.loc[start_ea:end_ea, "beta_1"],
+    beta_1_m.loc[start_ea:end_ea, "y(3) - y(120)"],
+)
+
+pearsonr(df_ea.beta_1, df_ea.beta_2)
+
+pearsonr(yields_ea_m_r.loc[:"2022", "beta_1"], yields_ea_m_r.loc[:"2022", "beta_2"])
+
+
+yields_ea_m_r.loc[:"2023-01-01", "beta_1"].tail(20)
+
+
+# Curvature Factor
+pearsonr(
+    yields_ea_m_r.loc[start_ea:end_ea, "beta_2"],
+    beta_2_m.loc[start_ea:end_ea, "Curvature_Approx"],
+)
+
+plt.figure(figsize=(15, 10))
+plt.plot(yields_ea_m_r.loc[start_ea:end_ea, "beta_2"], label="Curvature", color="c")
+
+plt.plot(
+    beta_2_m.loc[start_ea:end_ea, "Curvature_Approx"],
+    label="Curvature_Approx",
+    color="red",
+    linestyle="--",
+)
+
+plt.legend()
+plt.show()

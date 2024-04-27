@@ -359,6 +359,69 @@ plt.plot(cpi_hp[start_us:end_us], label="CPI_HP")
 plt.legend()
 plt.show()
 
+##########sVAR ##########
+# Plot Data
+plot_data(df_analysis_us)
+
+
+# Stationarity Check
+get_adf(df_analysis_us)
+
+
+# Estimate sVAR
+model_us = VAR(df_analysis_us)
+print(model_us.select_order())
+
+result = model_us.fit(maxlags=5, ic="aic")
+result.summary()
+
+stargazer = Stargazer(result)
+
+# print(result.test_whiteness())
+print(result.is_stable())
+
+residuals = result.sigma_u
+resid_chol_decomp = np.linalg.cholesky(residuals)
+np.linalg.eigvals(resid_chol_decomp)
+
+
+# IRFs
+irfs_us = result.irf(20)
+plt.figure(figsize=(30, 15))
+irfs_us.plot(
+    orth=True,
+    signif=0.16,
+    subplot_params={
+        "fontsize": 8,
+        #  "wspace" : 0.8,
+        #  "hspace" : 0.8,
+        #  "left" : 0.01
+    },
+)
+plt.savefig("IRF_US.pdf", dpi=1000)
+plt.show()
+
+irfs_us = result.irf(20)
+plt.figure(figsize=(15, 5))
+irfs_us.plot(orth=True, impulse="L", signif=0.16)
+plt.show()
+
+plt.figure(figsize=(15, 5))
+irfs_us.plot(orth=True, impulse="S", signif=0.16)
+plt.show()
+
+plt.figure(figsize=(15, 5))
+irfs_us.plot(orth=True, impulse="C", signif=0.16)
+plt.show()
+
+plt.figure(figsize=(15, 5))
+irfs_us.plot(orth=True, impulse="IP", signif=0.16)
+plt.show()
+
+plt.figure(figsize=(15, 5))
+irfs_us.plot(orth=True, impulse="Infl_US", signif=0.16)
+plt.show()
+
 
 ########## Granger Causality ##########
 grangercausalitytests(df_us[["Infl_US", "Level Factor"]], 4)
@@ -405,26 +468,19 @@ df_analysis_us.rename(
 )
 
 
-# Plot Data
-plot_data(df_analysis_us)
+# Granger Causality
+# Macro to Yield Curve
+granger_result = result.test_causality(
+    ["L", "S", "C"],
+    ["IP", "Infl_US", "TB_3M"],
+)
+
+print(granger_result.summary())
 
 
-# Stationarity Check
-get_adf(df_analysis_us)
+granger_result = result.test_causality(
+    ["IP", "Infl_US", "TB_3M"],
+    ["L", "S", "C"],
+)
 
-
-# Estimate sVAR
-model_us = VAR(df_analysis_us)
-print(model_us.select_order())
-
-result = model_us.fit(maxlags=5, ic="aic")
-result.summary().as_latex()
-
-stargazer = Stargazer(result)
-
-# print(result.test_whiteness())
-print(result.is_stable())
-
-residuals = result.sigma_u
-resid_chol_decomp = np.linalg.cholesky(residuals)
-np.linalg.eigvals(resid_chol_decomp)
+print(granger_result.summary())

@@ -10,6 +10,7 @@ import seaborn as sns
 sns.set_theme(style="darkgrid")
 from mpl_toolkits.mplot3d import Axes3D
 from tabulate import tabulate
+from stargazer.stargazer import Stargazer
 
 # import plotly.graph_objects as go
 import copy
@@ -264,6 +265,9 @@ df_us = [
 df_us = pd.concat(df_us, axis=1).dropna()
 
 
+##############################
+########## Analysis ##########
+##############################
 # Plots
 # All Coefficients
 os.chdir(r"C:\Users\alexa\Documents\Studium\MSc (WU)\Master Thesis\Analysis")
@@ -354,3 +358,73 @@ plt.plot(df_us["Infl_US"], label="Inflation")
 plt.plot(cpi_hp[start_us:end_us], label="CPI_HP")
 plt.legend()
 plt.show()
+
+
+########## Granger Causality ##########
+grangercausalitytests(df_us[["Infl_US", "Level Factor"]], 4)
+
+grangercausalitytests(df_us[["Level Factor", "Infl_US"]], 4)
+
+grangercausalitytests(df_us[["Slope Factor", "INDPRO_YoY"]], 4)
+
+grangercausalitytests(df_us[["INDPRO_YoY", "Slope Factor"]], 4)
+
+grangercausalitytests(df_us[["TB_3M", "Level Factor"]], 4)
+
+grangercausalitytests(df_us[["Level Factor", "TB_3M"]], 4)
+
+grangercausalitytests(df_us[["Slope Factor", "TB_3M"]], 4)
+
+grangercausalitytests(df_us[["Curvature Factor", "TB_3M"]], 4)
+
+
+# VAR
+df_analysis_us = [
+    df_us["INDPRO_YoY"],
+    df_us["Infl_US"],
+    df_us["TB_3M"],
+    df_us["ebp"],
+    df_us["Level Factor"],
+    df_us["Slope Factor"],
+    df_us["Curvature Factor"],
+    df_us["S&P_500_YoY"],
+]
+
+
+df_analysis_us = pd.concat(df_analysis_us, axis=1)
+
+df_analysis_us.rename(
+    columns={
+        "INDPRO_YoY": "IP",
+        "Level Factor": "L",
+        "Slope Factor": "S",
+        "Curvature Factor": "C",
+        "S&P_500_YoY": "S&P_500",
+    },
+    inplace=True,
+)
+
+
+# Plot Data
+plot_data(df_analysis_us)
+
+
+# Stationarity Check
+get_adf(df_analysis_us)
+
+
+# Estimate sVAR
+model_us = VAR(df_analysis_us)
+print(model_us.select_order())
+
+result = model_us.fit(maxlags=5, ic="aic")
+result.summary().as_latex()
+
+stargazer = Stargazer(result)
+
+# print(result.test_whiteness())
+print(result.is_stable())
+
+residuals = result.sigma_u
+resid_chol_decomp = np.linalg.cholesky(residuals)
+np.linalg.eigvals(resid_chol_decomp)

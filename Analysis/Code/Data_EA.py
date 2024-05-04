@@ -620,7 +620,7 @@ plt.plot(
     linestyle="--",
 )
 
-# plt.plot(df_ea.loc[start_ea:end_ea, "INDPRO_EA"], label="INDRPO_EA_YoY", linestyle=":")
+plt.plot(df_ea.loc[start_ea:end_ea, "INDPRO_EA"], label="INDRPO_EA_YoY", linestyle=":")
 
 plt.legend()
 plt.savefig("Beta_1_Figure_EA_1.pdf", dpi=1000)
@@ -683,6 +683,8 @@ pearsonr(yields_ea_m_r.loc[:"2022", "beta_1"], yields_ea_m_r.loc[:"2022", "beta_
 
 
 yields_ea_m_r.loc[:"2023-01-01", "beta_1"].tail(20)
+
+pearsonr(df_ea["INDPRO_EA"], df_ea["beta_1"])
 
 
 # Curvature Factor

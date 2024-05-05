@@ -137,7 +137,7 @@ model_us = VAR(df_analysis_us)
 print(model_us.select_order())
 
 result = model_us.fit(maxlags=5, ic="aic")
-result.summary()
+print(result.summary())
 
 # print(result.test_whiteness())
 print(result.is_stable())
@@ -183,6 +183,10 @@ plt.show()
 plt.figure(figsize=(15, 5))
 irfs_us.plot(orth=True, impulse="Infl_US", signif=0.16)
 plt.show()
+
+# FEVD
+result.fevd(10).plot()
+display(result.fevd(10).summary())
 
 
 # # Get Period

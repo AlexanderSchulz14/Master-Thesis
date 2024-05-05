@@ -505,6 +505,8 @@ df_analysis_us.rename(
     inplace=True,
 )
 
+path_ma_data = r"C:\Users\alexa\Documents\Studium\MSc (WU)\Master Thesis\Analysis\Data"
+df_analysis_us.to_csv(path_ma_data + "\\" + "VAR_Data_US.csv")
 
 # Granger Causality
 # Macro to Yield Curve
@@ -522,3 +524,13 @@ granger_result = result.test_causality(
 )
 
 print(granger_result.summary())
+
+
+# Create an empty 8x8 matrix filled with False
+lower_triangular = np.zeros((8, 8), dtype=bool)
+
+# Set TRUE values below or on the main diagonal
+lower_triangular[np.tril_indices_from(lower_triangular)] = True
+
+# Print the matrix
+print(lower_triangular)

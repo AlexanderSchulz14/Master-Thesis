@@ -368,7 +368,7 @@ df_analysis_us = [
     df_us["Curvature Factor"],
     df_us["INDPRO_YoY"],
     df_us["Infl_US"],
-    df_us["TB_3M"],
+    df_us["FFR"],
     df_us["ebp"],
     df_us["S&P_500_YoY"],
 ]
@@ -376,7 +376,7 @@ df_analysis_us = [
 df_analysis_us = [
     df_us["INDPRO_YoY"],
     df_us["Infl_US"],
-    df_us["TB_3M"],
+    df_us["FFR"],
     df_us["ebp"],
     df_us["Level Factor"],
     df_us["Slope Factor"],
@@ -410,7 +410,7 @@ get_adf(df_analysis_us)
 model_us = VAR(df_analysis_us)
 print(model_us.select_order())
 
-result = model_us.fit(maxlags=5, ic="aic")
+result = model_us.fit(maxlags=4, ic="aic")
 result.summary()
 
 # stargazer = Stargazer(result)
@@ -424,11 +424,11 @@ np.linalg.eigvals(resid_chol_decomp)
 
 
 # IRFs
-irfs_us = result.irf(20)
+irfs_us = result.irf(36)
 plt.figure(figsize=(30, 15))
 irfs_us.plot(
     orth=True,
-    signif=0.16,
+    signif=0.1,
     subplot_params={
         "fontsize": 8,
         #  "wspace" : 0.8,
@@ -439,25 +439,29 @@ irfs_us.plot(
 plt.savefig("IRF_US.pdf", dpi=1000)
 plt.show()
 
-irfs_us = result.irf(20)
+irfs_us = result.irf(36)
 plt.figure(figsize=(15, 5))
-irfs_us.plot(orth=True, impulse="L", signif=0.16)
+irfs_us.plot(orth=True, impulse="L", signif=0.1)
 plt.show()
 
 plt.figure(figsize=(15, 5))
-irfs_us.plot(orth=True, impulse="S", signif=0.16)
+irfs_us.plot(orth=True, impulse="S", signif=0.1)
 plt.show()
 
 plt.figure(figsize=(15, 5))
-irfs_us.plot(orth=True, impulse="C", signif=0.16)
+irfs_us.plot(orth=True, impulse="C", signif=0.1)
 plt.show()
 
 plt.figure(figsize=(15, 5))
-irfs_us.plot(orth=True, impulse="IP", signif=0.16)
+irfs_us.plot(orth=True, impulse="IP", signif=0.1)
 plt.show()
 
 plt.figure(figsize=(15, 5))
-irfs_us.plot(orth=True, impulse="Infl_US", signif=0.16)
+irfs_us.plot(orth=True, impulse="Infl_US", signif=0.1)
+plt.show()
+
+plt.figure(figsize=(15, 5))
+irfs_us.plot(orth=True, impulse="FFR", signif=0.1)
 plt.show()
 
 
@@ -512,18 +516,31 @@ df_analysis_us.to_csv(path_ma_data + "\\" + "VAR_Data_US.csv")
 # Macro to Yield Curve
 granger_result = result.test_causality(
     ["L", "S", "C"],
-    ["IP", "Infl_US", "TB_3M"],
+    ["IP", "Infl_US", "FFR"],
 )
 
 print(granger_result.summary())
 
+result_macro_us = granger_result.summary()
 
+df_result_macro_us = pd.DataFrame(result_macro_us[1:], columns=result_macro_us[0])
+
+df_result_macro_us.to_latex()
+
+
+# Yield Curve to Macro
 granger_result = result.test_causality(
-    ["IP", "Infl_US", "TB_3M"],
+    ["IP", "Infl_US", "FFR"],
     ["L", "S", "C"],
 )
 
 print(granger_result.summary())
+
+result_yc_us = granger_result.summary()
+
+df_result_yc_us = pd.DataFrame(result_yc_us[1:], columns=result_yc_us[0])
+
+df_result_yc_us.to_latex()
 
 
 # Create an empty 8x8 matrix filled with False

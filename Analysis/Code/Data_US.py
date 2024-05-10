@@ -425,43 +425,56 @@ np.linalg.eigvals(resid_chol_decomp)
 
 # IRFs
 irfs_us = result.irf(36)
-plt.figure(figsize=(30, 15))
+# plt.figure(figsize=(30, 15))
 irfs_us.plot(
     orth=True,
     signif=0.1,
+    figsize=(30, 15),
+    plot_params={
+        "legend_fontsize": 20
+        # "tick_params": {"axis": "y", "pad": 10}
+    },
     subplot_params={
-        "fontsize": 8,
+        "fontsize": 15,
         #  "wspace" : 0.8,
-        #  "hspace" : 0.8,
-        #  "left" : 0.01
+        # "hspace": 0.8,
+        #  "left" : 0.01,
+        #  "right" : 1,
+        # "tick_params": {"axis": "y", "pad": 10},
     },
 )
-plt.savefig("IRF_US.pdf", dpi=1000)
+plt.savefig("IRF_US_30_15_v2.pdf", dpi=1000)
 plt.show()
 
 irfs_us = result.irf(36)
-plt.figure(figsize=(15, 5))
+plt.figure(figsize=(10, 5))
 irfs_us.plot(orth=True, impulse="L", signif=0.1)
+plt.savefig("IRF_L.pdf")
 plt.show()
 
-plt.figure(figsize=(15, 5))
+plt.figure(figsize=(10, 5))
 irfs_us.plot(orth=True, impulse="S", signif=0.1)
+plt.savefig("IRF_S.pdf")
 plt.show()
 
-plt.figure(figsize=(15, 5))
+plt.figure(figsize=(10, 5))
 irfs_us.plot(orth=True, impulse="C", signif=0.1)
+plt.savefig("IRF_C.pdf")
 plt.show()
 
-plt.figure(figsize=(15, 5))
+plt.figure(figsize=(10, 5))
 irfs_us.plot(orth=True, impulse="IP", signif=0.1)
+plt.savefig("IRF_IP.pdf")
 plt.show()
 
-plt.figure(figsize=(15, 5))
+plt.figure(figsize=(10, 5))
 irfs_us.plot(orth=True, impulse="Infl_US", signif=0.1)
+plt.savefig("IRF_Infl_US.pdf")
 plt.show()
 
-plt.figure(figsize=(15, 5))
+plt.figure(figsize=(10, 5))
 irfs_us.plot(orth=True, impulse="FFR", signif=0.1)
+plt.savefig("IRF_FFR.pdf")
 plt.show()
 
 

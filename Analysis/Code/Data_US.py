@@ -12,6 +12,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from tabulate import tabulate
 from stargazer.stargazer import Stargazer
 
+
 # import plotly.graph_objects as go
 import copy
 import yfinance as yf
@@ -410,7 +411,7 @@ get_adf(df_analysis_us)
 model_us = VAR(df_analysis_us)
 print(model_us.select_order())
 
-result = model_us.fit(maxlags=4, ic="aic")
+result = model_us.fit(maxlags=1, ic="aic")
 result.summary()
 
 # stargazer = Stargazer(result)
@@ -564,3 +565,19 @@ lower_triangular[np.tril_indices_from(lower_triangular)] = True
 
 # Print the matrix
 print(lower_triangular)
+
+
+########## Playing Around ##########
+print(result.summary())
+
+
+plt.figure(figsize=(30, 15))
+acorr_plot = result.plot_acorr()
+plt.show()
+
+
+print(result.test_whiteness(nlags=5))
+
+
+result.params
+print(result.params.to_latex())

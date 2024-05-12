@@ -230,22 +230,22 @@ start_us = max(
     #    min(ts_10y2y_us.index)
 )
 
-end_us = "2000-12-01"
-# end_us = min(
-#     # max(gdp_us.index),
-#     max(ind_pro_us.index),
-#     max(ind_pro_us_diff.index),
-#     max(infl_us.index),
-#     max(ffr_m.index),
-#     max(cap_util_us_diff.index),
-#     max(yields_us_sub_r.index),
-#     max(tb_3m.index),
-#     max(sp_500_1_m.index),
-#     max(sp_500_1_m_ret.index),
-#     max(ebp["ebp"].index),
-#     #    max(vix_m.index),
-#     #    max(ts_10y2y_us.index)
-# )
+# end_us = "2000-12-01"
+end_us = min(
+    # max(gdp_us.index),
+    max(ind_pro_us.index),
+    max(ind_pro_us_diff.index),
+    max(infl_us.index),
+    max(ffr_m.index),
+    max(cap_util_us_diff.index),
+    max(yields_us_sub_r.index),
+    max(tb_3m.index),
+    max(sp_500_1_m.index),
+    max(sp_500_1_m_ret.index),
+    max(ebp["ebp"].index),
+    #    max(vix_m.index),
+    #    max(ts_10y2y_us.index)
+)
 
 
 # Merge Data
@@ -340,26 +340,26 @@ factors_us_summaries = factors_us_summaries.loc[
 
 # HP Filter
 # INDPRO
-cycle, trend = hpfilter(df_us["INDPRO"])
-ip_hp = df_us["INDPRO"] - trend
+# cycle, trend = hpfilter(df_us["INDPRO"])
+# ip_hp = df_us["INDPRO"] - trend
 
-plt.figure(figsize=(15, 10))
-plt.plot(df_us["INDPRO_YoY"], label="INDPRO")
-plt.plot(ip_hp, label="INDPRO_HP")
-plt.legend()
-plt.show()
+# plt.figure(figsize=(15, 10))
+# plt.plot(df_us["INDPRO_YoY"], label="INDPRO")
+# plt.plot(ip_hp, label="INDPRO_HP")
+# plt.legend()
+# plt.show()
 
-pearsonr(df_us["Slope Factor"], ip_hp)
+# pearsonr(df_us["Slope Factor"], ip_hp)
 
-# Inflation
-cycle, trend = hpfilter(cpi_us)
-cpi_hp = cpi_us - trend
+# # Inflation
+# cycle, trend = hpfilter(cpi_us)
+# cpi_hp = cpi_us - trend
 
-plt.figure(figsize=(15, 10))
-plt.plot(df_us["Infl_US"], label="Inflation")
-plt.plot(cpi_hp[start_us:end_us], label="CPI_HP")
-plt.legend()
-plt.show()
+# plt.figure(figsize=(15, 10))
+# plt.plot(df_us["Infl_US"], label="Inflation")
+# plt.plot(cpi_hp[start_us:end_us], label="CPI_HP")
+# plt.legend()
+# plt.show()
 
 ##########sVAR ##########
 # Differenced Data
@@ -404,11 +404,10 @@ plot_data(df_analysis_us)
 
 
 # Stationarity Check
-get_adf(df_analysis_us)
+adf_test_us = get_adf(df_analysis_us)
 
 adf_test = adfuller(df_us["INDPRO"])
 
-adf_test[0:2]
 
 # Estimate sVAR
 model_us = VAR(df_analysis_us)
@@ -500,31 +499,31 @@ grangercausalitytests(df_us[["Slope Factor", "TB_3M"]], 4)
 grangercausalitytests(df_us[["Curvature Factor", "TB_3M"]], 4)
 
 
-# VAR
-df_analysis_us = [
-    df_us["INDPRO_YoY"],
-    df_us["Infl_US"],
-    df_us["TB_3M"],
-    df_us["ebp"],
-    df_us["Level Factor"],
-    df_us["Slope Factor"],
-    df_us["Curvature Factor"],
-    df_us["S&P_500_YoY"],
-]
+# # VAR
+# df_analysis_us = [
+#     df_us["INDPRO_YoY"],
+#     df_us["Infl_US"],
+#     df_us["FFR"],
+#     df_us["ebp"],
+#     df_us["Level Factor"],
+#     df_us["Slope Factor"],
+#     df_us["Curvature Factor"],
+#     df_us["S&P_500_YoY"],
+# ]
 
 
-df_analysis_us = pd.concat(df_analysis_us, axis=1)
+# df_analysis_us = pd.concat(df_analysis_us, axis=1)
 
-df_analysis_us.rename(
-    columns={
-        "INDPRO_YoY": "IP",
-        "Level Factor": "L",
-        "Slope Factor": "S",
-        "Curvature Factor": "C",
-        "S&P_500_YoY": "S&P_500",
-    },
-    inplace=True,
-)
+# df_analysis_us.rename(
+#     columns={
+#         "INDPRO_YoY": "IP",
+#         "Level Factor": "L",
+#         "Slope Factor": "S",
+#         "Curvature Factor": "C",
+#         "S&P_500_YoY": "S&P_500",
+#     },
+#     inplace=True,
+# )
 
 path_ma_data = r"C:\Users\alexa\Documents\Studium\MSc (WU)\Master Thesis\Analysis\Data"
 df_analysis_us.to_csv(path_ma_data + "\\" + "VAR_Data_US.csv")

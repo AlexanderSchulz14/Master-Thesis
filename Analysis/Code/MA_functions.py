@@ -41,7 +41,7 @@ def get_adf(data):
         t_stat = result[0]
         p_val = result[1]
         adf_dict[col] = [t_stat, p_val]
-        print(str(col) + ": " + str(p_val))
+        # print(str(col) + ": " + str(p_val))
 
     return adf_dict
 

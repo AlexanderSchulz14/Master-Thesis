@@ -51,6 +51,7 @@ for (i in 1:nrow(yields_ea)){
   yields_ea[i, c('beta_0')] <- NSParameters[,1]
   yields_ea[i, c('beta_1')] <- NSParameters[,2]
   yields_ea[i, c('beta_2')] <- NSParameters[,3]
+  yields_ea[i, c('lambda')] <- NSParameters[,4]
   
 }
 

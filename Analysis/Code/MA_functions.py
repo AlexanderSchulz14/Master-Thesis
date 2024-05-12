@@ -21,15 +21,29 @@ def plot_data(data):
 
 
 # ADF Test Function
+# adf_dict = {}
+
+
+# def get_adf(data):
+#     for col in data.columns:
+#         result = adfuller(data[col])
+#         p_val = result[1]
+#         adf_dict[col] = p_val
+#         print(str(col) + ": " + str(p_val))
+
+
 adf_dict = {}
 
 
 def get_adf(data):
     for col in data.columns:
         result = adfuller(data[col])
+        t_stat = result[0]
         p_val = result[1]
-        adf_dict[col] = p_val
+        adf_dict[col] = [t_stat, p_val]
         print(str(col) + ": " + str(p_val))
+
+    return adf_dict
 
 
 # Coefficient Approximation Function

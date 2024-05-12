@@ -213,39 +213,39 @@ yield_cols_to_use = [
 
 
 # Get Period
-start_us = "1973-01-01"
-# start_us = max(
-#     # min(gdp_us.index),
-#     min(ind_pro_us.index),
-#     min(ind_pro_us_diff.index),
-#     min(infl_us.index),
-#     min(ffr_m.index),
-#     min(cap_util_us_diff.index),
-#     min(yields_us_sub_r.index),
-#     min(tb_3m.index),
-#     min(sp_500_1_m.index),
-#     min(sp_500_1_m_ret.index),
-#     min(ebp["ebp"].index),
-#     #    min(vix_m.index),
-#     #    min(ts_10y2y_us.index)
-# )
-
-# end_us = "2000-12-01"
-end_us = min(
-    # max(gdp_us.index),
-    max(ind_pro_us.index),
-    max(ind_pro_us_diff.index),
-    max(infl_us.index),
-    max(ffr_m.index),
-    max(cap_util_us_diff.index),
-    max(yields_us_sub_r.index),
-    max(tb_3m.index),
-    max(sp_500_1_m.index),
-    max(sp_500_1_m_ret.index),
-    max(ebp["ebp"].index),
-    #    max(vix_m.index),
-    #    max(ts_10y2y_us.index)
+# start_us = "1977-01-01"
+start_us = max(
+    # min(gdp_us.index),
+    min(ind_pro_us.index),
+    min(ind_pro_us_diff.index),
+    min(infl_us.index),
+    min(ffr_m.index),
+    min(cap_util_us_diff.index),
+    min(yields_us_sub_r.index),
+    min(tb_3m.index),
+    min(sp_500_1_m.index),
+    min(sp_500_1_m_ret.index),
+    min(ebp["ebp"].index),
+    #    min(vix_m.index),
+    #    min(ts_10y2y_us.index)
 )
+
+end_us = "2000-12-01"
+# end_us = min(
+#     # max(gdp_us.index),
+#     max(ind_pro_us.index),
+#     max(ind_pro_us_diff.index),
+#     max(infl_us.index),
+#     max(ffr_m.index),
+#     max(cap_util_us_diff.index),
+#     max(yields_us_sub_r.index),
+#     max(tb_3m.index),
+#     max(sp_500_1_m.index),
+#     max(sp_500_1_m_ret.index),
+#     max(ebp["ebp"].index),
+#     #    max(vix_m.index),
+#     #    max(ts_10y2y_us.index)
+# )
 
 
 # Merge Data
@@ -363,16 +363,16 @@ plt.show()
 
 ##########sVAR ##########
 # Differenced Data
-df_analysis_us = [
-    df_us["Level Factor"],
-    df_us["Slope Factor"],
-    df_us["Curvature Factor"],
-    df_us["INDPRO_YoY"],
-    df_us["Infl_US"],
-    df_us["FFR"],
-    df_us["ebp"],
-    df_us["S&P_500_YoY"],
-]
+# df_analysis_us = [
+#     df_us["Level Factor"],
+#     df_us["Slope Factor"],
+#     df_us["Curvature Factor"],
+#     df_us["INDPRO_YoY"],
+#     df_us["Infl_US"],
+#     df_us["FFR"],
+#     df_us["ebp"],
+#     df_us["S&P_500_YoY"],
+# ]
 
 df_analysis_us = [
     df_us["INDPRO_YoY"],
@@ -406,6 +406,9 @@ plot_data(df_analysis_us)
 # Stationarity Check
 get_adf(df_analysis_us)
 
+adf_test = adfuller(df_us["INDPRO"])
+
+adf_test[0:2]
 
 # Estimate sVAR
 model_us = VAR(df_analysis_us)

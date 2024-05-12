@@ -63,6 +63,7 @@ for (i in 1:nrow(yields_sub_us)) {
   yields_sub_us[i, c('beta_0')] <- NSParameters[,1]
   yields_sub_us[i, c('beta_1')] <- NSParameters[,2]
   yields_sub_us[i, c('beta_2')] <- NSParameters[,3]
+  yields_sub_us[i, c('lambda')] <- NSParameters[,4]
   
 }
 

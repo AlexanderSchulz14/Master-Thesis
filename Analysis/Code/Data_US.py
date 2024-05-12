@@ -406,17 +406,36 @@ plot_data(df_analysis_us)
 # Stationarity Check
 adf_test_us = get_adf(df_analysis_us)
 
+col_names_adf = ["t-Statistic", "Critical Values at 5%", "p-value"]
+
+df_adf_us = pd.DataFrame.from_dict(adf_test_us, orient="index", columns=col_names_adf)
+
+print(df_adf_us.round(4).to_latex())
+
 adf_test = adfuller(df_us["INDPRO"])
 
+adf_test[4]["5%"]
 
 # Estimate sVAR
 model_us = VAR(df_analysis_us)
 print(model_us.select_order())
 
-result = model_us.fit(maxlags=1, ic="aic")
+result = model_us.fit(maxlags=4, ic="aic")
 result.summary()
 
-# stargazer = Stargazer(result)
+
+llf_us = {"Log-Likelihood": result.llf}
+aic_us = {"AIC": result.aic}
+bic_us = {"BIC": result.bic}
+hqic_us = {"HQIC": result.hqic}
+
+dict_ic_us = {**llf_us, **aic_us, **bic_us, **hqic_us}
+print(pd.DataFrame.from_dict(dict_ic_us, orient="index").round(4).to_latex())
+
+
+result.params
+print(result.params.to_latex())
+
 
 # print(result.test_whiteness())
 print(result.is_stable())
@@ -579,7 +598,3 @@ plt.show()
 
 
 print(result.test_whiteness(nlags=5))
-
-
-result.params
-print(result.params.to_latex())

@@ -126,17 +126,17 @@ ebp = pd.read_csv("ebp_csv.csv", index_col=[0], parse_dates=True)
 
 
 # VIX? (von Bloomberg?)
-vix = yf.download("^VIX", start="1990-01-02", end="2024-01-01")
-vix_m = vix.resample("M", loffset="1d").mean()
+# vix = yf.download("^VIX", start="1990-01-02", end="2024-01-01")
+# vix_m = vix.resample("M", loffset="1d").mean()
 
 
 # Moody's Seasoned Baa Corporate Bond Yield Relative to Yield on 10-Year Treasury Constant Maturity
-corp_spread = fred.get_series("BAA10Y")
-corp_spread.rename("BAA10Y", inplace=True)
-corp_spread_m = corp_spread.resample("M", loffset="1d").mean()
+# corp_spread = fred.get_series("BAA10Y")
+# corp_spread.rename("BAA10Y", inplace=True)
+# corp_spread_m = corp_spread.resample("M", loffset="1d").mean()
 
 
-# Yield Data
+# Yields Data
 os.chdir(r"C:\Users\alexa\Documents\Studium\MSc (WU)\Master Thesis\Analysis\Data")
 yields_us = pd.read_excel("LW_monthly.xlsx", skiprows=8)
 
@@ -364,19 +364,9 @@ factors_us_summaries = factors_us_summaries.loc[
 # plt.legend()
 # plt.show()
 
+
 ##########sVAR ##########
 # Differenced Data
-# df_analysis_us = [
-#     df_us["Level Factor"],
-#     df_us["Slope Factor"],
-#     df_us["Curvature Factor"],
-#     df_us["INDPRO_YoY"],
-#     df_us["Infl_US"],
-#     df_us["FFR"],
-#     df_us["ebp"],
-#     df_us["S&P_500_YoY"],
-# ]
-
 df_analysis_us = [
     df_us["INDPRO_YoY"],
     df_us["Infl_US"],
@@ -404,35 +394,51 @@ df_analysis_us.rename(
 
 # start_date = ""
 
-end_date = "2019-12-01"
+# end_date = "2019-12-01"
 
-df_analysis_us = df_analysis_us[:end_date]
-
-# Plot Data
-plot_data(df_analysis_us)
-
-
-# Stationarity Check
-adf_test_us = get_adf(df_analysis_us)
-
-col_names_adf = ["t-Statistic", "Critical Values at 5%", "p-value"]
-
-df_adf_us = pd.DataFrame.from_dict(adf_test_us, orient="index", columns=col_names_adf)
-
-print(df_adf_us.round(4).to_latex())
-
-adf_test = adfuller(df_us["INDPRO"])
-
-adf_test[4]["5%"]
+# df_analysis_us = df_analysis_us[:end_date]
 
 # Estimate sVAR
 model_us = VAR(df_analysis_us)
-print(model_us.select_order())
+# print(model_us.select_order())
 
 result = model_us.fit(maxlags=4, ic="aic")
-result.summary()
+
+# print(result.test_whiteness())
+# print(result.is_stable())
+
+# residuals = result.sigma_u
+# resid_chol_decomp = np.linalg.cholesky(residuals)
+# np.linalg.eigvals(resid_chol_decomp)
 
 
+# Stationarity Check (with Latex output)
+adf_test_us = get_adf(df_analysis_us)
+
+col_names_adf = ["t-Statistic", "Critical value", "p-value"]
+
+df_adf_us = pd.DataFrame.from_dict(adf_test_us, orient="index", columns=col_names_adf)
+
+df_adf_us.index = [
+    "$IP^{US}_{t}$",
+    "$\\pi^{US}_{t}$",
+    "$i^{US}_{t}$",
+    "$FS^{US}_{t}$",
+    "$L^{US}_{t}$",
+    "$S^{US}_{t}$",
+    "$C^{US}_{t}$",
+    "$M^{US}_{t}$",
+]
+
+
+print(df_adf_us.round(4).to_latex(escape=False))
+
+
+# Estimation Results (with Latex output)
+result.params
+print(result.params.to_latex())
+
+# Information Criteria
 llf_us = {"Log-Likelihood": result.llf}
 aic_us = {"AIC": result.aic}
 bic_us = {"BIC": result.bic}
@@ -440,18 +446,6 @@ hqic_us = {"HQIC": result.hqic}
 
 dict_ic_us = {**llf_us, **aic_us, **bic_us, **hqic_us}
 print(pd.DataFrame.from_dict(dict_ic_us, orient="index").round(4).to_latex())
-
-
-result.params
-print(result.params.to_latex())
-
-
-# print(result.test_whiteness())
-print(result.is_stable())
-
-residuals = result.sigma_u
-resid_chol_decomp = np.linalg.cholesky(residuals)
-np.linalg.eigvals(resid_chol_decomp)
 
 
 # IRFs
@@ -477,99 +471,70 @@ irfs_us.plot(
 plt.savefig("IRF_US_30_15_v2.pdf", dpi=1000)
 plt.show()
 
-irfs_us = result.irf(36)
-plt.figure(figsize=(10, 5))
-irfs_us.plot(orth=True, impulse="L", signif=0.1)
-plt.savefig("IRF_L.pdf")
-plt.show()
+# irfs_us = result.irf(36)
+# plt.figure(figsize=(10, 5))
+# irfs_us.plot(orth=True, impulse="L", signif=0.1)
+# plt.savefig("IRF_L.pdf")
+# plt.show()
 
-plt.figure(figsize=(10, 5))
-irfs_us.plot(orth=True, impulse="S", signif=0.1)
-plt.savefig("IRF_S.pdf")
-plt.show()
+# plt.figure(figsize=(10, 5))
+# irfs_us.plot(orth=True, impulse="S", signif=0.1)
+# plt.savefig("IRF_S.pdf")
+# plt.show()
 
-plt.figure(figsize=(10, 5))
-irfs_us.plot(orth=True, impulse="C", signif=0.1)
-plt.savefig("IRF_C.pdf")
-plt.show()
+# plt.figure(figsize=(10, 5))
+# irfs_us.plot(orth=True, impulse="C", signif=0.1)
+# plt.savefig("IRF_C.pdf")
+# plt.show()
 
-plt.figure(figsize=(10, 5))
-irfs_us.plot(orth=True, impulse="IP", signif=0.1)
-plt.savefig("IRF_IP.pdf")
-plt.show()
+# plt.figure(figsize=(10, 5))
+# irfs_us.plot(orth=True, impulse="IP", signif=0.1)
+# plt.savefig("IRF_IP.pdf")
+# plt.show()
 
-plt.figure(figsize=(10, 5))
-irfs_us.plot(orth=True, impulse="Infl_US", signif=0.1)
-plt.savefig("IRF_Infl_US.pdf")
-plt.show()
+# plt.figure(figsize=(10, 5))
+# irfs_us.plot(orth=True, impulse="Infl_US", signif=0.1)
+# plt.savefig("IRF_Infl_US.pdf")
+# plt.show()
 
-plt.figure(figsize=(10, 5))
-irfs_us.plot(orth=True, impulse="FFR", signif=0.1)
-plt.savefig("IRF_FFR.pdf")
-plt.show()
+# plt.figure(figsize=(10, 5))
+# irfs_us.plot(orth=True, impulse="FFR", signif=0.1)
+# plt.savefig("IRF_FFR.pdf")
+# plt.show()
 
 
 ########## Granger Causality ##########
-grangercausalitytests(df_us[["Infl_US", "Level Factor"]], 4)
+# grangercausalitytests(df_us[["Infl_US", "Level Factor"]], 4)
 
-grangercausalitytests(df_us[["Level Factor", "Infl_US"]], 4)
+# grangercausalitytests(df_us[["Level Factor", "Infl_US"]], 4)
 
-grangercausalitytests(df_us[["Slope Factor", "INDPRO_YoY"]], 4)
+# grangercausalitytests(df_us[["Slope Factor", "INDPRO_YoY"]], 4)
 
-grangercausalitytests(df_us[["INDPRO_YoY", "Slope Factor"]], 4)
+# grangercausalitytests(df_us[["INDPRO_YoY", "Slope Factor"]], 4)
 
-grangercausalitytests(df_us[["TB_3M", "Level Factor"]], 4)
+# grangercausalitytests(df_us[["TB_3M", "Level Factor"]], 4)
 
-grangercausalitytests(df_us[["Level Factor", "TB_3M"]], 4)
+# grangercausalitytests(df_us[["Level Factor", "TB_3M"]], 4)
 
-grangercausalitytests(df_us[["Slope Factor", "TB_3M"]], 4)
+# grangercausalitytests(df_us[["Slope Factor", "TB_3M"]], 4)
 
-grangercausalitytests(df_us[["Curvature Factor", "TB_3M"]], 4)
-
-
-# # VAR
-# df_analysis_us = [
-#     df_us["INDPRO_YoY"],
-#     df_us["Infl_US"],
-#     df_us["FFR"],
-#     df_us["ebp"],
-#     df_us["Level Factor"],
-#     df_us["Slope Factor"],
-#     df_us["Curvature Factor"],
-#     df_us["S&P_500_YoY"],
-# ]
+# grangercausalitytests(df_us[["Curvature Factor", "TB_3M"]], 4)
 
 
-# df_analysis_us = pd.concat(df_analysis_us, axis=1)
-
-# df_analysis_us.rename(
-#     columns={
-#         "INDPRO_YoY": "IP",
-#         "Level Factor": "L",
-#         "Slope Factor": "S",
-#         "Curvature Factor": "C",
-#         "S&P_500_YoY": "S&P_500",
-#     },
-#     inplace=True,
-# )
-
-path_ma_data = r"C:\Users\alexa\Documents\Studium\MSc (WU)\Master Thesis\Analysis\Data"
-df_analysis_us.to_csv(path_ma_data + "\\" + "VAR_Data_US.csv")
-
-# Granger Causality
+# Block Granger Causality
 # Macro to Yield Curve
 granger_result = result.test_causality(
     ["L", "S", "C"],
     ["IP", "Infl_US", "FFR"],
 )
 
-print(granger_result.summary())
+# print(granger_result.summary())
 
 result_macro_us = granger_result.summary()
 
 df_result_macro_us = pd.DataFrame(result_macro_us[1:], columns=result_macro_us[0])
 
-df_result_macro_us.to_latex()
+print(df_result_macro_us.to_latex())
 
 
 # Yield Curve to Macro
@@ -578,7 +543,7 @@ granger_result = result.test_causality(
     ["L", "S", "C"],
 )
 
-print(granger_result.summary())
+# print(granger_result.summary())
 
 result_yc_us = granger_result.summary()
 
@@ -587,29 +552,6 @@ df_result_yc_us = pd.DataFrame(result_yc_us[1:], columns=result_yc_us[0])
 df_result_yc_us.to_latex()
 
 
-# Create an empty 8x8 matrix filled with False
-lower_triangular = np.zeros((8, 8), dtype=bool)
-
-# Set TRUE values below or on the main diagonal
-lower_triangular[np.tril_indices_from(lower_triangular)] = True
-
-# Print the matrix
-print(lower_triangular)
-
-
-########## Playing Around ##########
-print(result.summary())
-
-
-plt.figure(figsize=(30, 15))
-acorr_plot = result.plot_acorr()
-plt.show()
-
-
-print(result.test_whiteness(nlags=5))
-
-
-########## Playing Around ##########
 # Level Data
 df_analysis_us = [
     df_us["INDPRO"],
@@ -636,11 +578,6 @@ df_analysis_us.rename(
     inplace=True,
 )
 
-
-# Plot Data
-plot_data(df_analysis_us)
-
-
 # Stationarity Check
 adf_test_us = get_adf(df_analysis_us)
 
@@ -668,10 +605,6 @@ print(result.params.to_latex())
 
 # print(result.test_whiteness())
 print(result.is_stable())
-
-residuals = result.sigma_u
-resid_chol_decomp = np.linalg.cholesky(residuals)
-np.linalg.eigvals(resid_chol_decomp)
 
 
 # IRFs
@@ -724,10 +657,6 @@ df_analysis_us.rename(
 )
 
 
-# Plot Data
-plot_data(df_analysis_us)
-
-
 # Stationarity Check
 adf_test_us = get_adf(df_analysis_us)
 
@@ -755,10 +684,6 @@ print(result.params.to_latex())
 
 # print(result.test_whiteness())
 print(result.is_stable())
-
-residuals = result.sigma_u
-resid_chol_decomp = np.linalg.cholesky(residuals)
-np.linalg.eigvals(resid_chol_decomp)
 
 
 # IRFs
@@ -846,11 +771,6 @@ print(result.params.to_latex())
 # print(result.test_whiteness())
 print(result.is_stable())
 
-residuals = result.sigma_u
-resid_chol_decomp = np.linalg.cholesky(residuals)
-np.linalg.eigvals(resid_chol_decomp)
-
-
 # IRFs
 irfs_us = result.irf(36)
 # plt.figure(figsize=(30, 15))
@@ -873,3 +793,28 @@ irfs_us.plot(
 )
 plt.savefig("IRF_US_30_15_Diebold_2006.pdf", dpi=1000)
 plt.show()
+
+
+########## Playing Around ##########
+path_ma_data = r"C:\Users\alexa\Documents\Studium\MSc (WU)\Master Thesis\Analysis\Data"
+df_analysis_us.to_csv(path_ma_data + "\\" + "VAR_Data_US.csv")
+
+
+# Create an empty 8x8 matrix filled with False
+lower_triangular = np.zeros((8, 8), dtype=bool)
+
+# Set TRUE values below or on the main diagonal
+lower_triangular[np.tril_indices_from(lower_triangular)] = True
+
+# Print the matrix
+print(lower_triangular)
+
+print(result.summary())
+
+
+plt.figure(figsize=(30, 15))
+acorr_plot = result.plot_acorr()
+plt.show()
+
+
+print(result.test_whiteness(nlags=5))

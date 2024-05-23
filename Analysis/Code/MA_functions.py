@@ -36,16 +36,19 @@ adf_dict = {}
 
 
 def get_adf(data):
-    for col in data.columns:
-        result = adfuller(data[col])
-        t_stat = result[0]
-        critical_val = result[4]["5%"]
-        p_val = result[1]
+    if not adf_dict:
+        for col in data.columns:
+            result = adfuller(data[col])
+            t_stat = result[0]
+            critical_val = result[4]["5%"]
+            p_val = result[1]
 
-        adf_dict[col] = [t_stat, critical_val, p_val]
-        # print(str(col) + ": " + str(p_val))
+            adf_dict[col] = [t_stat, critical_val, p_val]
+            # print(str(col) + ": " + str(p_val))
 
-    return adf_dict
+        return adf_dict
+    else:
+        adf_dict.clear()
 
 
 # Coefficient Approximation Function

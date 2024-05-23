@@ -400,9 +400,9 @@ df_analysis_us.rename(
 
 # Estimate sVAR
 model_us = VAR(df_analysis_us)
-# print(model_us.select_order())
+print(model_us.select_order())
 
-result = model_us.fit(maxlags=4, ic="aic")
+result = model_us.fit(maxlags=4, ic="bic")
 
 # print(result.test_whiteness())
 # print(result.is_stable())
@@ -552,269 +552,269 @@ df_result_yc_us = pd.DataFrame(result_yc_us[1:], columns=result_yc_us[0])
 df_result_yc_us.to_latex()
 
 
-# Level Data
-df_analysis_us = [
-    df_us["INDPRO"],
-    df_us["CPI_US"],
-    df_us["FFR"],
-    df_us["ebp"],
-    df_us["Level Factor"],
-    df_us["Slope Factor"],
-    df_us["Curvature Factor"],
-    df_us["S&P_500_YoY"],
-]
+# # Level Data
+# df_analysis_us = [
+#     df_us["INDPRO"],
+#     df_us["CPI_US"],
+#     df_us["FFR"],
+#     df_us["ebp"],
+#     df_us["Level Factor"],
+#     df_us["Slope Factor"],
+#     df_us["Curvature Factor"],
+#     df_us["S&P_500_YoY"],
+# ]
 
 
-df_analysis_us = pd.concat(df_analysis_us, axis=1)
+# df_analysis_us = pd.concat(df_analysis_us, axis=1)
 
-df_analysis_us.rename(
-    columns={
-        "INDPRO": "IP",
-        "Level Factor": "L",
-        "Slope Factor": "S",
-        "Curvature Factor": "C",
-        "S&P_500_YoY": "S&P_500",
-    },
-    inplace=True,
-)
+# df_analysis_us.rename(
+#     columns={
+#         "INDPRO": "IP",
+#         "Level Factor": "L",
+#         "Slope Factor": "S",
+#         "Curvature Factor": "C",
+#         "S&P_500_YoY": "S&P_500",
+#     },
+#     inplace=True,
+# )
 
-# Stationarity Check
-adf_test_us = get_adf(df_analysis_us)
-
-
-# Estimate sVAR
-model_us = VAR(df_analysis_us)
-print(model_us.select_order())
-
-result = model_us.fit(maxlags=4, ic="aic")
-result.summary()
+# # Stationarity Check
+# adf_test_us = get_adf(df_analysis_us)
 
 
-llf_us = {"Log-Likelihood": result.llf}
-aic_us = {"AIC": result.aic}
-bic_us = {"BIC": result.bic}
-hqic_us = {"HQIC": result.hqic}
+# # Estimate sVAR
+# model_us = VAR(df_analysis_us)
+# print(model_us.select_order())
 
-dict_ic_us = {**llf_us, **aic_us, **bic_us, **hqic_us}
-print(pd.DataFrame.from_dict(dict_ic_us, orient="index").round(4).to_latex())
-
-
-result.params
-print(result.params.to_latex())
+# result = model_us.fit(maxlags=4, ic="aic")
+# result.summary()
 
 
-# print(result.test_whiteness())
-print(result.is_stable())
+# llf_us = {"Log-Likelihood": result.llf}
+# aic_us = {"AIC": result.aic}
+# bic_us = {"BIC": result.bic}
+# hqic_us = {"HQIC": result.hqic}
+
+# dict_ic_us = {**llf_us, **aic_us, **bic_us, **hqic_us}
+# print(pd.DataFrame.from_dict(dict_ic_us, orient="index").round(4).to_latex())
 
 
-# IRFs
-irfs_us = result.irf(36)
+# result.params
+# print(result.params.to_latex())
+
+
+# # print(result.test_whiteness())
+# print(result.is_stable())
+
+
+# # IRFs
+# irfs_us = result.irf(36)
+# # plt.figure(figsize=(30, 15))
+# irfs_us.plot(
+#     orth=True,
+#     signif=0.1,
+#     figsize=(30, 15),
+#     plot_params={
+#         "legend_fontsize": 20
+#         # "tick_params": {"axis": "y", "pad": 10}
+#     },
+#     subplot_params={
+#         "fontsize": 15,
+#         #  "wspace" : 0.8,
+#         # "hspace": 0.8,
+#         #  "left" : 0.01,
+#         #  "right" : 1,
+#         # "tick_params": {"axis": "y", "pad": 10},
+#     },
+# )
+# plt.savefig("IRF_US_30_15_Level_Data.pdf", dpi=1000)
+# plt.show()
+
+
+# # Capacity Utilization
+# df_analysis_us = [
+#     df_us["CU_US"],
+#     df_us["Infl_US"],
+#     df_us["FFR"],
+#     df_us["ebp"],
+#     df_us["Level Factor"],
+#     df_us["Slope Factor"],
+#     df_us["Curvature Factor"],
+#     df_us["S&P_500_YoY"],
+# ]
+
+
+# df_analysis_us = pd.concat(df_analysis_us, axis=1)
+
+# df_analysis_us.rename(
+#     columns={
+#         "Level Factor": "L",
+#         "Slope Factor": "S",
+#         "Curvature Factor": "C",
+#         "S&P_500_YoY": "S&P_500",
+#     },
+#     inplace=True,
+# )
+
+
+# # Stationarity Check
+# adf_test_us = get_adf(df_analysis_us)
+
+
+# # Estimate sVAR
+# model_us = VAR(df_analysis_us)
+# print(model_us.select_order())
+
+# result = model_us.fit(maxlags=4, ic="aic")
+# result.summary()
+
+
+# llf_us = {"Log-Likelihood": result.llf}
+# aic_us = {"AIC": result.aic}
+# bic_us = {"BIC": result.bic}
+# hqic_us = {"HQIC": result.hqic}
+
+# dict_ic_us = {**llf_us, **aic_us, **bic_us, **hqic_us}
+# print(pd.DataFrame.from_dict(dict_ic_us, orient="index").round(4).to_latex())
+
+
+# result.params
+# print(result.params.to_latex())
+
+
+# # print(result.test_whiteness())
+# print(result.is_stable())
+
+
+# # IRFs
+# irfs_us = result.irf(36)
+# # plt.figure(figsize=(30, 15))
+# irfs_us.plot(
+#     orth=True,
+#     signif=0.1,
+#     figsize=(30, 15),
+#     plot_params={
+#         "legend_fontsize": 20
+#         # "tick_params": {"axis": "y", "pad": 10}
+#     },
+#     subplot_params={
+#         "fontsize": 15,
+#         #  "wspace" : 0.8,
+#         # "hspace": 0.8,
+#         #  "left" : 0.01,
+#         #  "right" : 1,
+#         # "tick_params": {"axis": "y", "pad": 10},
+#     },
+# )
+# plt.savefig("IRF_US_30_15_CU.pdf", dpi=1000)
+# plt.show()
+
+
+# # Diebold et al (2006) sample
+# df_analysis_us = [
+#     df_us["Level Factor"],
+#     df_us["Slope Factor"],
+#     df_us["Curvature Factor"],
+#     df_us["CU_US"],
+#     df_us["Infl_US"],
+#     df_us["FFR"],
+# ]
+
+
+# df_analysis_us = pd.concat(df_analysis_us, axis=1)
+
+# # start_date = ""
+
+# end_date = "2000-12-01"
+
+# df_analysis_us = df_analysis_us[:end_date]
+
+# df_analysis_us.rename(
+#     columns={
+#         "Level Factor": "L",
+#         "Slope Factor": "S",
+#         "Curvature Factor": "C",
+#     },
+#     inplace=True,
+# )
+
+
+# # Plot Data
+# plot_data(df_analysis_us)
+
+
+# # Stationarity Check
+# adf_test_us = get_adf(df_analysis_us)
+
+
+# # Estimate sVAR
+# model_us = VAR(df_analysis_us)
+# print(model_us.select_order())
+
+# result = model_us.fit(maxlags=4, ic="aic")
+# result.summary()
+
+
+# llf_us = {"Log-Likelihood": result.llf}
+# aic_us = {"AIC": result.aic}
+# bic_us = {"BIC": result.bic}
+# hqic_us = {"HQIC": result.hqic}
+
+# dict_ic_us = {**llf_us, **aic_us, **bic_us, **hqic_us}
+# print(pd.DataFrame.from_dict(dict_ic_us, orient="index").round(4).to_latex())
+
+
+# result.params
+# print(result.params.to_latex())
+
+
+# # print(result.test_whiteness())
+# print(result.is_stable())
+
+# # IRFs
+# irfs_us = result.irf(36)
+# # plt.figure(figsize=(30, 15))
+# irfs_us.plot(
+#     orth=True,
+#     signif=0.1,
+#     figsize=(30, 15),
+#     plot_params={
+#         "legend_fontsize": 20
+#         # "tick_params": {"axis": "y", "pad": 10}
+#     },
+#     subplot_params={
+#         "fontsize": 15,
+#         #  "wspace" : 0.8,
+#         # "hspace": 0.8,
+#         #  "left" : 0.01,
+#         #  "right" : 1,
+#         # "tick_params": {"axis": "y", "pad": 10},
+#     },
+# )
+# plt.savefig("IRF_US_30_15_Diebold_2006.pdf", dpi=1000)
+# plt.show()
+
+
+# ########## Playing Around ##########
+# path_ma_data = r"C:\Users\alexa\Documents\Studium\MSc (WU)\Master Thesis\Analysis\Data"
+# df_analysis_us.to_csv(path_ma_data + "\\" + "VAR_Data_US.csv")
+
+
+# # Create an empty 8x8 matrix filled with False
+# lower_triangular = np.zeros((8, 8), dtype=bool)
+
+# # Set TRUE values below or on the main diagonal
+# lower_triangular[np.tril_indices_from(lower_triangular)] = True
+
+# # Print the matrix
+# print(lower_triangular)
+
+# print(result.summary())
+
+
 # plt.figure(figsize=(30, 15))
-irfs_us.plot(
-    orth=True,
-    signif=0.1,
-    figsize=(30, 15),
-    plot_params={
-        "legend_fontsize": 20
-        # "tick_params": {"axis": "y", "pad": 10}
-    },
-    subplot_params={
-        "fontsize": 15,
-        #  "wspace" : 0.8,
-        # "hspace": 0.8,
-        #  "left" : 0.01,
-        #  "right" : 1,
-        # "tick_params": {"axis": "y", "pad": 10},
-    },
-)
-plt.savefig("IRF_US_30_15_Level_Data.pdf", dpi=1000)
-plt.show()
+# acorr_plot = result.plot_acorr()
+# plt.show()
 
 
-# Capacity Utilization
-df_analysis_us = [
-    df_us["CU_US"],
-    df_us["Infl_US"],
-    df_us["FFR"],
-    df_us["ebp"],
-    df_us["Level Factor"],
-    df_us["Slope Factor"],
-    df_us["Curvature Factor"],
-    df_us["S&P_500_YoY"],
-]
-
-
-df_analysis_us = pd.concat(df_analysis_us, axis=1)
-
-df_analysis_us.rename(
-    columns={
-        "Level Factor": "L",
-        "Slope Factor": "S",
-        "Curvature Factor": "C",
-        "S&P_500_YoY": "S&P_500",
-    },
-    inplace=True,
-)
-
-
-# Stationarity Check
-adf_test_us = get_adf(df_analysis_us)
-
-
-# Estimate sVAR
-model_us = VAR(df_analysis_us)
-print(model_us.select_order())
-
-result = model_us.fit(maxlags=4, ic="aic")
-result.summary()
-
-
-llf_us = {"Log-Likelihood": result.llf}
-aic_us = {"AIC": result.aic}
-bic_us = {"BIC": result.bic}
-hqic_us = {"HQIC": result.hqic}
-
-dict_ic_us = {**llf_us, **aic_us, **bic_us, **hqic_us}
-print(pd.DataFrame.from_dict(dict_ic_us, orient="index").round(4).to_latex())
-
-
-result.params
-print(result.params.to_latex())
-
-
-# print(result.test_whiteness())
-print(result.is_stable())
-
-
-# IRFs
-irfs_us = result.irf(36)
-# plt.figure(figsize=(30, 15))
-irfs_us.plot(
-    orth=True,
-    signif=0.1,
-    figsize=(30, 15),
-    plot_params={
-        "legend_fontsize": 20
-        # "tick_params": {"axis": "y", "pad": 10}
-    },
-    subplot_params={
-        "fontsize": 15,
-        #  "wspace" : 0.8,
-        # "hspace": 0.8,
-        #  "left" : 0.01,
-        #  "right" : 1,
-        # "tick_params": {"axis": "y", "pad": 10},
-    },
-)
-plt.savefig("IRF_US_30_15_CU.pdf", dpi=1000)
-plt.show()
-
-
-# Diebold et al (2006) sample
-df_analysis_us = [
-    df_us["Level Factor"],
-    df_us["Slope Factor"],
-    df_us["Curvature Factor"],
-    df_us["CU_US"],
-    df_us["Infl_US"],
-    df_us["FFR"],
-]
-
-
-df_analysis_us = pd.concat(df_analysis_us, axis=1)
-
-# start_date = ""
-
-end_date = "2000-12-01"
-
-df_analysis_us = df_analysis_us[:end_date]
-
-df_analysis_us.rename(
-    columns={
-        "Level Factor": "L",
-        "Slope Factor": "S",
-        "Curvature Factor": "C",
-    },
-    inplace=True,
-)
-
-
-# Plot Data
-plot_data(df_analysis_us)
-
-
-# Stationarity Check
-adf_test_us = get_adf(df_analysis_us)
-
-
-# Estimate sVAR
-model_us = VAR(df_analysis_us)
-print(model_us.select_order())
-
-result = model_us.fit(maxlags=4, ic="aic")
-result.summary()
-
-
-llf_us = {"Log-Likelihood": result.llf}
-aic_us = {"AIC": result.aic}
-bic_us = {"BIC": result.bic}
-hqic_us = {"HQIC": result.hqic}
-
-dict_ic_us = {**llf_us, **aic_us, **bic_us, **hqic_us}
-print(pd.DataFrame.from_dict(dict_ic_us, orient="index").round(4).to_latex())
-
-
-result.params
-print(result.params.to_latex())
-
-
-# print(result.test_whiteness())
-print(result.is_stable())
-
-# IRFs
-irfs_us = result.irf(36)
-# plt.figure(figsize=(30, 15))
-irfs_us.plot(
-    orth=True,
-    signif=0.1,
-    figsize=(30, 15),
-    plot_params={
-        "legend_fontsize": 20
-        # "tick_params": {"axis": "y", "pad": 10}
-    },
-    subplot_params={
-        "fontsize": 15,
-        #  "wspace" : 0.8,
-        # "hspace": 0.8,
-        #  "left" : 0.01,
-        #  "right" : 1,
-        # "tick_params": {"axis": "y", "pad": 10},
-    },
-)
-plt.savefig("IRF_US_30_15_Diebold_2006.pdf", dpi=1000)
-plt.show()
-
-
-########## Playing Around ##########
-path_ma_data = r"C:\Users\alexa\Documents\Studium\MSc (WU)\Master Thesis\Analysis\Data"
-df_analysis_us.to_csv(path_ma_data + "\\" + "VAR_Data_US.csv")
-
-
-# Create an empty 8x8 matrix filled with False
-lower_triangular = np.zeros((8, 8), dtype=bool)
-
-# Set TRUE values below or on the main diagonal
-lower_triangular[np.tril_indices_from(lower_triangular)] = True
-
-# Print the matrix
-print(lower_triangular)
-
-print(result.summary())
-
-
-plt.figure(figsize=(30, 15))
-acorr_plot = result.plot_acorr()
-plt.show()
-
-
-print(result.test_whiteness(nlags=5))
+# print(result.test_whiteness(nlags=5))

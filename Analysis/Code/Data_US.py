@@ -435,8 +435,13 @@ print(df_adf_us.round(4).to_latex(escape=False))
 
 
 # Estimation Results (with Latex output)
-result.params
-print(result.params.to_latex())
+result.summary()
+result.params.round(2)
+print(result.params.round(2).to_latex())
+
+result.bse.round(4)
+
+result.pvalues.round(4)
 
 # Information Criteria
 llf_us = {"Log-Likelihood": result.llf}

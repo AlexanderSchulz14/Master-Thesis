@@ -26,7 +26,6 @@ from statsmodels.tsa.seasonal import seasonal_decompose
 from statsmodels.tsa.filters.hp_filter import hpfilter
 from scipy.stats import pearsonr
 import requests as req
-import yfinance as yf
 
 from fredapi import Fred
 

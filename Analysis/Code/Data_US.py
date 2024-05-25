@@ -391,11 +391,14 @@ df_analysis_us.rename(
     inplace=True,
 )
 
+
 # start_date = ""
 
 # end_date = "2019-12-01"
 
 # df_analysis_us = df_analysis_us[:end_date]
+
+# df_analysis_us.to_csv("Analysis_US.csv")
 
 # Estimate sVAR
 model_us = VAR(df_analysis_us)

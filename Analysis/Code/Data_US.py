@@ -382,10 +382,10 @@ df_analysis_us = pd.concat(df_analysis_us, axis=1)
 
 df_analysis_us.rename(
     columns={
-        "INDPRO_YoY": "IP",
-        "Level Factor": "L",
-        "Slope Factor": "S",
-        "Curvature Factor": "C",
+        "INDPRO_YoY": "IP_US",
+        "Level Factor": "L_US",
+        "Slope Factor": "S_US",
+        "Curvature Factor": "C_US",
         "S&P_500_YoY": "S&P_500",
     },
     inplace=True,
@@ -531,8 +531,7 @@ plt.show()
 # Block Granger Causality
 # Macro to Yield Curve
 granger_result = result.test_causality(
-    ["L", "S", "C"],
-    ["IP", "Infl_US", "FFR"],
+    ["L", "S", "C"], ["IP", "Infl_US", "FFR"], kind="wald"
 )
 
 # print(granger_result.summary())
@@ -541,13 +540,14 @@ result_macro_us = granger_result.summary()
 
 df_result_macro_us = pd.DataFrame(result_macro_us[1:], columns=result_macro_us[0])
 
+df_result_macro_us.iloc[0, 1]
+
 print(df_result_macro_us.to_latex())
 
 
 # Yield Curve to Macro
 granger_result = result.test_causality(
-    ["IP", "Infl_US", "FFR"],
-    ["L", "S", "C"],
+    ["IP", "Infl_US", "FFR"], ["L", "S", "C"], kind="wald"
 )
 
 # print(granger_result.summary())
@@ -556,7 +556,7 @@ result_yc_us = granger_result.summary()
 
 df_result_yc_us = pd.DataFrame(result_yc_us[1:], columns=result_yc_us[0])
 
-df_result_yc_us.to_latex()
+print(df_result_yc_us.to_latex())
 
 
 # # Level Data

@@ -28,11 +28,16 @@ from fredapi import Fred
 
 fred = Fred(api_key="ef7244731efdde9698fef5d547b7094f")
 
+from MA_functions import *
+
 import filterpy  # for Kalman Filter
 from nelson_siegel_svensson.calibrate import *
 import rpy2
 import io
 import sdmx
+
+# Paths
+data_path_ma = r"C:\Users\alexa\Documents\Studium\MSc (WU)\Master Thesis\Analysis\Data"
 
 
 ##### Data
@@ -69,6 +74,7 @@ eustx_50_m_ret.name = "EUSTX_50_YoY"
 
 # Financial Stress (VSTOXX) -> geht nur bis 2016!
 # -> Alternative: VIX fuer US & EA?
+
 # os.chdir(r'C:\Users\alexa\Documents\Studium\MSc (WU)\Master Thesis\Analysis\Data')
 # vstoxx = pd.read_csv('VSTOXX.csv',
 #                      skiprows=2,
@@ -80,6 +86,18 @@ eustx_50_m_ret.name = "EUSTX_50_YoY"
 
 # vstoxx.to_excel('VSTOXX_D_Excel.xlsx')
 # vstoxx_m.to_excel('VSTOXX_M_Excel.xlsx')
+
+# Bloomberg BDH Abfrage
+vix_data = pd.read_excel(data_path_ma + "\\" "VIX_Data.xlsx", skiprows=5, index_col=0)
+
+vix_data.rename(
+    columns={vix_data.columns[0]: "VIX", vix_data.columns[1]: "VSTOXX"}, inplace=True
+)
+
+vix_data = vix_data["2004":]
+
+
+vix_data.index = vix_data.index + pd.offsets.MonthBegin(1)
 
 
 # Yields
@@ -469,6 +487,7 @@ start_ea = max(
     min(infl_ea.index),
     min(ea_rate_3m.index),
     min(eustx_50_m_ret.index),
+    min(vix_data.index),
     min(yields_ea_m_r.index),
 )
 
@@ -478,6 +497,7 @@ end_ea = min(
     max(infl_ea.index),
     max(ea_rate_3m.index),
     max(eustx_50_m_ret.index),
+    max(vix_data.index),
     max(yields_ea_m_r.index),
 )
 
@@ -487,6 +507,7 @@ df_ea = [
     infl_ea[start_ea:end_ea],
     ea_rate_3m[start_ea:end_ea],
     eustx_50_m_ret[start_ea:end_ea],
+    # vix_data.loc[start_ea:end_ea, "VSTOXX"],
     yields_ea_m_r[start_ea:end_ea],
 ]
 
@@ -704,4 +725,104 @@ plt.plot(
 )
 
 plt.legend()
+plt.show()
+
+
+##############################
+########## Analysis ##########
+##############################
+
+##########sVAR ##########
+df_analysis_ea = [
+    df_ea["INDPRO_EA"],
+    df_ea["Infl_EA"],
+    df_ea["EA_Rate_3M"],
+    # df_ea["VSTOXX"],
+    df_ea["beta_0"],
+    df_ea["beta_1"],
+    df_ea["beta_2"],
+    df_ea["EUSTX_50_YoY"],
+]
+
+df_analysis_ea = pd.concat(df_analysis_ea, axis=1)
+
+df_analysis_ea.rename(
+    columns={
+        "INDPRO_EA": "IP_EA",
+        "beta_0": "L_EA",
+        "beta_1": "S_EA",
+        "beta_2": "C_EA",
+        "EUSTX_50_YoY": "EUSTX_50",
+    },
+    inplace=True,
+)
+
+# Estimate sVAR
+model_ea = VAR(df_analysis_ea)
+print(model_ea.select_order())
+
+result = model_ea.fit(maxlags=4, ic="bic")
+
+# Stationarity Check (with Latex output)
+adf_test_ea = get_adf(df_analysis_ea)
+
+col_names_adf = ["t-Statistic", "Critical value", "p-value"]
+
+df_adf_ea = pd.DataFrame.from_dict(adf_test_ea, orient="index", columns=col_names_adf)
+
+df_adf_ea.index = [
+    "$IP^{EA}_{t}$",
+    "$\\pi^{EA}_{t}$",
+    "$i^{EA}_{t}$",
+    # "$FS^{EA}_{t}$",
+    "$L^{EA}_{t}$",
+    "$S^{EA}_{t}$",
+    "$C^{EA}_{t}$",
+    "$M^{EA}_{t}$",
+]
+
+
+print(df_adf_ea.round(4).to_latex(escape=False))
+
+
+# Estimation Results (with Latex output)
+result.summary()
+result.params.round(4)
+print(result.params.round(4).to_latex())
+
+result.bse.round(4)
+
+result.pvalues.round(4)
+
+# Information Criteria
+llf_ea = {"Log-Likelihood": result.llf}
+aic_ea = {"AIC": result.aic}
+bic_ea = {"BIC": result.bic}
+hqic_ea = {"HQIC": result.hqic}
+
+dict_ic_ea = {**llf_ea, **aic_ea, **bic_ea, **hqic_ea}
+print(pd.DataFrame.from_dict(dict_ic_ea, orient="index").round(4).to_latex())
+
+
+# IRFs
+irfs_ea = result.irf(36)
+# plt.figure(figsize=(30, 15))
+irfs_ea.plot(
+    orth=True,
+    signif=0.1,
+    figsize=(30, 15),
+    plot_params={
+        "legend_fontsize": 20
+        # "tick_params": {"axis": "y", "pad": 10}
+    },
+    subplot_params={
+        "fontsize": 15,
+        #  "wspace" : 0.8,
+        # "hspace": 0.8,
+        #  "left" : 0.01,
+        #  "right" : 1,
+        # "tick_params": {"axis": "y", "pad": 10},
+    },
+)
+plt.savefig("IRF_EA_30_15_v2.pdf", dpi=1000)
 plt.show()

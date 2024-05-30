@@ -32,10 +32,10 @@ def plot_data(data):
 #         print(str(col) + ": " + str(p_val))
 
 
-adf_dict = {}
-
-
 def get_adf(data):
+
+    adf_dict = {}
+
     if not adf_dict:
         for col in data.columns:
             result = adfuller(data[col])
@@ -49,6 +49,7 @@ def get_adf(data):
         return adf_dict
     else:
         adf_dict.clear()
+        print("Non-empty dictionary. Please try again!")
 
 
 # Coefficient Approximation Function

@@ -324,6 +324,40 @@ plt.legend(loc="lower right")
 plt.savefig("Beta_2_Figure.pdf", dpi=1000)
 plt.show()
 
+
+# Interest Rate and Yield
+plt.figure(figsize=(15, 10))
+plt.plot(df_us["FFR"], label="FFR")
+plt.plot(df_us["3m"], label="3m")
+plt.plot(df_us["120m"], label="120m")
+plt.plot(df_us["Level Factor"], label="Level Factor")
+
+plt.legend()
+plt.show()
+
+
+# IP, Inflation, FFR
+plt.figure(figsize=(15, 10))
+plt.plot(df_us["FFR"], label="FFR")
+plt.plot(df_us["INDPRO_YoY"], label="INDPRO_YoY")
+plt.plot(df_us["Infl_US"], label="Infl_US")
+
+
+plt.legend()
+plt.show()
+
+
+# IP, Slope
+plt.figure(figsize=(15, 10))
+plt.plot(df_us["INDPRO_YoY"], label="INDPRO_YoY")
+plt.plot(df_us["Slope Factor"], label="Slope Factor")
+
+
+plt.legend()
+plt.show()
+
+pearsonr(df_us["INDPRO_YoY"], df_us["Slope Factor"])
+
 # Correlation
 df_us["Curvature Factor"].corr(df_us["2 * y(24) - y(120) - y(3)"])
 
@@ -445,6 +479,39 @@ result.bse.round(4)
 
 result.pvalues.round(4)
 
+
+# Output Table
+estimates_us = result.params.round(4)
+estimates_us.index = (
+    estimates_us.index[:1].tolist() + (estimates_us.index[1:].str[3:] + "-1").tolist()
+)
+# estimates_us.reset_index(inplace=True)
+# estimates_us = estimates_us.iloc[:, 1:]
+std_errors_us = result.bse.round(4)
+std_errors_us.index = ("se_" + std_errors_us.index[:1]).tolist() + (
+    "se_" + std_errors_us.index[1:].str[3:] + "-1"
+).tolist()
+# std_errors_us.reset_index(inplace=True)
+
+
+for i in range(estimates_us.shape[0]):
+    print(estimates_us.iloc[i, :])
+
+
+test = pd.concat([estimates_us, std_errors_us])
+
+
+index_sort = []
+for i in range(estimates_us.shape[0]):
+    index_sort.append(estimates_us.index[i])
+    index_sort.append(std_errors_us.index[i])
+
+
+test = test.reindex(index_sort)
+
+print(test.to_latex(float_format="%.4f"))
+
+
 # Information Criteria
 llf_us = {"Log-Likelihood": result.llf}
 aic_us = {"AIC": result.aic}
@@ -531,7 +598,7 @@ plt.show()
 # Block Granger Causality
 # Macro to Yield Curve
 granger_result = result.test_causality(
-    ["L", "S", "C"], ["IP", "Infl_US", "FFR"], kind="wald"
+    ["L_US", "S_US", "C_US"], ["IP_US", "Infl_US", "FFR"], kind="wald"
 )
 
 # print(granger_result.summary())
@@ -547,7 +614,7 @@ print(df_result_macro_us.to_latex())
 
 # Yield Curve to Macro
 granger_result = result.test_causality(
-    ["IP", "Infl_US", "FFR"], ["L", "S", "C"], kind="wald"
+    ["IP_US", "Infl_US", "FFR"], ["L_US", "S_US", "C_US"], kind="wald"
 )
 
 # print(granger_result.summary())

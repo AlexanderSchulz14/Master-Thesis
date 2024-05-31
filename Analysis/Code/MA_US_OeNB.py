@@ -113,4 +113,3 @@ for i in range(estimates_us.shape[0]):
 test = test.reindex(index_sort)
 
 print(test.to_latex(float_format="%.4f"))
-

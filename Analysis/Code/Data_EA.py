@@ -88,14 +88,23 @@ eustx_50_m_ret.name = "EUSTX_50_YoY"
 # vstoxx_m.to_excel('VSTOXX_M_Excel.xlsx')
 
 # Bloomberg BDH Abfrage
-vix_data = pd.read_excel(data_path_ma + "\\" "VIX_Data.xlsx", skiprows=5, index_col=0)
+# vix_data = pd.read_excel(data_path_ma + "\\" "VIX_Data.xlsx", skiprows=5, index_col=0)
 
-vix_data.rename(
-    columns={vix_data.columns[0]: "VIX", vix_data.columns[1]: "VSTOXX"}, inplace=True
-)
+# vix_data.rename(
+#     columns={vix_data.columns[0]: "VIX", vix_data.columns[1]: "VSTOXX"}, inplace=True
+# )
 
-vix_data = vix_data["2004":]
+# vix_data.to_csv(data_path_ma + "\\" + "VIX_VSTOXX_Data.csv")
 
+# vix_data = vix_data["2004":]
+
+
+# vix_data.index = vix_data.index + pd.offsets.MonthBegin(1)
+
+# Data ohne Bloomber BDH Formel
+vix_data = pd.read_csv(data_path_ma + "\\" + "VIX_VSTOXX_Data.csv", index_col=0)
+
+vix_data.index = pd.to_datetime(vix_data.index)
 
 vix_data.index = vix_data.index + pd.offsets.MonthBegin(1)
 
@@ -507,7 +516,7 @@ df_ea = [
     infl_ea[start_ea:end_ea],
     ea_rate_3m[start_ea:end_ea],
     eustx_50_m_ret[start_ea:end_ea],
-    # vix_data.loc[start_ea:end_ea, "VSTOXX"],
+    vix_data.loc[start_ea:end_ea, "VSTOXX"],
     yields_ea_m_r[start_ea:end_ea],
 ]
 
@@ -515,6 +524,16 @@ df_ea = pd.concat(df_ea, axis=1).dropna()
 
 ##### Plots
 os.chdir(r"C:\Users\alexa\Documents\Studium\MSc (WU)\Master Thesis\Analysis")
+
+# VSTOXX
+plt.figure(figsize=(15, 10))
+plt.plot(df_ea["INDPRO_EA"], label="INDPRO_EA")
+plt.plot(df_ea["VSTOXX"], label="VSTOXX")
+plt.plot(df_ea["EUSTX_50_YoY"], label="EUSTX_50_YoY")
+
+plt.legend()
+plt.show()
+
 
 # Factors ECB
 plt.figure(figsize=(15, 10))
@@ -737,7 +756,7 @@ df_analysis_ea = [
     df_ea["INDPRO_EA"],
     df_ea["Infl_EA"],
     df_ea["EA_Rate_3M"],
-    # df_ea["VSTOXX"],
+    df_ea["VSTOXX"],
     df_ea["beta_0"],
     df_ea["beta_1"],
     df_ea["beta_2"],
@@ -762,6 +781,7 @@ model_ea = VAR(df_analysis_ea)
 print(model_ea.select_order())
 
 result = model_ea.fit(maxlags=4, ic="bic")
+print(result.is_stable())
 
 # Stationarity Check (with Latex output)
 adf_test_ea = get_adf(df_analysis_ea)
@@ -774,7 +794,7 @@ df_adf_ea.index = [
     "$IP^{EA}_{t}$",
     "$\\pi^{EA}_{t}$",
     "$i^{EA}_{t}$",
-    # "$FS^{EA}_{t}$",
+    "$FS^{EA}_{t}$",
     "$L^{EA}_{t}$",
     "$S^{EA}_{t}$",
     "$C^{EA}_{t}$",
@@ -793,6 +813,38 @@ print(result.params.round(4).to_latex())
 result.bse.round(4)
 
 result.pvalues.round(4)
+
+# Output Table
+estimates_ea = result.params.round(4)
+estimates_ea.index = (
+    estimates_ea.index[:1].tolist() + (estimates_ea.index[1:].str[3:] + "-1").tolist()
+)
+# estimates_ea.reset_index(inplace=True)
+# estimates_ea = estimates_ea.iloc[:, 1:]
+std_errors_ea = result.bse.round(4)
+std_errors_ea.index = ("se_" + std_errors_ea.index[:1]).tolist() + (
+    "se_" + std_errors_ea.index[1:].str[3:] + "-1"
+).tolist()
+# std_errors_ea.reset_index(inplace=True)
+
+
+for i in range(estimates_ea.shape[0]):
+    print(estimates_ea.iloc[i, :])
+
+
+test = pd.concat([estimates_ea, std_errors_ea])
+
+
+index_sort = []
+for i in range(estimates_ea.shape[0]):
+    index_sort.append(estimates_ea.index[i])
+    index_sort.append(std_errors_ea.index[i])
+
+
+test = test.reindex(index_sort)
+
+print(test.to_latex(float_format="%.4f"))
+
 
 # Information Criteria
 llf_ea = {"Log-Likelihood": result.llf}
@@ -826,3 +878,34 @@ irfs_ea.plot(
 )
 plt.savefig("IRF_EA_30_15_v2.pdf", dpi=1000)
 plt.show()
+
+
+# Block Granger Causality
+# Macro to Yield Curve
+granger_result = result.test_causality(
+    ["L_EA", "S_EA", "C_EA"], ["IP_EA", "Infl_EA", "EA_Rate_3M"], kind="F"
+)
+
+# print(granger_result.summary())
+
+result_macro_us = granger_result.summary()
+
+df_result_macro_us = pd.DataFrame(result_macro_us[1:], columns=result_macro_us[0])
+
+df_result_macro_us.iloc[0, 1]
+
+print(df_result_macro_us.to_latex())
+
+
+# Yield Curve to Macro
+granger_result = result.test_causality(
+    ["IP_EA", "Infl_EA", "EA_Rate_3M"], ["L_EA", "S_EA", "C_EA"], kind="F"
+)
+
+# print(granger_result.summary())
+
+result_yc_us = granger_result.summary()
+
+df_result_yc_us = pd.DataFrame(result_yc_us[1:], columns=result_yc_us[0])
+
+print(df_result_yc_us.to_latex())

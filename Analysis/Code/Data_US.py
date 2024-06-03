@@ -17,7 +17,7 @@ from stargazer.stargazer import Stargazer
 import copy
 import yfinance as yf
 import statsmodels.api as sm
-from statsmodels.tsa.api import VAR
+from statsmodels.tsa.api import VAR, SVAR
 import statsmodels.tsa.vector_ar.svar_model as svar
 from statsmodels.tsa.stattools import adfuller
 from statsmodels.tools.eval_measures import rmse, aic
@@ -443,9 +443,28 @@ result = model_us.fit(maxlags=4, ic="bic")
 # print(result.test_whiteness())
 # print(result.is_stable())
 
-# residuals = result.sigma_u
-# resid_chol_decomp = np.linalg.cholesky(residuals)
+residuals = result.sigma_u
+resid_chol_decomp = np.linalg.cholesky(residuals).astype(np.float64)
 # np.linalg.eigvals(resid_chol_decomp)
+
+# # Define the size of the matrix
+# n = 8
+
+# # Create a lower triangular matrix with "E" on the main diagonal and below, and 0 elsewhere
+# lower_triangular_matrix = np.zeros((n, n), dtype=object)
+# for i in range(n):
+#     for j in range(i+1):
+#         lower_triangular_matrix[i, j] = "E"
+
+# print(lower_triangular_matrix)
+
+# # Fit SVAR model with Cholesky decomposition
+# svar_model = SVAR(df_analysis_us, svar_type='A', A=lower_triangular_matrix)
+# svar_results = svar_model.fit()
+# print(svar_results.summary())
+
+# svar_results_irf = svar_results.irf(20)
+# svar_results_irf.plot(figsize=(30,15), signif=0.1)
 
 
 # Stationarity Check (with Latex output)

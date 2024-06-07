@@ -63,7 +63,7 @@ ea_rate_3m.rename("EA_Rate_3M", inplace=True)
 
 
 # Stock Market
-eustx_50 = yf.download("^GDAXI", start="1990-01-01", end="2024-01-01")
+eustx_50 = yf.download("^STOXX50E", start="1990-01-01", end="2024-01-01")
 
 eustx_50_m = eustx_50["Close"].resample("M", loffset="1d").mean()
 eustx_50_m.name = "EUSTX_50"
@@ -876,7 +876,7 @@ irfs_ea.plot(
         # "tick_params": {"axis": "y", "pad": 10},
     },
 )
-plt.savefig("IRF_EA_30_15_v2.pdf", dpi=1000)
+plt.savefig("IRF_EA_30_15_v3.pdf", dpi=1000)
 plt.show()
 
 

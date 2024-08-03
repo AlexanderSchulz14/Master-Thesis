@@ -23,6 +23,7 @@ from statsmodels.tsa.filters.hp_filter import hpfilter
 from scipy.stats import pearsonr
 import requests as req
 import yfinance as yf
+from googlefinance.get import get_code
 
 from fredapi import Fred
 
@@ -63,13 +64,15 @@ ea_rate_3m.rename("EA_Rate_3M", inplace=True)
 
 
 # Stock Market
-eustx_50 = yf.download("^STOXX50E", start="1990-01-01", end="2024-01-01")
+eustx_50 = yf.download("^STOXX50E", start="2000-01-01", end="2024-01-01")
 
 eustx_50_m = eustx_50["Close"].resample("M", loffset="1d").mean()
 eustx_50_m.name = "EUSTX_50"
 
 eustx_50_m_ret = eustx_50_m.pct_change(periods=12).dropna() * 100
 eustx_50_m_ret.name = "EUSTX_50_YoY"
+
+
 
 
 # Financial Stress (VSTOXX) -> geht nur bis 2016!
@@ -356,6 +359,64 @@ yield_10y_ea.rename(columns={"OBS_VALUE": "Y10Y"}, inplace=True)
 yield_10y_ea_m = yield_10y_ea.resample("M", loffset="1d").mean()
 
 
+########## Financial Stress ##########
+entrypoint = "https://data-api.ecb.europa.eu/service"
+resource = "data"
+flowRef = "CISS"
+form = "?format=csvdata"
+
+key = "M.U2.Z0Z.4F.EC.SOV_GDPW.IDX"
+
+request_url = entrypoint + "/" + resource + "/" + flowRef + "/" + key + form
+response = req.get(request_url)
+
+ciss_idx = pd.read_csv(
+    io.StringIO(response.text),
+    usecols=["TIME_PERIOD", "OBS_VALUE"],
+    index_col=["TIME_PERIOD"],
+    infer_datetime_format=True
+)
+
+ciss_idx.index = pd.to_datetime(ciss_idx.index)
+
+ciss_idx.rename(columns={"OBS_VALUE" : "CISS"}, inplace=True)
+
+
+# Extract the Series from the DataFrames
+ciss_series = ciss_idx.loc[:"2024-01-01", "CISS"]
+vix_series = vix_data.loc["2000-09-01":, "VSTOXX"]
+
+# Compute the Pearson correlation
+correlation, p_value = pearsonr(ciss_series, vix_series)
+
+fig, ax1 = plt.subplots(figsize=(15, 10))
+ax2 = ax1.twinx()
+
+ax1.plot(vix_series, color="#69b3a2", label="VSTOXX")
+
+ax2.plot(ciss_series, color="#3399e6", label="CISS")
+
+# Adding labels
+ax1.set_xlabel("Date")
+ax1.set_ylabel("VSTOXX", color="#69b3a2")
+ax2.set_ylabel("CISS", color="#3399e6")
+
+# Adding legends
+lines_1, labels_1 = ax1.get_legend_handles_labels()
+lines_2, labels_2 = ax2.get_legend_handles_labels()
+ax1.legend(lines_1 + lines_2, labels_1 + labels_2, loc="upper left")
+
+plt.show()
+
+
+
+# plt.figure(figsize=(15, 10))
+# plt.plot(ciss_idx.loc[:"2024-01-01", ["CISS"]] * 100, label="CISS")
+# plt.plot(vix_data.loc["2000-09-01":, ["VSTOXX"]], label="VSTOXX")
+
+# plt.legend()
+# plt.show()
+
 # Merge Yield Data for Nelson-Siegel decomposition in R
 start_yields_ea = max(
     min(yield_3m_ea_m.index),
@@ -497,6 +558,7 @@ start_ea = max(
     min(ea_rate_3m.index),
     min(eustx_50_m_ret.index),
     min(vix_data.index),
+    min(ciss_idx.index),
     min(yields_ea_m_r.index),
 )
 
@@ -507,6 +569,7 @@ end_ea = min(
     max(ea_rate_3m.index),
     max(eustx_50_m_ret.index),
     max(vix_data.index),
+    max(ciss_idx.index),
     max(yields_ea_m_r.index),
 )
 
@@ -517,6 +580,7 @@ df_ea = [
     ea_rate_3m[start_ea:end_ea],
     eustx_50_m_ret[start_ea:end_ea],
     vix_data.loc[start_ea:end_ea, "VSTOXX"],
+    ciss_idx.loc[start_ea:end_ea],
     yields_ea_m_r[start_ea:end_ea],
 ]
 

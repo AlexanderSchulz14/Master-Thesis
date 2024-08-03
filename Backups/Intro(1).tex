@@ -1,0 +1,72 @@
+\section{Introduction}
+\label{sec:intro}
+
+Over the past decade, people have become increasingly concerned about personal health. 
+One's own health is constantly monitored and assessed using different metrics, while potential risks are forecasted and mitigated as well as possible. 
+% For this reason, various metrics have been developed and are used to approximate the health status of an individual. 
+For the masses, simplicity is key in this context as easy-to-understand metrics offer a good indication of one’s current health status. 
+In a similar fashion, economists, finance professionals and laypeople alike rely on some key metrics to assess the health of the economy. 
+Especially in times of turmoil, simple albeit highly relevant metrics often enter the center stage. 
+One of the most well-known and most studied among those key metrics is the yield curve. 
+Its various shapes, slopes and spreads are analysed, forecasted and interpreted in order to assess the health of the overall economy as well as market expectations of the future.
+Beware an inverted yield curve, which the market usually interprets as the onset of a recession, similar to a doctor facing elevated inflammation markers and inferring the onset of illness. 
+But analogous to a doctor, who is faced with the challenge of an accurate diagnosis in spite of an individual's various idiosyncratic characteristics, economic researchers are faced with a tremendous amount of information from which they try to infer a signal in order to predict future economic activity. 
+In this context, understanding the underlying dynamics is an essential means to the this end .
+
+That said, the global economy has become increasingly complex in recent years, with the start of an unprecedented global monetary policy tightening, geopolitical tensions, and unexpected shocks such as the COVID-19 pandemic or the war in Ukraine dramatically influencing economic conditions. 
+This has amplified the need to refine the hitherto available tools and methods available in the economist's toolbox in order to infer as precise economic signals as possible even in such volatile times.
+Rooted in decades of economic research, the yield curve has oftentimes offered simplistic yet highly accurate predictions of the future path of the economy. 
+However, though the yield curve - mapping interest rates to specific maturities - seemingly is a key indicator for economic agents, it is often not well understood, either in a general sense and especially in regards to its dynamics with various economic variables.
+% Does the yield curve really tell us something about future economic activity?
+% Are economic conditions determining the shapes and movements of the yield curve?
+% Could it indeed be the case that the economy and the yield curve interact in both directions, and if so, how?
+% Ultimately, correctly assessing and predicting the impact of movements in the underlying factors on the yield curve enables central bank policymakers to calibrate their policies to current market expectations as well as giving asset managers the opportunity to position their portfolios in order to maximize returns. 
+A contributing factor to this could be that the yield curve has been studied in a rather dichotomous fashion, either from the lens of a finance professional aiming to maximize the returns of his/her portfolio, or from the perspective of an economist concerned with predicting the future state of the economy as accurately as possible. 
+Yet yields are known to contain a tremendous amount of information useful in both realms, be it on the current stance of monetary or fiscal policy as well as expectations of future economic activity and inflation \citep{evans2007economic}. Vice versa, ever since the introduction of the expectation theory by \citet{hicks1946value},
+% Expectation theory einbauen
+monetary policy (expectations) seem to be one of the main drivers of yield curve movements \citep{evans1998monetary}. Thus, correctly assessing the impacts of future developments in both macroeconomic factors such monetary policy, as well as the term structure seems invaluable for both portfolio managers and economists alike.
+Ultimately, a precise understanding of the underlying drivers, be they of economic or financial nature, enables central banks to calibrate their policies to current market conditions and expectations, as well as giving asset managers the opportunity to position their portfolios profitably. 
+But how does one combine those two worlds?
+% How exactly is the yield curve related to the economy? 
+Is the yield curve really a leading indicator for economic activity?
+% Does the yield curve really tell us something about future economic activity?
+% Is the yield curve a leading indicator for economic activity, or are economic variables the reason for shifts in the yield curve? 
+Are economic conditions determining the shapes and movements of the yield curve?
+Could there even be a bidirectional link, where the causality runs in both directions?
+% And if so, how exactly is the yield curve related to the economy? 
+% One such key metric that is used by central bankers and hedge fund managers alike is the yield curve, where the slope, or even more simple, the spread, is used to assess the health of the overall economy as well as expectations about the future. 
+% An inverse yield curve is associated with an imminent recessions, while a positively sloped yield curve imdicates a healthy and strong economy. 
+This thesis is aimed at answering these questions.
+% regarding the dynamic interactions between the yield curve and the macroeconomy. 
+% On the one hand, the theoretical background of the yield curve is presented in order to understand the economic reasoning why it gained such popularity, especially given the fact that almost all recessions are preceded by a yield curve inversion. 
+% On the other hand, potential macroeconomic factors that drive yield curve movements are presented in the context of an empirical analysis. 
+
+Stemming from the methodology introduced by \citet{diebold2006macroeconomy}, a decomposition of the United States and Euro Area yield curves using the well-known model introduced by \citet{nelson1987parsimonious} is conducted, yielding the three latent factors representing the level, slope and curvature.
+% of the respective yield curve. 
+In a second step, a structural vector autoregression (SVAR) model is estimated including said factors along with various economic variables.
+Based thereupon, distinct structural shocks are obtained using short-term restrictions via a Cholesky decomposition of the reduced form variance-covariance matrix of the error term.
+The resulting impulse responses are utilized for the sake of deducing potential interpretations regarding the dynamic interactions between the macroeconomy and the yield curve.
+
+The thesis is structured in the following way. 
+Section \ref{sec:lit_rev} offers a brief overview of the literature, highlighting past findings regarding the yield curve's relevance and connection to macroeconomic factors. 
+Section \ref{sec:method} introduces the methodological approach implemented.
+% a chapter is dedicated to the theoretical background of the yield curve in general as well as introducing various modelling strategies. 
+The subsequent Section starts with an overview regarding the data used (Section \ref{sec:data}) as well as presenting the empirical results for the United States (Section \ref{sec:analysis_us}) and the Euro Area yield curves (Section \ref{sec:analysis_ea}), where the relevance of macroeconomic variables as drivers of yield curve movements is assessed, while simultaneously examining the impacts changes in the yield curve factors have on economic variables.   
+Thereafter, a conclusion summarizing the main findings is provided. 
+
+% The last decade has seen a surge in personal health research/application. 
+
+
+
+
+
+
+% As mentioned before, one key variable seems to be the yield curve. 
+
+% This thesis aims at answering these questions. 
+
+
+% The thesis is structured in the following way. 
+% The first section gives a concise overview of the hitherto available literature. 
+ % Chapter 4 is concerned with the empirical analysis, where part 1 is focused on the US, while part 2 presents the findings for the Euro Area. 
+ % Finally, a conclusion is provided.

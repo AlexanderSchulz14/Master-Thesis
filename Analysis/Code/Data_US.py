@@ -279,12 +279,30 @@ df_us = pd.concat(df_us, axis=1).dropna()
 ########## Analysis ##########
 ##############################
 # Plots
+# Add shadded Recession Areas in Figures for Sample Period
+us_rec = us_rec.loc[start_us:end_us]
+
+
 # All Coefficients
 os.chdir(r"C:\Users\alexa\Documents\Studium\MSc (WU)\Master Thesis\Analysis")
 
 plt.figure(figsize=(15, 10))
 sns.lineplot(df_us[["Level Factor", "Slope Factor", "Curvature Factor"]])
 plt.legend(loc="lower right")
+
+# Adding recession bars
+start_date = None  # Initialize start_date to None
+for i in range(1, len(us_rec)):
+    if us_rec.iloc[i] == 1 and us_rec.iloc[i - 1] == 0:
+        start_date = us_rec.index[i]
+    if us_rec.iloc[i] == 0 and us_rec.iloc[i - 1] == 1:
+        end_date = us_rec.index[i]
+        plt.axvspan(start_date, end_date, color="lightgray", alpha=0.8)
+        start_date = None  # Reset start_date after plotting
+
+# Handle the case where the series ends in a recession
+if start_date is not None:
+    plt.axvspan(start_date, ind_pro_us_diff.index[-1], color="lightgray", alpha=0.8)
 
 plt.savefig("Factor_Figure.pdf", dpi=1000)
 plt.show()
@@ -297,6 +315,20 @@ sns.lineplot(
     palette=["blue", "orange", "green"],
 )
 plt.legend(loc="lower right")
+
+# Adding recession bars
+start_date = None  # Initialize start_date to None
+for i in range(1, len(us_rec)):
+    if us_rec.iloc[i] == 1 and us_rec.iloc[i - 1] == 0:
+        start_date = us_rec.index[i]
+    if us_rec.iloc[i] == 0 and us_rec.iloc[i - 1] == 1:
+        end_date = us_rec.index[i]
+        plt.axvspan(start_date, end_date, color="lightgray", alpha=0.8)
+        start_date = None  # Reset start_date after plotting
+
+# Handle the case where the series ends in a recession
+if start_date is not None:
+    plt.axvspan(start_date, ind_pro_us_diff.index[-1], color="lightgray", alpha=0.8)
 
 plt.savefig("Beta_0_Figure.pdf", dpi=1000)
 plt.show()
@@ -312,6 +344,20 @@ plt.figure(figsize=(15, 10))
 sns.lineplot(df_us[["Slope Factor", "y(3) - y(120)", "INDPRO_YoY"]])
 plt.legend(loc="lower right")
 
+# Adding recession bars
+start_date = None  # Initialize start_date to None
+for i in range(1, len(us_rec)):
+    if us_rec.iloc[i] == 1 and us_rec.iloc[i - 1] == 0:
+        start_date = us_rec.index[i]
+    if us_rec.iloc[i] == 0 and us_rec.iloc[i - 1] == 1:
+        end_date = us_rec.index[i]
+        plt.axvspan(start_date, end_date, color="lightgray", alpha=0.8)
+        start_date = None  # Reset start_date after plotting
+
+# Handle the case where the series ends in a recession
+if start_date is not None:
+    plt.axvspan(start_date, ind_pro_us_diff.index[-1], color="lightgray", alpha=0.8)
+
 plt.savefig("Beta_1_Figure.pdf", dpi=1000)
 plt.show()
 
@@ -326,6 +372,20 @@ sns.lineplot(
     df_us[["Curvature Factor", "2 * y(24) - y(120) - y(3)"]], palette=["c", "r"]
 )
 plt.legend(loc="lower right")
+
+# Adding recession bars
+start_date = None  # Initialize start_date to None
+for i in range(1, len(us_rec)):
+    if us_rec.iloc[i] == 1 and us_rec.iloc[i - 1] == 0:
+        start_date = us_rec.index[i]
+    if us_rec.iloc[i] == 0 and us_rec.iloc[i - 1] == 1:
+        end_date = us_rec.index[i]
+        plt.axvspan(start_date, end_date, color="lightgray", alpha=0.8)
+        start_date = None  # Reset start_date after plotting
+
+# Handle the case where the series ends in a recession
+if start_date is not None:
+    plt.axvspan(start_date, ind_pro_us_diff.index[-1], color="lightgray", alpha=0.8)
 
 plt.savefig("Beta_2_Figure.pdf", dpi=1000)
 plt.show()

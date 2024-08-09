@@ -62,18 +62,26 @@ infl_ea.rename("Infl_EA", inplace=True)
 ea_rate_3m = fred.get_series("IR3TIB01EZM156N")
 ea_rate_3m.rename("EA_Rate_3M", inplace=True)
 
+# Recession Indicator
+ea_rec = fred.get_series("EUROREC").dropna()
+ea_rec.rename("EA_REC", inplace=True)
+
 
 # Stock Market
-eustx_50 = yf.download("^STOXX50E", start="2000-01-01", end="2024-01-01")
+# eustx_50 = yf.download("^STOXX50E", start="2000-01-01", end="2024-01-01")
 
-eustx_50_m = eustx_50["Close"].resample("M", loffset="1d").mean()
+# eustx_50_m = eustx_50["Close"].resample("M", loffset="1d").mean()
+# eustx_50_m.name = "EUSTX_50"
+
+# eustx_50_m_ret = eustx_50_m.pct_change(periods=12).dropna() * 100
+# eustx_50_m_ret.name = "EUSTX_50_YoY"
+
+eustx_50_m = pd.read_csv(data_path_ma + "\\" + "EUSTX_50_Data.csv", index_col=[0])
+eustx_50_m.index = pd.to_datetime(eustx_50_m.index)
 eustx_50_m.name = "EUSTX_50"
 
 eustx_50_m_ret = eustx_50_m.pct_change(periods=12).dropna() * 100
 eustx_50_m_ret.name = "EUSTX_50_YoY"
-
-
-
 
 # Financial Stress (VSTOXX) -> geht nur bis 2016!
 # -> Alternative: VIX fuer US & EA?
@@ -374,12 +382,12 @@ ciss_idx = pd.read_csv(
     io.StringIO(response.text),
     usecols=["TIME_PERIOD", "OBS_VALUE"],
     index_col=["TIME_PERIOD"],
-    infer_datetime_format=True
+    infer_datetime_format=True,
 )
 
 ciss_idx.index = pd.to_datetime(ciss_idx.index)
 
-ciss_idx.rename(columns={"OBS_VALUE" : "CISS"}, inplace=True)
+ciss_idx.rename(columns={"OBS_VALUE": "CISS"}, inplace=True)
 
 
 # Extract the Series from the DataFrames
@@ -407,7 +415,6 @@ lines_2, labels_2 = ax2.get_legend_handles_labels()
 ax1.legend(lines_1 + lines_2, labels_1 + labels_2, loc="upper left")
 
 plt.show()
-
 
 
 # plt.figure(figsize=(15, 10))
@@ -560,6 +567,7 @@ start_ea = max(
     min(vix_data.index),
     min(ciss_idx.index),
     min(yields_ea_m_r.index),
+    min(ea_rec.index),
 )
 
 
@@ -571,6 +579,7 @@ end_ea = min(
     max(vix_data.index),
     max(ciss_idx.index),
     max(yields_ea_m_r.index),
+    max(ea_rec.index),
 )
 
 
@@ -582,6 +591,7 @@ df_ea = [
     vix_data.loc[start_ea:end_ea, "VSTOXX"],
     ciss_idx.loc[start_ea:end_ea],
     yields_ea_m_r[start_ea:end_ea],
+    ea_rec.loc[start_ea:end_ea],
 ]
 
 df_ea = pd.concat(df_ea, axis=1).dropna()
@@ -678,6 +688,9 @@ for coeff in factors_ea_sub["DATA_TYPE_FM"].unique():
 
 # Plots Own Calculation
 os.chdir(r"C:\Users\alexa\Documents\Studium\MSc (WU)\Master Thesis\Analysis")
+
+# EA_Recession Subset
+ea_rec = ea_rec.loc[start_ea:end_ea]
 # Factors
 plt.figure(figsize=(15, 10))
 plt.plot(yields_ea_m_r.loc[start_ea:end_ea, "beta_0"], label="Level Factor", color="b")
@@ -694,8 +707,22 @@ plt.plot(
     linestyle=":",
 )
 
+# Adding recession bars
+start_date = None  # Initialize start_date to None
+for i in range(1, len(ea_rec)):
+    if ea_rec.iloc[i] == 1 and ea_rec.iloc[i - 1] == 0:
+        start_date = ea_rec.index[i]
+    if ea_rec.iloc[i] == 0 and ea_rec.iloc[i - 1] == 1:
+        end_date = ea_rec.index[i]
+        plt.axvspan(start_date, end_date, color="lightgray", alpha=0.8)
+        start_date = None  # Reset start_date after plotting
+
+# Handle the case where the series ends in a recession
+if start_date is not None:
+    plt.axvspan(start_date, yields_ea_m_r.index[-1], color="lightgray", alpha=0.8)
+
 plt.legend()
-plt.savefig("Factors_Figure_EA_1.pdf", dpi=1000)
+# plt.savefig("Factors_Figure_EA_1.pdf", dpi=1000)
 plt.show()
 
 # Beta 0

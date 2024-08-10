@@ -63,8 +63,8 @@ ea_rate_3m = fred.get_series("IR3TIB01EZM156N")
 ea_rate_3m.rename("EA_Rate_3M", inplace=True)
 
 # Recession Indicator
-ea_rec = fred.get_series("EUROREC").dropna()
-ea_rec.rename("EA_REC", inplace=True)
+# ea_rec = fred.get_series("EUROREC").dropna()
+# ea_rec.rename("EA_REC", inplace=True)
 
 
 # Stock Market
@@ -78,10 +78,9 @@ ea_rec.rename("EA_REC", inplace=True)
 
 eustx_50_m = pd.read_csv(data_path_ma + "\\" + "EUSTX_50_Data.csv", index_col=[0])
 eustx_50_m.index = pd.to_datetime(eustx_50_m.index)
-eustx_50_m.name = "EUSTX_50"
 
 eustx_50_m_ret = eustx_50_m.pct_change(periods=12).dropna() * 100
-eustx_50_m_ret.name = "EUSTX_50_YoY"
+eustx_50_m_ret.rename(columns={"EUSTX50": "EUSTX_50_YoY"}, inplace=True)
 
 # Financial Stress (VSTOXX) -> geht nur bis 2016!
 # -> Alternative: VIX fuer US & EA?
@@ -567,7 +566,7 @@ start_ea = max(
     min(vix_data.index),
     min(ciss_idx.index),
     min(yields_ea_m_r.index),
-    min(ea_rec.index),
+    # min(ea_rec.index),
 )
 
 
@@ -579,7 +578,7 @@ end_ea = min(
     max(vix_data.index),
     max(ciss_idx.index),
     max(yields_ea_m_r.index),
-    max(ea_rec.index),
+    # max(ea_rec.index),
 )
 
 
@@ -591,7 +590,7 @@ df_ea = [
     vix_data.loc[start_ea:end_ea, "VSTOXX"],
     ciss_idx.loc[start_ea:end_ea],
     yields_ea_m_r[start_ea:end_ea],
-    ea_rec.loc[start_ea:end_ea],
+    # ea_rec.loc[start_ea:end_ea],
 ]
 
 df_ea = pd.concat(df_ea, axis=1).dropna()
@@ -599,14 +598,14 @@ df_ea = pd.concat(df_ea, axis=1).dropna()
 ##### Plots
 os.chdir(r"C:\Users\alexa\Documents\Studium\MSc (WU)\Master Thesis\Analysis")
 
-# VSTOXX
-plt.figure(figsize=(15, 10))
-plt.plot(df_ea["INDPRO_EA"], label="INDPRO_EA")
-plt.plot(df_ea["VSTOXX"], label="VSTOXX")
-plt.plot(df_ea["EUSTX_50_YoY"], label="EUSTX_50_YoY")
+# # VSTOXX
+# plt.figure(figsize=(15, 10))
+# plt.plot(df_ea["INDPRO_EA"], label="INDPRO_EA")
+# plt.plot(df_ea["VSTOXX"], label="VSTOXX")
+# plt.plot(df_ea["EUSTX_50_YoY"], label="EUSTX_50_YoY")
 
-plt.legend()
-plt.show()
+# plt.legend()
+# plt.show()
 
 
 # Factors ECB
@@ -690,7 +689,34 @@ for coeff in factors_ea_sub["DATA_TYPE_FM"].unique():
 os.chdir(r"C:\Users\alexa\Documents\Studium\MSc (WU)\Master Thesis\Analysis")
 
 # EA_Recession Subset
-ea_rec = ea_rec.loc[start_ea:end_ea]
+# Recession Dates based on EABCN Peaks and Troughs
+# see: https://eabcn.org/dbc/peaksandtroughs/chronology-euro-area-business-cycles
+ea_rec_dates = {
+    "rec_1": ["2008-04-01", "2009-07-01"],
+    "rec_2": ["2011-10-01", "2013-04-01"],
+    "rec_3": ["2020-01-01", "2020-07-01"],
+}
+
+# empty list where each recession month is added
+ea_rec_months = []
+
+# loop through recession dates dictionary
+for rec, dates in ea_rec_dates.items():
+    start_date, end_date = dates
+    # get all months where a recession occured according to EABCN
+    rec_range = pd.date_range(start=start_date, end=end_date, freq="MS")
+    for rec_month in rec_range:
+        # append each recession month
+        ea_rec_months.append(rec_month)
+
+# Create EA Recession df with 0
+ea_rec = pd.Series(0, index=df_ea.index)
+
+# subset EA Recession df with all recession month and
+# set the values to 1 (1=recession occured in month p)
+ea_rec.loc[ea_rec.index.isin(ea_rec_months)] = 1
+
+
 # Factors
 plt.figure(figsize=(15, 10))
 plt.plot(yields_ea_m_r.loc[start_ea:end_ea, "beta_0"], label="Level Factor", color="b")
@@ -722,7 +748,7 @@ if start_date is not None:
     plt.axvspan(start_date, yields_ea_m_r.index[-1], color="lightgray", alpha=0.8)
 
 plt.legend()
-# plt.savefig("Factors_Figure_EA_1.pdf", dpi=1000)
+plt.savefig("Factors_Figure_EA_1.pdf", dpi=1000)
 plt.show()
 
 # Beta 0
@@ -735,6 +761,20 @@ plt.plot(
     color="orange",
 )
 plt.plot(infl_ea.loc[start_ea:end_ea], label="Inflation EA", linestyle=":", color="g")
+
+# Adding recession bars
+start_date = None  # Initialize start_date to None
+for i in range(1, len(ea_rec)):
+    if ea_rec.iloc[i] == 1 and ea_rec.iloc[i - 1] == 0:
+        start_date = ea_rec.index[i]
+    if ea_rec.iloc[i] == 0 and ea_rec.iloc[i - 1] == 1:
+        end_date = ea_rec.index[i]
+        plt.axvspan(start_date, end_date, color="lightgray", alpha=0.8)
+        start_date = None  # Reset start_date after plotting
+
+# Handle the case where the series ends in a recession
+if start_date is not None:
+    plt.axvspan(start_date, yields_ea_m_r.index[-1], color="lightgray", alpha=0.8)
 
 plt.legend()
 plt.savefig("Beta_0_Figure_EA_1.pdf", dpi=1000)
@@ -753,6 +793,20 @@ plt.plot(
 
 plt.plot(df_ea.loc[start_ea:end_ea, "INDPRO_EA"], label="INDRPO_EA_YoY", linestyle=":")
 
+# Adding recession bars
+start_date = None  # Initialize start_date to None
+for i in range(1, len(ea_rec)):
+    if ea_rec.iloc[i] == 1 and ea_rec.iloc[i - 1] == 0:
+        start_date = ea_rec.index[i]
+    if ea_rec.iloc[i] == 0 and ea_rec.iloc[i - 1] == 1:
+        end_date = ea_rec.index[i]
+        plt.axvspan(start_date, end_date, color="lightgray", alpha=0.8)
+        start_date = None  # Reset start_date after plotting
+
+# Handle the case where the series ends in a recession
+if start_date is not None:
+    plt.axvspan(start_date, yields_ea_m_r.index[-1], color="lightgray", alpha=0.8)
+
 plt.legend()
 plt.savefig("Beta_1_Figure_EA_1.pdf", dpi=1000)
 plt.show()
@@ -770,6 +824,20 @@ plt.plot(
     color="red",
     linestyle="--",
 )
+
+# Adding recession bars
+start_date = None  # Initialize start_date to None
+for i in range(1, len(ea_rec)):
+    if ea_rec.iloc[i] == 1 and ea_rec.iloc[i - 1] == 0:
+        start_date = ea_rec.index[i]
+    if ea_rec.iloc[i] == 0 and ea_rec.iloc[i - 1] == 1:
+        end_date = ea_rec.index[i]
+        plt.axvspan(start_date, end_date, color="lightgray", alpha=0.8)
+        start_date = None  # Reset start_date after plotting
+
+# Handle the case where the series ends in a recession
+if start_date is not None:
+    plt.axvspan(start_date, yields_ea_m_r.index[-1], color="lightgray", alpha=0.8)
 
 plt.legend()
 plt.savefig("Beta_2_Figure_EA_1.pdf", dpi=1000)
@@ -1000,3 +1068,47 @@ result_yc_us = granger_result.summary()
 df_result_yc_us = pd.DataFrame(result_yc_us[1:], columns=result_yc_us[0])
 
 print(df_result_yc_us.to_latex())
+
+
+##############################
+########## Playing Around ##########
+##############################
+
+# ea_rec_dates = {
+#     "2008-04-01":"2009-07-01",
+#     "2011-10-01":"2013-04-01",
+#     "2020-01-01":"2020-07-01",
+# }
+
+# ea_rec_dates = [
+#     ["2008-04-01":"2009-07-01"],
+#     ["2011-10-01":"2013-04-01"],
+#     ["2020-01-01":"2020-07-01"],
+# ]
+
+# Recession Dates based on EABCN Peaks and Troughs
+# see: https://eabcn.org/dbc/peaksandtroughs/chronology-euro-area-business-cycles
+ea_rec_dates = {
+    "rec_1": ["2008-04-01", "2009-07-01"],
+    "rec_2": ["2011-10-01", "2013-04-01"],
+    "rec_3": ["2020-01-01", "2020-07-01"],
+}
+
+# empty list where each recession month is added
+ea_rec_months = []
+
+# loop through recession dates dictionary
+for rec, dates in ea_rec_dates.items():
+    start_date, end_date = dates
+    # get all months where a recession occured according to EABCN
+    rec_range = pd.date_range(start=start_date, end=end_date, freq="MS")
+    for rec_month in rec_range:
+        # append each recession month
+        ea_rec_months.append(rec_month)
+
+# Create EA Recession df with 0
+ea_rec = pd.DataFrame({"EA_REC": [0]}, index=df_ea.index)
+
+# subset EA Recession df with all recession month and
+# set the values to 1 (1=recession occured in month p)
+ea_rec.loc[ea_rec.index.isin(ea_rec_months)] = 1

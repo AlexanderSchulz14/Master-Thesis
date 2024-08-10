@@ -58,3 +58,17 @@ def get_beta_0_approx(data, time, yield_1="3m", yield_2="24m", yield_3="120m"):
     beta_0_approx = calc_data.mean()
 
     return beta_0_approx
+
+
+# Beta 1 Loading
+def beta_1_loading(lmda, maturity):
+    result = (1 - np.exp(-lmda * maturity)) / (lmda * maturity)
+    return result
+
+
+# Beta 2 Loading
+def beta_2_loading(lmda, maturity):
+    result = (1 - np.exp(-lmda * maturity)) / (lmda * maturity) - np.exp(
+        -lmda * maturity
+    )
+    return result

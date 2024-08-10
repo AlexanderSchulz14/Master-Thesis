@@ -5,6 +5,7 @@ from datetime import date, datetime
 from pandas.tseries.frequencies import to_offset
 import os
 import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
 import seaborn as sns
 
 sns.set_theme(style="darkgrid")
@@ -915,7 +916,7 @@ df_analysis_ea = [
     df_ea["INDPRO_EA"],
     df_ea["Infl_EA"],
     df_ea["EA_Rate_3M"],
-    df_ea["VSTOXX"],
+    df_ea["CISS"],
     df_ea["beta_0"],
     df_ea["beta_1"],
     df_ea["beta_2"],
@@ -939,7 +940,7 @@ df_analysis_ea.rename(
 model_ea = VAR(df_analysis_ea)
 print(model_ea.select_order())
 
-result = model_ea.fit(maxlags=4, ic="bic")
+result = model_ea.fit(maxlags=6, ic="aic")
 print(result.is_stable())
 
 # Stationarity Check (with Latex output)

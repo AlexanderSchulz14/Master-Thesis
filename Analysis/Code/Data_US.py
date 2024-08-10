@@ -6,6 +6,7 @@ from datetime import date, datetime
 from pandas.tseries.frequencies import to_offset
 import os
 import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
 import seaborn as sns
 
 sns.set_theme(style="darkgrid")
@@ -39,6 +40,7 @@ from MA_functions import *
 # import rpy2
 import io
 
+data_path_ma = r"C:\Users\alexa\Documents\Studium\MSc (WU)\Master Thesis\Analysis\Data"
 
 # Get Data
 # Data
@@ -129,10 +131,39 @@ sp_500_1_m_ret.name = "S&P_500_YoY"
 os.chdir(r"C:\Users\alexa\Documents\Studium\MSc (WU)\Master Thesis\Analysis\Data")
 ebp = pd.read_csv("ebp_csv.csv", index_col=[0], parse_dates=True)
 
+# CISS Index
+entrypoint = "https://data-api.ecb.europa.eu/service"
+resource = "data"
+flowRef = "CISS"
+form = "?format=csvdata"
+
+key = "M.U2.Z0Z.4F.EC.SOV_GDPW.IDX"
+
+request_url = entrypoint + "/" + resource + "/" + flowRef + "/" + key + form
+response = req.get(request_url)
+
+ciss_idx = pd.read_csv(
+    io.StringIO(response.text),
+    usecols=["TIME_PERIOD", "OBS_VALUE"],
+    index_col=["TIME_PERIOD"],
+    infer_datetime_format=True,
+)
+
+ciss_idx.index = pd.to_datetime(ciss_idx.index)
+
+ciss_idx.rename(columns={"OBS_VALUE": "CISS"}, inplace=True)
+
 
 # VIX? (von Bloomberg?)
 # vix = yf.download("^VIX", start="1990-01-02", end="2024-01-01")
 # vix_m = vix.resample("M", loffset="1d").mean()
+
+# Data ohne Bloomber BDH Formel
+vix_data = pd.read_csv(data_path_ma + "\\" + "VIX_VSTOXX_Data.csv", index_col=0)
+
+vix_data.index = pd.to_datetime(vix_data.index)
+
+vix_data.index = vix_data.index + pd.offsets.MonthBegin(1)
 
 
 # Moody's Seasoned Baa Corporate Bond Yield Relative to Yield on 10-Year Treasury Constant Maturity
@@ -232,6 +263,7 @@ start_us = max(
     min(sp_500_1_m.index),
     min(sp_500_1_m_ret.index),
     min(ebp["ebp"].index),
+    # min(ciss_idx.index),
     #    min(vix_m.index),
     #    min(ts_10y2y_us.index)
 )
@@ -249,6 +281,7 @@ end_us = min(
     max(sp_500_1_m.index),
     max(sp_500_1_m_ret.index),
     max(ebp["ebp"].index),
+    # max(ciss_idx.index),
     #    max(vix_m.index),
     #    max(ts_10y2y_us.index)
 )
@@ -257,7 +290,7 @@ end_us = min(
 # Merge Data
 df_us = [
     # gdp_us[start_us:end_us],
-    ind_pro_us[start_us:end_us],
+    # ind_pro_us[start_us:end_us],
     ind_pro_us_diff[start_us:end_us],
     cpi_us[start_us:end_us],
     infl_us[start_us:end_us],
@@ -269,6 +302,7 @@ df_us = [
     sp_500_1_m.loc[start_us:end_us],
     sp_500_1_m_ret.loc[start_us:end_us],
     ebp.loc[start_us:end_us, "ebp"],
+    # ciss_idx.loc[start_us:end_us],
     #  ts_10y2y_us[start_us:end_us]
 ]
 
@@ -504,7 +538,7 @@ df_analysis_us.rename(
 model_us = VAR(df_analysis_us)
 print(model_us.select_order())
 
-result = model_us.fit(maxlags=4, ic="bic")
+result = model_us.fit(maxlags=6, ic="aic")
 
 # print(result.test_whiteness())
 # print(result.is_stable())
@@ -1051,3 +1085,134 @@ plt.show()
 
 
 # print(result.test_whiteness(nlags=5))
+
+
+########## Factor Loadings Figure ###########
+yc_us_date = "2019-12-01"
+
+yc_us = yields_us_sub_r.loc[yc_us_date].iloc[0:120]
+lmda = yields_us_sub_r.loc[yc_us_date]["lambda"]
+# beta_0 = yields_us_sub_r.loc[yc_us_date]["Level Factor"]
+# beta_1 = yields_us_sub_r.loc[yc_us_date]["Slope Factor"]
+# beta_2 = yields_us_sub_r.loc[yc_us_date]["Curvature Factor"]
+
+yc_us_mat_idx = list(range(len(yc_us)))
+yc_us_mat = [i + 1 for i in yc_us_mat_idx]
+yc_us_mat.insert(0, 0)  # damit 0 maturity auch inkludiert ist
+
+
+ls_beta_1_loading = {}
+for maturity in yc_us_mat:
+    # print(beta_1_loading(lmda=lmda, maturity=maturity))
+    result = beta_1_loading(lmda=lmda, maturity=maturity)
+    ls_beta_1_loading[maturity] = result
+
+# ls_beta_1_loading[0] = 1 # set first value to 1
+
+# list(ls_beta_1_loading.keys())
+# list(ls_beta_1_loading.values())
+
+# plt.plot(list(ls_beta_1_loading.keys()), list(ls_beta_1_loading.values()))
+
+ls_beta_2_loading = {}
+for maturity in yc_us_mat:
+    # print(beta_2_loading(lmda=lmda, maturity=maturity))
+    result = beta_2_loading(lmda=lmda, maturity=maturity)
+    ls_beta_2_loading[maturity] = result
+
+# ls_beta_2_loading[0] = 1 # set first value to 1
+
+
+# list(ls_beta_2_loading.keys())
+# list(ls_beta_2_loading.values())
+
+# plt.plot(list(ls_beta_2_loading.keys()), list(ls_beta_2_loading.values()))
+
+
+# Plot Loadings
+plt.figure(figsize=(10, 8))
+
+plt.axhline(y=1, color="black", label="Level Factor Loading")
+plt.plot(
+    list(ls_beta_1_loading.keys()),
+    list(ls_beta_1_loading.values()),
+    label="Slope Factor Loading",
+)
+plt.plot(
+    list(ls_beta_2_loading.keys()),
+    list(ls_beta_2_loading.values()),
+    label="Curvature Factor Loading",
+)
+
+plt.legend()
+plt.show()
+
+
+for date in yields_us_sub_r.index:
+    yc_us_date = date
+    print(date)
+
+    yc_us = yields_us_sub_r.loc[yc_us_date].iloc[0:120]
+    lmda = yields_us_sub_r.loc[yc_us_date]["lambda"]
+    # beta_0 = yields_us_sub_r.loc[yc_us_date]["Level Factor"]
+    # beta_1 = yields_us_sub_r.loc[yc_us_date]["Slope Factor"]
+    # beta_2 = yields_us_sub_r.loc[yc_us_date]["Curvature Factor"]
+
+    yc_us_mat_idx = list(range(len(yc_us)))
+    yc_us_mat = [i + 1 for i in yc_us_mat_idx]
+    yc_us_mat.insert(0, 0)  # damit 0 maturity auch inkludiert ist
+
+    ls_beta_1_loading = {}
+    for maturity in yc_us_mat:
+        # print(beta_1_loading(lmda=lmda, maturity=maturity))
+        result = beta_1_loading(lmda=lmda, maturity=maturity)
+        ls_beta_1_loading[maturity] = result
+
+    # ls_beta_1_loading[0] = 1 # set first value to 1
+
+    # list(ls_beta_1_loading.keys())
+    # list(ls_beta_1_loading.values())
+
+    # plt.plot(list(ls_beta_1_loading.keys()), list(ls_beta_1_loading.values()))
+
+    ls_beta_2_loading = {}
+    for maturity in yc_us_mat:
+        # print(beta_2_loading(lmda=lmda, maturity=maturity))
+        result = beta_2_loading(lmda=lmda, maturity=maturity)
+        ls_beta_2_loading[maturity] = result
+
+    # ls_beta_2_loading[0] = 1 # set first value to 1
+
+    # list(ls_beta_2_loading.keys())
+    # list(ls_beta_2_loading.values())
+
+    # plt.plot(list(ls_beta_2_loading.keys()), list(ls_beta_2_loading.values()))
+
+    # Plot Loadings
+    plt.figure(figsize=(10, 8))
+
+    plt.axhline(y=1, color="black", label="Level")
+    plt.plot(
+        list(ls_beta_1_loading.keys()), list(ls_beta_1_loading.values()), label="Slope"
+    )
+    plt.plot(
+        list(ls_beta_2_loading.keys()),
+        list(ls_beta_2_loading.values()),
+        label="Curvature",
+    )
+
+    plt.legend()
+    plt.show()
+
+
+# YC plot
+# maturities_plot = list(range(11, 120, 12))
+maturities_plot = [0, 11, 23, 35, 47, 59, 71, 83, 95, 107, 119]
+x_labels = [yc_us.index[i] for i in maturities_plot]
+
+plt.figure(figsize=(15, 10))
+plt.plot(yc_us.index, yc_us.values, linestyle="dashdot", color="darkred")
+
+plt.xticks(ticks=maturities_plot, labels=x_labels)
+
+plt.show()

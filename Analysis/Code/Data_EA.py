@@ -40,6 +40,7 @@ import sdmx
 
 # Paths
 data_path_ma = r"C:\Users\alexa\Documents\Studium\MSc (WU)\Master Thesis\Analysis\Data"
+figures_path_ma = r"C:\Users\alexa\Documents\Studium\MSc (WU)\Master Thesis\Analysis"
 
 
 ##### Data

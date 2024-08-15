@@ -72,3 +72,71 @@ def beta_2_loading(lmda, maturity):
         -lmda * maturity
     )
     return result
+
+
+# sVAR Function yielding IRFs and IC  for multiple lag cases
+# Empty Information Criteria Dataframe for storing IC
+# df_ic = pd.DataFrame(
+#     columns=[
+#         "Lag",
+#         "Log-Likelihood",
+#         "AIC",
+#         "BIC",
+#         "HQIC",
+#     ]
+# )
+
+# ls_ic_row = []
+
+
+def get_svars(data, lag_start: int, lag_end: int, geography: str):
+    df_ic = pd.DataFrame(
+        columns=[
+            "Lag",
+            "Log-Likelihood",
+            "AIC",
+            "BIC",
+            "HQIC",
+        ]
+    )
+    ls_ic_row = []
+
+    model = VAR(data)
+
+    for lag in range(lag_start, lag_end + 1):
+        # Estimation
+        result = model.fit(maxlags=lag, ic="aic")
+
+        # Information Criteria
+        ic_row = {
+            "Lag": f"$p={lag}$",
+            "Log-Likelihood": result.llf,
+            "AIC": result.aic,
+            "BIC": result.bic,
+            "HQIC": result.hqic,
+        }
+
+        ls_ic_row.append(ic_row)
+
+        if lag == lag_end:
+            df_ic = pd.concat([df_ic, pd.DataFrame(ls_ic_row)], ignore_index=True)
+        else:
+            pass
+
+        # IRF
+        irfs_us = result.irf(36)
+        irfs_us.plot(
+            orth=True,
+            signif=0.1,
+            figsize=(30, 15),
+            plot_params={"legend_fontsize": 20},
+            subplot_params={
+                "fontsize": 15,
+            },
+        )
+        plt.savefig(f"IRF_{geography}_lag_{lag}.pdf", dpi=1000)
+        print(f"Figure IRF_{geography}_lag_{lag}.pdf has been saved!")
+        plt.show()
+
+    print(df_ic.to_latex(index=False, escape=False, float_format="%.2f"))
+    return df_ic

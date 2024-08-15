@@ -991,77 +991,77 @@ print(df_result_yc_us.to_latex())
 
 # ########## Playing Around ##########
 # Create a plot
-ind_pro_us_diff = ind_pro_us_diff.loc[start_us:end_us]
-us_rec = us_rec.loc[start_us:end_us]
+# ind_pro_us_diff = ind_pro_us_diff.loc[start_us:end_us]
+# us_rec = us_rec.loc[start_us:end_us]
 
-plt.figure(figsize=(15, 10))
-plt.plot(
-    ind_pro_us_diff.index,
-    ind_pro_us_diff,
-    label="Industrial Production",
-    color="#69b3a2",
-)
+# plt.figure(figsize=(15, 10))
+# plt.plot(
+#     ind_pro_us_diff.index,
+#     ind_pro_us_diff,
+#     label="Industrial Production",
+#     color="#69b3a2",
+# )
 
-# Adding recession bars
-start_date = None  # Initialize start_date to None
-for i in range(1, len(us_rec)):
-    if us_rec.iloc[i] == 1 and us_rec.iloc[i - 1] == 0:
-        start_date = us_rec.index[i]
-    if us_rec.iloc[i] == 0 and us_rec.iloc[i - 1] == 1:
-        end_date = us_rec.index[i]
-        plt.axvspan(start_date, end_date, color="lightgray", alpha=0.8)
-        start_date = None  # Reset start_date after plotting
+# # Adding recession bars
+# start_date = None  # Initialize start_date to None
+# for i in range(1, len(us_rec)):
+#     if us_rec.iloc[i] == 1 and us_rec.iloc[i - 1] == 0:
+#         start_date = us_rec.index[i]
+#     if us_rec.iloc[i] == 0 and us_rec.iloc[i - 1] == 1:
+#         end_date = us_rec.index[i]
+#         plt.axvspan(start_date, end_date, color="lightgray", alpha=0.8)
+#         start_date = None  # Reset start_date after plotting
 
-# Handle the case where the series ends in a recession
-if start_date is not None:
-    plt.axvspan(start_date, ind_pro_us_diff.index[-1], color="lightgray", alpha=0.8)
+# # Handle the case where the series ends in a recession
+# if start_date is not None:
+#     plt.axvspan(start_date, ind_pro_us_diff.index[-1], color="lightgray", alpha=0.8)
 
-# Adding labels and legend
-plt.xlabel("Date")
-plt.ylabel("Industrial Production Index")
-plt.title("Industrial Production with NBER Recessions")
-plt.legend()
-plt.show()
+# # Adding labels and legend
+# plt.xlabel("Date")
+# plt.ylabel("Industrial Production Index")
+# plt.title("Industrial Production with NBER Recessions")
+# plt.legend()
+# plt.show()
 
 
-# Fetch the data
-ind_pro_us = fred.get_series("INDPRO")
-us_rec = fred.get_series("USREC")
+# # Fetch the data
+# ind_pro_us = fred.get_series("INDPRO")
+# us_rec = fred.get_series("USREC")
 
-# Ensure the series are in DataFrame format
-ind_pro_df = pd.DataFrame(ind_pro_us, columns=["INDPRO"])
-us_rec_df = pd.DataFrame(us_rec, columns=["USREC"])
+# # Ensure the series are in DataFrame format
+# ind_pro_df = pd.DataFrame(ind_pro_us, columns=["INDPRO"])
+# us_rec_df = pd.DataFrame(us_rec, columns=["USREC"])
 
-# Create a plot
-plt.figure(figsize=(15, 10))
-plt.plot(
-    ind_pro_df.index,
-    ind_pro_df["INDPRO"],
-    label="Industrial Production",
-    color="#69b3a2",
-)
+# # Create a plot
+# plt.figure(figsize=(15, 10))
+# plt.plot(
+#     ind_pro_df.index,
+#     ind_pro_df["INDPRO"],
+#     label="Industrial Production",
+#     color="#69b3a2",
+# )
 
-# Adding recession bars
-start_date = None  # Initialize start_date to None
-for i in range(1, len(us_rec_df)):
-    if us_rec_df["USREC"].iloc[i] == 1 and us_rec_df["USREC"].iloc[i - 1] == 0:
-        start_date = us_rec_df.index[i]
-    if us_rec_df["USREC"].iloc[i] == 0 and us_rec_df["USREC"].iloc[i - 1] == 1:
-        if start_date is not None:
-            end_date = us_rec_df.index[i]
-            plt.axvspan(start_date, end_date, color="lightgray", alpha=0.8)
-            start_date = None  # Reset start_date after plotting
+# # Adding recession bars
+# start_date = None  # Initialize start_date to None
+# for i in range(1, len(us_rec_df)):
+#     if us_rec_df["USREC"].iloc[i] == 1 and us_rec_df["USREC"].iloc[i - 1] == 0:
+#         start_date = us_rec_df.index[i]
+#     if us_rec_df["USREC"].iloc[i] == 0 and us_rec_df["USREC"].iloc[i - 1] == 1:
+#         if start_date is not None:
+#             end_date = us_rec_df.index[i]
+#             plt.axvspan(start_date, end_date, color="lightgray", alpha=0.8)
+#             start_date = None  # Reset start_date after plotting
 
-# Handle the case where the series ends in a recession
-if start_date is not None:
-    plt.axvspan(start_date, ind_pro_df.index[-1], color="lightgray", alpha=0.8)
+# # Handle the case where the series ends in a recession
+# if start_date is not None:
+#     plt.axvspan(start_date, ind_pro_df.index[-1], color="lightgray", alpha=0.8)
 
-# Adding labels and legend
-plt.xlabel("Date")
-plt.ylabel("Industrial Production Index")
-plt.title("Industrial Production with NBER Recessions")
-plt.legend()
-plt.show()
+# # Adding labels and legend
+# plt.xlabel("Date")
+# plt.ylabel("Industrial Production Index")
+# plt.title("Industrial Production with NBER Recessions")
+# plt.legend()
+# plt.show()
 
 
 # path_ma_data = r"C:\Users\alexa\Documents\Studium\MSc (WU)\Master Thesis\Analysis\Data"
@@ -1262,3 +1262,8 @@ ax1.legend(lines, labels, loc="lower right", bbox_to_anchor=(0.85, -0.125), ncol
 # ax2.legend(loc="lower right", bbox_to_anchor=(0.8, -0.125), ncol=1)
 plt.savefig(figures_path_ma + "\\" + "Factor_Loadings_Plot.pdf", dpi=1000)
 plt.show()
+
+
+########## sVAR Function ##########
+df_ic_test = get_svars(df_analysis_us, lag_start=1, lag_end=6, geography="US")
+print(df_ic_test.to_latex(index=False, escape=False, float_format="%.2f"))

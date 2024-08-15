@@ -2,6 +2,9 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+import statsmodels.api as sm
+from statsmodels.tsa.api import VAR, SVAR
+import statsmodels.tsa.vector_ar.svar_model as svar
 
 sns.set_theme(style="darkgrid")
 from statsmodels.tsa.stattools import adfuller

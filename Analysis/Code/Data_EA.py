@@ -966,55 +966,55 @@ df_adf_ea.index = [
 print(df_adf_ea.round(4).to_latex(escape=False))
 
 
-# Estimation Results (with Latex output)
-result.summary()
-result.params.round(4)
-print(result.params.round(4).to_latex())
+# # Estimation Results (with Latex output)
+# result.summary()
+# result.params.round(4)
+# print(result.params.round(4).to_latex())
 
-result.bse.round(4)
+# result.bse.round(4)
 
-result.pvalues.round(4)
+# result.pvalues.round(4)
 
-# Output Table
-estimates_ea = result.params.round(4)
-estimates_ea.index = (
-    estimates_ea.index[:1].tolist() + (estimates_ea.index[1:].str[3:] + "-1").tolist()
-)
-# estimates_ea.reset_index(inplace=True)
-# estimates_ea = estimates_ea.iloc[:, 1:]
-std_errors_ea = result.bse.round(4)
-std_errors_ea.index = ("se_" + std_errors_ea.index[:1]).tolist() + (
-    "se_" + std_errors_ea.index[1:].str[3:] + "-1"
-).tolist()
-# std_errors_ea.reset_index(inplace=True)
-
-
-for i in range(estimates_ea.shape[0]):
-    print(estimates_ea.iloc[i, :])
+# # Output Table
+# estimates_ea = result.params.round(4)
+# estimates_ea.index = (
+#     estimates_ea.index[:1].tolist() + (estimates_ea.index[1:].str[3:] + "-1").tolist()
+# )
+# # estimates_ea.reset_index(inplace=True)
+# # estimates_ea = estimates_ea.iloc[:, 1:]
+# std_errors_ea = result.bse.round(4)
+# std_errors_ea.index = ("se_" + std_errors_ea.index[:1]).tolist() + (
+#     "se_" + std_errors_ea.index[1:].str[3:] + "-1"
+# ).tolist()
+# # std_errors_ea.reset_index(inplace=True)
 
 
-test = pd.concat([estimates_ea, std_errors_ea])
+# for i in range(estimates_ea.shape[0]):
+#     print(estimates_ea.iloc[i, :])
 
 
-index_sort = []
-for i in range(estimates_ea.shape[0]):
-    index_sort.append(estimates_ea.index[i])
-    index_sort.append(std_errors_ea.index[i])
+# test = pd.concat([estimates_ea, std_errors_ea])
 
 
-test = test.reindex(index_sort)
+# index_sort = []
+# for i in range(estimates_ea.shape[0]):
+#     index_sort.append(estimates_ea.index[i])
+#     index_sort.append(std_errors_ea.index[i])
 
-print(test.to_latex(float_format="%.4f"))
+
+# test = test.reindex(index_sort)
+
+# print(test.to_latex(float_format="%.4f"))
 
 
-# Information Criteria
-llf_ea = {"Log-Likelihood": result.llf}
-aic_ea = {"AIC": result.aic}
-bic_ea = {"BIC": result.bic}
-hqic_ea = {"HQIC": result.hqic}
+# # Information Criteria
+# llf_ea = {"Log-Likelihood": result.llf}
+# aic_ea = {"AIC": result.aic}
+# bic_ea = {"BIC": result.bic}
+# hqic_ea = {"HQIC": result.hqic}
 
-dict_ic_ea = {**llf_ea, **aic_ea, **bic_ea, **hqic_ea}
-print(pd.DataFrame.from_dict(dict_ic_ea, orient="index").round(4).to_latex())
+# dict_ic_ea = {**llf_ea, **aic_ea, **bic_ea, **hqic_ea}
+# print(pd.DataFrame.from_dict(dict_ic_ea, orient="index").round(4).to_latex())
 
 
 # IRFs
@@ -1114,3 +1114,8 @@ ea_rec = pd.DataFrame({"EA_REC": [0]}, index=df_ea.index)
 # subset EA Recession df with all recession month and
 # set the values to 1 (1=recession occured in month p)
 ea_rec.loc[ea_rec.index.isin(ea_rec_months)] = 1
+
+
+########## sVAR Function ##########
+df_ic_test_ea = get_svars(df_analysis_ea, lag_start=1, lag_end=6, geography="EA")
+print(df_ic_test_ea.to_latex(index=False, escape=False, float_format="%.2f"))

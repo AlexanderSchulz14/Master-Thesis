@@ -600,46 +600,46 @@ result.bse.round(4)
 result.pvalues.round(4)
 
 
-# Output Table
-estimates_us = result.params.round(4)
-estimates_us.index = (
-    estimates_us.index[:1].tolist() + (estimates_us.index[1:].str[3:] + "-1").tolist()
-)
-# estimates_us.reset_index(inplace=True)
-# estimates_us = estimates_us.iloc[:, 1:]
-std_errors_us = result.bse.round(4)
-std_errors_us.index = ("se_" + std_errors_us.index[:1]).tolist() + (
-    "se_" + std_errors_us.index[1:].str[3:] + "-1"
-).tolist()
-# std_errors_us.reset_index(inplace=True)
+# # Output Table
+# estimates_us = result.params.round(4)
+# estimates_us.index = (
+#     estimates_us.index[:1].tolist() + (estimates_us.index[1:].str[3:] + "-1").tolist()
+# )
+# # estimates_us.reset_index(inplace=True)
+# # estimates_us = estimates_us.iloc[:, 1:]
+# std_errors_us = result.bse.round(4)
+# std_errors_us.index = ("se_" + std_errors_us.index[:1]).tolist() + (
+#     "se_" + std_errors_us.index[1:].str[3:] + "-1"
+# ).tolist()
+# # std_errors_us.reset_index(inplace=True)
 
 
-for i in range(estimates_us.shape[0]):
-    print(estimates_us.iloc[i, :])
+# for i in range(estimates_us.shape[0]):
+#     print(estimates_us.iloc[i, :])
 
 
-test = pd.concat([estimates_us, std_errors_us])
+# test = pd.concat([estimates_us, std_errors_us])
 
 
-index_sort = []
-for i in range(estimates_us.shape[0]):
-    index_sort.append(estimates_us.index[i])
-    index_sort.append(std_errors_us.index[i])
+# index_sort = []
+# for i in range(estimates_us.shape[0]):
+#     index_sort.append(estimates_us.index[i])
+#     index_sort.append(std_errors_us.index[i])
 
 
-test = test.reindex(index_sort)
+# test = test.reindex(index_sort)
 
-print(test.to_latex(float_format="%.4f"))
+# print(test.to_latex(float_format="%.4f"))
 
 
-# Information Criteria
-llf_us = {"Log-Likelihood": result.llf}
-aic_us = {"AIC": result.aic}
-bic_us = {"BIC": result.bic}
-hqic_us = {"HQIC": result.hqic}
+# # Information Criteria
+# llf_us = {"Log-Likelihood": result.llf}
+# aic_us = {"AIC": result.aic}
+# bic_us = {"BIC": result.bic}
+# hqic_us = {"HQIC": result.hqic}
 
-dict_ic_us = {**llf_us, **aic_us, **bic_us, **hqic_us}
-print(pd.DataFrame.from_dict(dict_ic_us, orient="index").round(4).to_latex())
+# dict_ic_us = {**llf_us, **aic_us, **bic_us, **hqic_us}
+# print(pd.DataFrame.from_dict(dict_ic_us, orient="index").round(4).to_latex())
 
 
 # IRFs

@@ -120,6 +120,16 @@ vix_data.index = pd.to_datetime(vix_data.index)
 
 vix_data.index = vix_data.index + pd.offsets.MonthBegin(1)
 
+# Credit Risk NF Sector
+# see: https://publications.banque-france.fr/en/economic-and-financial-publications-working-papers/credit-risk-euro-area
+credit_risk_ea = pd.read_excel(
+    data_path_ma + "\\" + "gm_ea_credit_risk_indicators.xlsx",
+    index_col=[0],
+    usecols=["spread"],
+)
+
+credit_risk_ea.index = pd.to_datetime(credit_risk_ea.index, format="%Ym%m")
+
 
 # Yields
 
@@ -569,6 +579,7 @@ start_ea = max(
     min(ciss_idx.index),
     min(yields_ea_m_r.index),
     # min(ea_rec.index),
+    min(credit_risk_ea.index),
 )
 
 
@@ -581,6 +592,7 @@ end_ea = min(
     max(ciss_idx.index),
     max(yields_ea_m_r.index),
     # max(ea_rec.index),
+    max(credit_risk_ea.index),
 )
 
 
@@ -593,6 +605,7 @@ df_ea = [
     ciss_idx.loc[start_ea:end_ea],
     yields_ea_m_r[start_ea:end_ea],
     # ea_rec.loc[start_ea:end_ea],
+    credit_risk_ea.loc[start_ea:end_ea, "spr_nfc_bund_ea"],
 ]
 
 df_ea = pd.concat(df_ea, axis=1).dropna()
@@ -917,7 +930,8 @@ df_analysis_ea = [
     df_ea["INDPRO_EA"],
     df_ea["Infl_EA"],
     df_ea["EA_Rate_3M"],
-    df_ea["CISS"],
+    # df_ea["CISS"],
+    df_ea["spr_nfc_bund_ea"],
     df_ea["beta_0"],
     df_ea["beta_1"],
     df_ea["beta_2"],
@@ -933,6 +947,7 @@ df_analysis_ea.rename(
         "beta_1": "S_EA",
         "beta_2": "C_EA",
         "EUSTX_50_YoY": "EUSTX_50",
+        "spr_nfc_bund_ea": "FS_EA",
     },
     inplace=True,
 )
@@ -1119,3 +1134,23 @@ ea_rec.loc[ea_rec.index.isin(ea_rec_months)] = 1
 ########## sVAR Function ##########
 df_ic_test_ea = get_svars(df_analysis_ea, lag_start=1, lag_end=6, geography="EA")
 print(df_ic_test_ea.to_latex(index=False, escape=False, float_format="%.2f"))
+
+# Risk Indicators
+plt.figure(figsize=(15, 10))
+plt.plot(credit_risk_ea.iloc[:, 0:2])
+plt.legend()
+plt.show()
+
+plt.figure(figsize=(15, 10))
+plt.plot(credit_risk_ea.loc[start_ea:end_ea, "spr_nfc_bund_ea"], label="Spread EA")
+plt.plot(credit_risk_ea.loc[start_ea:end_ea, "spr_nfc_dom_ea"], label="Spread EA 1")
+plt.plot(vix_data.loc[start_ea:end_ea, "VSTOXX"] / 10, label="VSTOXX")
+plt.legend()
+plt.show()
+
+pearsonr(
+    credit_risk_ea.loc[start_ea:end_ea, "spr_nfc_bund_ea"],
+    vix_data.loc[start_ea : credit_risk_ea.index[-1], "VSTOXX"],
+)
+
+pearsonr(credit_risk_ea["spr_nfc_bund_ea"], credit_risk_ea["spr_nfc_dom_ea"])

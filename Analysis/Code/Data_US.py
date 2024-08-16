@@ -518,6 +518,7 @@ df_analysis_us = pd.concat(df_analysis_us, axis=1)
 df_analysis_us.rename(
     columns={
         "INDPRO_YoY": "IP_US",
+        "ebp": "FS_US",
         "Level Factor": "L_US",
         "Slope Factor": "S_US",
         "Curvature Factor": "C_US",

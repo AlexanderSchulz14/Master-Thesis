@@ -185,8 +185,10 @@ yields_us.set_index([yields_us.columns[0]], inplace=True)
 
 yields_us.columns = [col.replace(" ", "") for col in yields_us.columns]
 
+yields_us = yields_us / 100
+
 # Subset Yield Data as not all maturities are available for each point in time -> used in R for Nelson-Siegel decomposition
-start_yields_us = "1972-01-01"
+start_yields_us = "1975-01-01"
 yields_us_sub = yields_us.loc[start_yields_us:]
 yields_us_sub.to_csv("Yields_Data_Subset.csv")
 
@@ -251,23 +253,23 @@ yield_cols_to_use = [
 
 
 # Get Period
-# start_us = "1977-01-01"
-start_us = max(
-    # min(gdp_us.index),
-    min(ind_pro_us.index),
-    min(ind_pro_us_diff.index),
-    min(infl_us.index),
-    min(ffr_m.index),
-    min(cap_util_us_diff.index),
-    min(yields_us_sub_r.index),
-    min(tb_3m.index),
-    min(sp_500_1_m.index),
-    min(sp_500_1_m_ret.index),
-    min(ebp["ebp"].index),
-    # min(ciss_idx.index),
-    #    min(vix_m.index),
-    #    min(ts_10y2y_us.index)
-)
+start_us = "1978-01-01"
+# start_us = max(
+#     # min(gdp_us.index),
+#     min(ind_pro_us.index),
+#     min(ind_pro_us_diff.index),
+#     min(infl_us.index),
+#     min(ffr_m.index),
+#     min(cap_util_us_diff.index),
+#     min(yields_us_sub_r.index),
+#     min(tb_3m.index),
+#     min(sp_500_1_m.index),
+#     min(sp_500_1_m_ret.index),
+#     min(ebp["ebp"].index),
+#     # min(ciss_idx.index),
+#     #    min(vix_m.index),
+#     #    min(ts_10y2y_us.index)
+# )
 
 # end_us = "2000-12-01"
 end_us = min(
@@ -317,6 +319,29 @@ df_us = pd.concat(df_us, axis=1).dropna()
 # Add shadded Recession Areas in Figures for Sample Period
 us_rec = us_rec.loc[start_us:end_us]
 
+# mal 100 damit alles in Prozentpunkte ist
+df_us[
+    [
+        "Level Factor",
+        "Slope Factor",
+        "Curvature Factor",
+        "(y(3) + y(24) + y(120))/3",
+        "y(3) - y(120)",
+        "2 * y(24) - y(120) - y(3)",
+    ]
+] = (
+    df_us[
+        [
+            "Level Factor",
+            "Slope Factor",
+            "Curvature Factor",
+            "(y(3) + y(24) + y(120))/3",
+            "y(3) - y(120)",
+            "2 * y(24) - y(120) - y(3)",
+        ]
+    ]
+    * 100
+)
 
 # All Coefficients
 os.chdir(r"C:\Users\alexa\Documents\Studium\MSc (WU)\Master Thesis\Analysis")
@@ -1090,179 +1115,191 @@ print(df_result_yc_us.to_latex())
 
 
 ########## Factor Loadings Figure ###########
-yc_us_date = "2019-12-01"
+dates_factor_plot = [
+    "1987-02-01",
+    "1986-07-01",
+    "1985-07-01",
+    "1984-02-01",
+    "1983-06-01",
+    "1981-04-01",
+    "1979-10-01",
+    "1979-05-01",
+    "1990-01-01",
+    "1990-08-01",
+    "1991-08-01",
+    "2019-12-01",
+]
 
-yc_us = yields_us_sub_r.loc[yc_us_date].iloc[0:120]
-lmda = yields_us_sub_r.loc[yc_us_date]["lambda"]
-# beta_0 = yields_us_sub_r.loc[yc_us_date]["Level Factor"]
-# beta_1 = yields_us_sub_r.loc[yc_us_date]["Slope Factor"]
-# beta_2 = yields_us_sub_r.loc[yc_us_date]["Curvature Factor"]
+# 1987-02-01
 
-yc_us_mat_idx = list(range(len(yc_us)))
-yc_us_mat = [i + 1 for i in yc_us_mat_idx]
-yc_us_mat.insert(0, 0)  # damit 0 maturity auch inkludiert ist
+for date in dates_factor_plot:
+    print(date)
+    yc_us_date = date
 
+    yc_us = yields_us_sub_r.loc[yc_us_date].iloc[0:120]
+    lmda = yields_us_sub_r.loc[yc_us_date]["lambda"]
+    # beta_0 = yields_us_sub_r.loc[yc_us_date]["Level Factor"]
+    # beta_1 = yields_us_sub_r.loc[yc_us_date]["Slope Factor"]
+    # beta_2 = yields_us_sub_r.loc[yc_us_date]["Curvature Factor"]
 
-ls_beta_1_loading = {}
-for maturity in yc_us_mat:
-    # print(beta_1_loading(lmda=lmda, maturity=maturity))
-    result = beta_1_loading(lmda=lmda, maturity=maturity)
-    ls_beta_1_loading[maturity] = result
+    yc_us_mat_idx = list(range(len(yc_us)))
+    yc_us_mat = [i + 1 for i in yc_us_mat_idx]
+    yc_us_mat.insert(0, 0)  # damit 0 maturity auch inkludiert ist
 
-# ls_beta_1_loading[0] = 1 # set first value to 1
+    ls_beta_1_loading = {}
+    for maturity in yc_us_mat:
+        # print(beta_1_loading(lmda=lmda, maturity=maturity))
+        result = beta_1_loading(lmda=lmda, maturity=maturity)
+        ls_beta_1_loading[maturity] = result
 
-# list(ls_beta_1_loading.keys())
-# list(ls_beta_1_loading.values())
+    # ls_beta_1_loading[0] = 1 # set first value to 1
 
-# plt.plot(list(ls_beta_1_loading.keys()), list(ls_beta_1_loading.values()))
+    # list(ls_beta_1_loading.keys())
+    # list(ls_beta_1_loading.values())
 
-ls_beta_2_loading = {}
-for maturity in yc_us_mat:
-    # print(beta_2_loading(lmda=lmda, maturity=maturity))
-    result = beta_2_loading(lmda=lmda, maturity=maturity)
-    ls_beta_2_loading[maturity] = result
+    # plt.plot(list(ls_beta_1_loading.keys()), list(ls_beta_1_loading.values()))
 
-# ls_beta_2_loading[0] = 1 # set first value to 1
+    ls_beta_2_loading = {}
+    for maturity in yc_us_mat:
+        # print(beta_2_loading(lmda=lmda, maturity=maturity))
+        result = beta_2_loading(lmda=lmda, maturity=maturity)
+        ls_beta_2_loading[maturity] = result
 
+    # ls_beta_2_loading[0] = 1 # set first value to 1
 
-# list(ls_beta_2_loading.keys())
-# list(ls_beta_2_loading.values())
+    # list(ls_beta_2_loading.keys())
+    # list(ls_beta_2_loading.values())
 
-# plt.plot(list(ls_beta_2_loading.keys()), list(ls_beta_2_loading.values()))
+    # plt.plot(list(ls_beta_2_loading.keys()), list(ls_beta_2_loading.values()))
 
+    # # Plot Loadings
+    # plt.figure(figsize=(10, 8))
 
-# Plot Loadings
-plt.figure(figsize=(10, 8))
+    # plt.axhline(y=1, color="black", label="Level Factor Loading")
+    # plt.plot(
+    #     list(ls_beta_1_loading.keys()),
+    #     list(ls_beta_1_loading.values()),
+    #     label="Slope Factor Loading",
+    # )
+    # plt.plot(
+    #     list(ls_beta_2_loading.keys()),
+    #     list(ls_beta_2_loading.values()),
+    #     label="Curvature Factor Loading",
+    # )
 
-plt.axhline(y=1, color="black", label="Level Factor Loading")
-plt.plot(
-    list(ls_beta_1_loading.keys()),
-    list(ls_beta_1_loading.values()),
-    label="Slope Factor Loading",
-)
-plt.plot(
-    list(ls_beta_2_loading.keys()),
-    list(ls_beta_2_loading.values()),
-    label="Curvature Factor Loading",
-)
+    # plt.xlim(left=0)
 
-plt.xlim(left=0)
+    # plt.legend()
+    # plt.show()
 
-plt.legend()
-plt.show()
+    # for date in yields_us_sub_r.index:
+    #     yc_us_date = date
+    #     print(date)
 
+    #     yc_us = yields_us_sub_r.loc[yc_us_date].iloc[0:120]
+    #     lmda = yields_us_sub_r.loc[yc_us_date]["lambda"]
+    #     # beta_0 = yields_us_sub_r.loc[yc_us_date]["Level Factor"]
+    #     # beta_1 = yields_us_sub_r.loc[yc_us_date]["Slope Factor"]
+    #     # beta_2 = yields_us_sub_r.loc[yc_us_date]["Curvature Factor"]
 
-# for date in yields_us_sub_r.index:
-#     yc_us_date = date
-#     print(date)
+    #     yc_us_mat_idx = list(range(len(yc_us)))
+    #     yc_us_mat = [i + 1 for i in yc_us_mat_idx]
+    #     yc_us_mat.insert(0, 0)  # damit 0 maturity auch inkludiert ist
 
-#     yc_us = yields_us_sub_r.loc[yc_us_date].iloc[0:120]
-#     lmda = yields_us_sub_r.loc[yc_us_date]["lambda"]
-#     # beta_0 = yields_us_sub_r.loc[yc_us_date]["Level Factor"]
-#     # beta_1 = yields_us_sub_r.loc[yc_us_date]["Slope Factor"]
-#     # beta_2 = yields_us_sub_r.loc[yc_us_date]["Curvature Factor"]
+    #     ls_beta_1_loading = {}
+    #     for maturity in yc_us_mat:
+    #         # print(beta_1_loading(lmda=lmda, maturity=maturity))
+    #         result = beta_1_loading(lmda=lmda, maturity=maturity)
+    #         ls_beta_1_loading[maturity] = result
 
-#     yc_us_mat_idx = list(range(len(yc_us)))
-#     yc_us_mat = [i + 1 for i in yc_us_mat_idx]
-#     yc_us_mat.insert(0, 0)  # damit 0 maturity auch inkludiert ist
+    #     # ls_beta_1_loading[0] = 1 # set first value to 1
 
-#     ls_beta_1_loading = {}
-#     for maturity in yc_us_mat:
-#         # print(beta_1_loading(lmda=lmda, maturity=maturity))
-#         result = beta_1_loading(lmda=lmda, maturity=maturity)
-#         ls_beta_1_loading[maturity] = result
+    #     # list(ls_beta_1_loading.keys())
+    #     # list(ls_beta_1_loading.values())
 
-#     # ls_beta_1_loading[0] = 1 # set first value to 1
+    #     # plt.plot(list(ls_beta_1_loading.keys()), list(ls_beta_1_loading.values()))
 
-#     # list(ls_beta_1_loading.keys())
-#     # list(ls_beta_1_loading.values())
+    #     ls_beta_2_loading = {}
+    #     for maturity in yc_us_mat:
+    #         # print(beta_2_loading(lmda=lmda, maturity=maturity))
+    #         result = beta_2_loading(lmda=lmda, maturity=maturity)
+    #         ls_beta_2_loading[maturity] = result
 
-#     # plt.plot(list(ls_beta_1_loading.keys()), list(ls_beta_1_loading.values()))
+    #     # ls_beta_2_loading[0] = 1 # set first value to 1
 
-#     ls_beta_2_loading = {}
-#     for maturity in yc_us_mat:
-#         # print(beta_2_loading(lmda=lmda, maturity=maturity))
-#         result = beta_2_loading(lmda=lmda, maturity=maturity)
-#         ls_beta_2_loading[maturity] = result
+    #     # list(ls_beta_2_loading.keys())
+    #     # list(ls_beta_2_loading.values())
 
-#     # ls_beta_2_loading[0] = 1 # set first value to 1
+    #     # plt.plot(list(ls_beta_2_loading.keys()), list(ls_beta_2_loading.values()))
 
-#     # list(ls_beta_2_loading.keys())
-#     # list(ls_beta_2_loading.values())
+    #     # Plot Loadings
+    #     plt.figure(figsize=(10, 8))
 
-#     # plt.plot(list(ls_beta_2_loading.keys()), list(ls_beta_2_loading.values()))
+    #     plt.axhline(y=1, color="black", label="Level")
+    #     plt.plot(
+    #         list(ls_beta_1_loading.keys()), list(ls_beta_1_loading.values()), label="Slope"
+    #     )
+    #     plt.plot(
+    #         list(ls_beta_2_loading.keys()),
+    #         list(ls_beta_2_loading.values()),
+    #         label="Curvature",
+    #     )
 
-#     # Plot Loadings
-#     plt.figure(figsize=(10, 8))
+    #     plt.legend()
+    #     plt.show()
 
-#     plt.axhline(y=1, color="black", label="Level")
-#     plt.plot(
-#         list(ls_beta_1_loading.keys()), list(ls_beta_1_loading.values()), label="Slope"
-#     )
-#     plt.plot(
-#         list(ls_beta_2_loading.keys()),
-#         list(ls_beta_2_loading.values()),
-#         label="Curvature",
-#     )
+    # # YC plot
+    # # maturities_plot = list(range(11, 120, 12))
+    # maturities_plot = [0, 11, 23, 35, 47, 59, 71, 83, 95, 107, 119]
+    # x_labels = [yc_us.index[i] for i in maturities_plot]
 
-#     plt.legend()
-#     plt.show()
+    # plt.figure(figsize=(15, 10))
+    # plt.plot(yc_us.index, yc_us.values, linestyle="dashdot", color="darkred")
 
+    # plt.xticks(ticks=maturities_plot, labels=x_labels)
 
-# YC plot
-# maturities_plot = list(range(11, 120, 12))
-maturities_plot = [0, 11, 23, 35, 47, 59, 71, 83, 95, 107, 119]
-x_labels = [yc_us.index[i] for i in maturities_plot]
+    # plt.show()
 
-plt.figure(figsize=(15, 10))
-plt.plot(yc_us.index, yc_us.values, linestyle="dashdot", color="darkred")
+    # Plot YC & Factor Loadings gesamt
+    fig, ax1 = plt.subplots(figsize=(15, 10))
 
-plt.xticks(ticks=maturities_plot, labels=x_labels)
+    plt.axhline(y=1, color="black", label="Level Factor Loading")
 
-plt.show()
+    ax1.plot(
+        list(ls_beta_1_loading.keys()),
+        list(ls_beta_1_loading.values()),
+        label="Slope Factor Loading",
+    )
 
+    ax1.plot(
+        list(ls_beta_2_loading.keys()),
+        list(ls_beta_2_loading.values()),
+        label="Curvature Factor Loading",
+    )
 
-# Plot YC & Factor Loadings gesamt
-fig, ax1 = plt.subplots(figsize=(15, 10))
+    ax2 = ax1.twinx()
+    ax2.plot(yc_us.values, linestyle="dashdot", color="darkred", label="Yield Curve")
 
-plt.axhline(y=1, color="black", label="Level Factor Loading")
+    plt.xlim(left=0)
 
-ax1.plot(
-    list(ls_beta_1_loading.keys()),
-    list(ls_beta_1_loading.values()),
-    label="Slope Factor Loading",
-)
+    # plt.xticks(ticks=maturities_plot, labels=x_labels)
 
+    ax1.set_xlabel("Maturity (in months)")
+    ax1.set_ylabel("Loadings")
+    ax2.set_ylabel("Yield (in %)")
 
-ax1.plot(
-    list(ls_beta_2_loading.keys()),
-    list(ls_beta_2_loading.values()),
-    label="Curvature Factor Loading",
-)
+    # Combine legends from both axes
+    lines, labels = [], []
+    for ax in [ax1, ax2]:
+        line_handles, line_labels = ax.get_legend_handles_labels()
+        lines.extend(line_handles)
+        labels.extend(line_labels)
+    ax1.legend(lines, labels, loc="lower right", bbox_to_anchor=(0.85, -0.125), ncol=4)
 
-ax2 = ax1.twinx()
-ax2.plot(yc_us.values, linestyle="dashdot", color="darkred", label="Yield Curve")
-
-plt.xlim(left=0)
-
-# plt.xticks(ticks=maturities_plot, labels=x_labels)
-
-ax1.set_xlabel("Maturity (in months)")
-ax1.set_ylabel("Loadings")
-ax2.set_ylabel("Yield (in %)")
-
-# Combine legends from both axes
-lines, labels = [], []
-for ax in [ax1, ax2]:
-    line_handles, line_labels = ax.get_legend_handles_labels()
-    lines.extend(line_handles)
-    labels.extend(line_labels)
-ax1.legend(lines, labels, loc="lower right", bbox_to_anchor=(0.85, -0.125), ncol=4)
-
-# ax1.legend(loc="lower right", bbox_to_anchor=(0.685, -0.125), ncol=3)
-# ax2.legend(loc="lower right", bbox_to_anchor=(0.8, -0.125), ncol=1)
-plt.savefig(figures_path_ma + "\\" + "Factor_Loadings_Plot.pdf", dpi=1000)
-plt.show()
+    # ax1.legend(loc="lower right", bbox_to_anchor=(0.685, -0.125), ncol=3)
+    # ax2.legend(loc="lower right", bbox_to_anchor=(0.8, -0.125), ncol=1)
+    plt.savefig(figures_path_ma + "\\" + "Factor_Loadings_Plot.pdf", dpi=1000)
+    plt.show()
 
 
 ########## sVAR Function ##########

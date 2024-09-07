@@ -1,0 +1,137 @@
+\section{Introduction}
+\label{sec:intro}
+
+% Over the past decade, people have become increasingly concerned about personal health. 
+% One's own health is constantly monitored and assessed using different metrics, while potential risks are forecasted and mitigated as well as possible. 
+% % For this reason, various metrics have been developed and are used to approximate the health status of an individual. 
+% For the masses, simplicity is key in this context as easy-to-understand metrics offer a good indication of one’s current health status. 
+% In a similar fashion, economists, finance professionals and laypeople alike rely on some key metrics to assess the health of the economy. 
+% Especially in times of turmoil, simple albeit highly relevant metrics often enter the center stage. 
+% One of the most well-known and most studied among those key metrics is the yield curve. 
+% Its various shapes, slopes and spreads are analysed, forecasted and interpreted in order to assess the health of the overall economy as well as market expectations of the future.
+% Beware an inverted yield curve, which the market usually interprets as the prediction of an imminent recession, similar to a doctor facing elevated inflammation markers and inferring the onset of illness. 
+% But analogous to a doctor, who is faced with the challenge of an accurate diagnosis in spite of an individual's various idiosyncratic characteristics, economic researchers are faced with a tremendous amount of information from which they try to infer a signal in order to predict future economic activity. 
+% In this context, understanding the underlying dynamics is an essential means to the this end.
+
+The global economy has become increasingly complex in recent decades, with central banks in most major economies responding to the global financial crisis by keeping interest rates near or at the the zero lower bound, which necessitated the subsequent shift of monetary policy to unconventional instruments such as forward guidance and quantitative easing (QE) in order for monetary policy to stay viable. 
+Further complicating matters, idiosyncratic shocks such as the COVID-19 pandemic or the war in Ukraine have induced the start of an unprecedented global monetary tightening cycle, while geopolitical tensions in the Middle East make it even more difficult to correctly predict prospective output growth, inflation rates or the future stance of monetary policy. 
+Altogether, these factors have dramatically influenced economic conditions around the world and lead to a high degree of unpredictability and uncertainty. 
+This has amplified the need to refine the hitherto available tools and methods available in the economist's toolbox in order to infer as precise economic signals as possible in such volatile times.
+
+Rooted in decades of economic research, the yield curve has oftentimes offered simplistic yet highly accurate predictions of the future path of the economy. 
+Its various shapes, slopes and spreads are analysed, forecasted and interpreted in order to assess the state of the overall economy as well as market expectations of the future.
+Beware an inverted yield curve, which usually is interpreted as the market expecting an imminent recession. 
+% , similar to a doctor facing elevated inflammation markers and inferring the onset of illness.
+However, though the yield curve --- mapping interest rates to specific maturities --- seemingly is a key indicator for economic agents, it is oftentimes not well understood, either in a general sense and especially in regards to its dynamics with various economic variables.
+% Does the yield curve really tell us something about future economic activity?
+% Are economic conditions determining the shapes and movements of the yield curve?
+% Could it indeed be the case that the economy and the yield curve interact in both directions, and if so, how?
+% Ultimately, correctly assessing and predicting the impact of movements in the underlying factors on the yield curve enables central bank policymakers to calibrate their policies to current market expectations as well as giving asset managers the opportunity to position their portfolios in order to maximize returns. 
+A contributing factor to this could be that the yield curve has been studied in a rather dichotomous fashion, either from the lens of a finance professional aiming to maximize the returns of his/her portfolio, or from the perspective of an economist concerned with predicting the future state of the economy as accurately as possible. 
+Yet yields are known to contain a tremendous amount of information useful in both realms be it on the current stance of monetary or fiscal policy as well as expectations of future economic activity and inflation \citep{evans2007economic}.
+Likewise economic variables such as inflation expectations seem to be among the main drivers of yield curve movements \citep{Gürkaynak_Wright_2012}. 
+Nonetheless, the direction of causality and even the existence of a causal relationship per se is ambiguous, though some theories have helped uncover this fuzzy relationship. 
+
+Ever since the development of the well-known expectation hypothesis by \citet{hicks1946value}, the role agent's expectations play entered the center stage and have been key for better understanding the yield curve in an economic context.
+In short, the expectation hypothesis assumes that long-term interest rates are average expected future short-term rates. 
+Now, if these short-term rates are driven by macroeconomic aggregates such as the output gap and inflation (expectations), as is assumed by the monetary policy rule developed by \citet{taylor1993discretion}, the yield curve allows to deduce market expectations of the future state of the economy since current long-term market yields are based on expectations of said aggregates \citep{Gürkaynak_Wright_2012}. 
+% In turn, these expectations enable both portfolio managers and policymakers to calibrate their strategies accordingly.
+% Notably, in this case the direction runs from macroeconomic factors causing changes in the yield curve. 
+What is more, the expectation hypothesis is also fundamental in order to understand the implications of phenomena such as the above mentioned inversion of the yield curve. 
+% , potentially resulting in a negative term spread.
+Namely, if investors anticipate a decline in future inflation or output growth due to recessionary concerns, they would expect monetary policy authorities to lower (short-term) interest rates in the future, inducing current yields at the long end of the term structure to decrease relative to the short end, potentially resulting in an inverted yield curve. The economic implications of an inversion of the term structure have been studied extensively by the likes of \citet{estrella1991term}, \citet{estrella1995term}, \citet{stock2003did} and others, concluding that the term spread seems to possess predictive power regarding the future state of the economy. 
+
+In this context, another pivotal domain for a refined understanding of the yield curve --- again highlighting the importance of economic expectations --- has been the role of monetary policy, especially with regards to unconventional instruments.
+% such as forward guidance and QE at the zero lower bound. 
+% Here an enhanced understanding of the dynamics between the yield curve and monetary policy is particularly significant, since at the zero lower bound conventional tools such as lowering short-term interest is not possible and 
+With interest rates having been stuck at the zero lower bound in most major economies for the majority of the past decade, forward guidance and QE have become increasingly important.  
+In this scenario, conventional tools such as lowering short-term interest rates in order to boost aggregate demand and counteract deflationary risks are no longer feasible.
+Therefore --- under the expectation hypothesis --- to provide additional stimulus to the economy and preserve the effectiveness of monetary policy, central banks need to influence market expectations accordingly via implementing said unconventional tools \citep{Gürkaynak_Wright_2012}.
+However, under such distinct circumstances, it is of the utmost importance to assess the potential impacts of these monetary policy actions on the real economy.
+As a means to this end, high frequency event studies 
+% such as \citet{gurkaynak2005actions}, \citet{ALTAVILLA2019162}, \citet{SWANSON202132}, and 
+have become essential to identify the impacts of central bank actions for variations not only in the yield curve, but also exchange rates, inflation and stock prices.
+While \citet{gurkaynak2005actions} show that statements by the Federal Open Market Committee (FOMC) concerned with future policy actions seem to be the main driver of longer term US Treasury yields, above and beyond changes in the federal funds rate target, \citet{SWANSON202132} concludes that both forward guidance and QE have enabled the US Federal Reserve to effectively conduct monetary policy at the zero lower bound, where the former has had a significant effect on short-term Treasury yields, while the latter was the main driver of loner-term yields.
+Consistent with the findings for the US economy, \citet{ALTAVILLA2019162} have obtained similar results for the Euro Area, concluding that their three estimated monetary policy factors capture almost all of the variation in the yield curve. 
+Additionally, the authors stress the necessity to take the entire term structure, and not just short-term interest rates, into account when studying the effects of monetary policy, again corroborating the significance of the yield curve for policymakers. 
+
+%\citet{Nakamura_2018}
+%\citet{jarocinski2020deconstructing}, 
+%\citet{bauer_swanson_2023}
+
+All of the above show that understanding the interactions between the yield curve and the macroeconomy is crucial, especially highlighting the importance of economic expectations.
+Both the yield curve offers valuable insights into agent's expectations of the future state of the economy, while inflation expectations and monetary policy actions seem to induce yield curve movements. 
+% , be it on the current stance of monetary or fiscal policy as well as expectations of future economic activity and inflation \citep{evans2007economic}. Vice versa, ever since the introduction of the expectation theory by \citet{hicks1946value},
+% Expectation theory einbauen
+% monetary policy (expectations) seem to be one of the main drivers of yield curve movements \citep{evans1998monetary}. 
+Thus, correctly assessing the impacts of future developments in both macroeconomic factors such monetary policy, as well as the term structure seems invaluable for portfolio managers and economists alike.
+Ultimately, a precise understanding of the underlying drivers, be they of economic or financial nature, enables central banks to calibrate their policies to current market conditions and expectations, as well as giving asset managers the opportunity to position their portfolios profitably. 
+% But how does one combine those two worlds?
+But how exactly is the yield curve related to the economy? 
+Is the yield curve really a leading indicator for economic activity?
+% Does the yield curve really tell us something about future economic activity?
+% Is the yield curve a leading indicator for economic activity, or are economic variables the reason for shifts in the yield curve? 
+Are economic expectations really determining the shapes and movements of the yield curve?
+Could there even be a bidirectional link, where the causality runs in both directions?
+% And if so, how exactly is the yield curve related to the economy? 
+% One such key metric that is used by central bankers and hedge fund managers alike is the yield curve, where the slope, or even more simple, the spread, is used to assess the health of the overall economy as well as expectations about the future. 
+% An inverse yield curve is associated with an imminent recessions, while a positively sloped yield curve imdicates a healthy and strong economy. 
+This thesis is aimed at answering these questions.
+% regarding the dynamic interactions between the yield curve and the macroeconomy. 
+% On the one hand, the theoretical background of the yield curve is presented in order to understand the economic reasoning why it gained such popularity, especially given the fact that almost all recessions are preceded by a yield curve inversion. 
+% On the other hand, potential macroeconomic factors that drive yield curve movements are presented in the context of an empirical analysis. 
+
+Stemming from the methodology introduced by \citet{diebold2006macroeconomy}, a decomposition of the United States and Euro Area yield curves using the well-known model introduced by \citet{nelson1987parsimonious} is conducted, yielding the three latent factors representing the level, slope and curvature.
+% of the respective yield curve. 
+In a second step, a structural vector autoregression (SVAR) model is estimated including said factors along with various economic variables.
+Based thereupon, distinct structural shocks are obtained using short-term restrictions via a Cholesky decomposition of the reduced form variance-covariance matrix of the error term.
+The resulting impulse responses are utilized for the sake of deducing potential interpretations regarding the dynamic interactions between the macroeconomy and the yield curve.
+
+The thesis is structured in the following way. 
+Section \ref{sec:lit_rev} offers a brief overview of the literature, highlighting past findings regarding the yield curve's relevance and connection to macroeconomic factors. 
+Section \ref{sec:method} introduces the methodological approach implemented.
+% a chapter is dedicated to the theoretical background of the yield curve in general as well as introducing various modelling strategies. 
+The subsequent Section starts with an overview regarding the data used (Section \ref{sec:data}) as well as presenting the empirical results for the United States (Section \ref{sec:analysis_us}) and the Euro Area yield curves (Section \ref{sec:analysis_ea}), where the relevance of macroeconomic variables as drivers of yield curve movements is assessed, while simultaneously examining the impacts changes in the yield curve factors have on economic variables.
+Section \ref{sec:comparison} offers a comparative examination of the results obtained for the United States and the Euro Area, where the main similarities and differences are highlighted. 
+Thereafter, a conclusion summarizing the main findings is provided. 
+
+% The last decade has seen a surge in personal health research/application. 
+
+
+
+
+
+
+% As mentioned before, one key variable seems to be the yield curve. 
+
+% This thesis aims at answering these questions. 
+
+
+% The thesis is structured in the following way. 
+% The first section gives a concise overview of the hitherto available literature. 
+ % Chapter 4 is concerned with the empirical analysis, where part 1 is focused on the US, while part 2 presents the findings for the Euro Area. 
+ % Finally, a conclusion is provided.
+
+
+%%%%%%%%%%% Überarbeitung %%%%%%%%%%%
+% Central to an understanding of the role of the yield curve in both the economics and finance realm is the well-known expectation hypothesis --- based on the work by \citet{hicks1946value} --- stating that long-term interest rates are average expected future short-term rates. 
+% Now, if these short-term rates are driven by macroeconomic aggregates such as the output gap and future inflation, as is assumed by the monetary policy rule developed by \citet{taylor1993discretion}, the yield curve allows to deduce market expectations of the future state of the macroeconomy \citep{Gürkaynak_Wright_2012}. 
+% Said expectation hypothesis is also fundamental to understand the implications of phenomena such as the above mentioned inversion of the yield curve, potentially resulting in a negative term spread.
+% Namely, if investors anticipate a decline in future inflation or output growth due to recessionary concerns, they would expect monetary policy authorities to lower (short-term) interest rates in the future, inducing current yields at the long end of the term structure to decrease relative to the short end as a result. 
+% Though the expectation hypothesis has been tested, challenged and modified by influential works such as \citet{campbell1991yield}, underlining the importance of time varying risk premia for understanding long-term rates, it is still relevant to this day in order to  get an intuitive understanding of the interactions between the yield curve and the macroeconomy.
+% What is more, said risk premia seem to be influenced by macroeconomic variables such as inflation (uncertainty) or monetary policy in the form of large scale asset purchases, again underlining that there indeed seems to be a link between the term spread and the economy worthy of understanding better \citep{Gürkaynak_Wright_2012}. 
+
+
+% Another pivotal domain to better understand the interaction of the yield curve and the economy has been  the role of monetary policy, especially with regards to unconventional monetary policy instruments such as forward guidance and QE at the zero lower bound. 
+% In this context, high frequency event studies such as \citet{gurkaynak2005actions}, \citet{Nakamura_2018}, \citet{ALTAVILLA2019162}, \citet{jarocinski2020deconstructing}, \citet{SWANSON202132}, and \citet{bauer_swanson_2023} have become vital to identify the significance central bank actions play for variations not only in the yield curve and inflation, but also exchange rates and stock prices, etc. 
+% Specifically, \citet{gurkaynak2005actions} show that statements by the Federal Open Market Committee (FOMC) concerned with future policy actions seem to be the main driver of longer term US Treasury yields, above and beyond changes in the federal funds rate target.
+% With interest rates having been stuck at the zero lower bound in most major economies for the majority of the past 15 years, forward guidance and QE have become increasingly important to influence market expectations and monetary policy to stay viable. \citet{SWANSON202132} studies the effect of both unconventional monetary policy vehicles, i.e., forward guidance and QE in the aftermath of the 2007-09 global financial crisis, concluding that both instruments have enabled the US Federal Reserve to effectively conduct monetary policy at the zero lower bound, where the former has had a significant effect on short-term Treasury yields, while QE was the main driver of loner-term yields. 
+% Consistent with the findings for the US economy, \citet{ALTAVILLA2019162} have obtained similar results for the Euro Area. 
+% All of the above show that understanding the interactions between the yield curve and the macroeconomy is crucial.
+% Both the yield curve offers valuable insights into agent's expectations of the future state of the economy, while inflation expectations and monetary policy seem to significantly influence yield curve movements. 
+
+% Not only are these findings enlightening towards a better understanding of the yield curve, but they are also in accordance with the expectation hypothesis. 
+
+
+
+% such as \citet{gurkaynak2005actions}, \citet{ALTAVILLA2019162} and \citet{SWANSON202132} 

@@ -23,7 +23,7 @@ Among other researchers, \citet{estrella1991term}, \citet{estrella1995term} and 
 In a similar fashion, \citet{bernard1996} extend the analysis to other major economies such as Canada, Japan, Belgium and the Netherlands, confirming the finding that the term spread offers significant information regarding future recessions. 
 Solely for Japan the significance is limited, which can possibly be attributed to differences in financial regulation and the fact that interest rates in Japan did not fully reflect market participants expectations of the future path of the economy \citep{bernard1996}. 
 \citet{evgenidis2018yield} offer a meta-analysis of the yields-to-macro view, again focusing on the yield spread's ability to forecast economic activity. Although they again corroborate the findings of the previous 30 years, they note that the modelling strategy should take non-linearities into account as well as underlining the importance of incorporating monetary policy variables into the models, as some predictive power of the yield spread is attributed to expectations about the future path of monetary policy. The authors also note that there still is no widely accepted theory explaining the usefulness of the yield curve. 
-Apart from these rather promising studies affirming one's confidence in the yields-to-macro view, authors such as \citet{dotsey1998predictive} and \citet{stock_watson_2001} note that yields (spreads) have somewhat lost their predictive ability ever since the 1980s. 
+Apart from these rather promising studies affirming one's confidence in the yields-to-macro view, authors such as \citet{dotsey1998predictive} and \citet{stock2001vector} note that yields (spreads) have somewhat lost their predictive ability ever since the 1980s. 
 
 On the spectrum of authors leaning towards a macro-to-yields approach, central research has come from \citet{evans1998monetary}, \citet{ang2003no} and \citet{evans2007economic}, all using some variation of a VAR framework. 
 Using three different identification strategies within a VAR setting, \citet{evans1998monetary} find that monetary policy shocks primarily  have a significant effect on short-term interest rates while also reducing expected inflation, implying a rise in the real interest rate. 
@@ -68,6 +68,36 @@ Interestingly, \citet{kanjilal2011macroeconomic} finds a stronger evidence for t
 Suitably for this thesis, \citet{morales2010real} compares the two-step estimation approach introduced by \citet{diebold2006forecasting} with the more complicated state space representation (one-step estimation process) by \citet{diebold2006macroeconomy} and concludes that the simplified estimation methodology does not contradict the basic intuition of the results. Furthermore, the author finds evidence for a two-way relationship between yield curve factors and macroeconomic variables for the Chilean economy. 
 
 
-Notable theoretical contributions have come from \citet{hicks1946value}, who is among the economists credited with developing the well-known expectations theory, which is also tested in \citet{diebold2006macroeconomy}. 
-\citet{kessel1971cyclical} offers a broad overview of common (past) theories explaining the term structure of interest rates.
-Some of the latest contributions in the corresponding literature have mainly focused on how and how-well a Nelson-Siegel approach can be implemented in a machine learning framework, where, among others, \citet{pedersen2019survey} offer a comprehensive examination. 
+%%%%%%%%%%% Überarbeitung %%%%%%%%%%%
+It is again important to note the relevance of monetary policy to enhance one's understanding of the yield curve, especially highlighting the relevance of the yield curve for conducting monetary policy at the zero lower bound. 
+Some recent papers have made valuable contributions to this end. 
+\citet{Krippner_2012} proposes a modified approach to estimate a (Gaussian) term structure model when interest rates are near the ZLB, while \citet{KRIPPNER2013135} offer a pioneering framework in order to identify the stance of monetary policy when the term structure is in a ZLB environments via estimation of a so-called ``shadow short rate''.
+\citet{Wright_2012} finds that unconventional monetary policy has had a stimulative effect on the US economy, lowering government and corporate bond yields, though the effect has been quite modest. 
+\citet{Hamilton_Wu_2012} compare the effects of monetary policy, in particular the maturity structure of publicly held government bonds, on US interest rates without and within a ZLB environment, concluding that QE enables central banks to lower long-term interest rates with a similar magnitude compared to restructuring the maturity profile, e.g. selling short-term bonds in order to buy long-term bonds, of the central bank government bond portfolio.
+Using the shadow rate concept introduced by \citet{KRIPPNER2013135}, \citet{Bauer_Rudebusch_2016} use dynamic term structure models based on shadow rates to forecast short-term rates, i.e., the future stance of monetary policy, and find that said models provide more accurate estimates.
+\citet{Wu_Xia_2016} have been influential in estimating a shadow federal funds rate for the US using a shadow rate term structure model (SRTSM) in order to measure the stance of monetary policy at the ZLB, while also making their estimated shadow rate publicly \href{https://www.atlantafed.org/cqer/research/wu-xia-shadow-federal-funds-rate}{available}. 
+The authors show that the shadow federal funds rate has been crucial to understand the dynamics between monetary policy shocks and the real economy stuck at the ZLB. Specifically, expansionary monetary policy actions using unconventional instruments such as forward guidance and QE have boosted economic growth and decreased the unemployment rate, effectively demonstrating that the Fed has been able to conduct monetary policy even while being constrained by the zero lower bound. 
+%
+Prominent contributions have also come form \citet{gurkaynak2005actions}, \citet{Nakamura_2018}, \citet{ALTAVILLA2019162}, \citet{jarocinski2020deconstructing}, \citet{SWANSON202132}, \citet{bauer_swanson_2023} and \citet{NAKAMURA2024101300} providing critical insights into how central bank announcements in major economies such as the US, the EA and Japan have enabled monetary policy authorities to conduct monetary policy while being limited by the ZLB, where the yield curve --- particularly the long end --- has been crucial to influence agent's expectations and provide economic stimulus. 
+
+%\citet{Nakamura_2018}
+%\citet{jarocinski2020deconstructing}, 
+%\citet{bauer_swanson_2023} 
+
+%%%%%%%%%%% Überarbeitung %%%%%%%%%%%
+
+
+Notable theoretical contributions have come from \citet{hicks1946value}, who is among the economists credited with developing the well-known expectations theory.
+Though it has been tested, challenged and modified by influential works such as \citet{campbell1991yield}, underlining the importance of time varying risk premia for understanding long-term rates, it is still relevant to this day in order to  get an intuitive understanding of the importance of expectations regarding the interactions between the yield curve and the macroeconomy.
+In addition, said risk premia seem to be influenced by macroeconomic variables such as inflation (uncertainty) or monetary policy in the form of large scale asset purchases, again underlining the existence of a presumable link between the term structure and the economy worthy of a closer examination \citep{Gürkaynak_Wright_2012}. 
+The expectation hypothesis is also tested by \citet{diebold2006macroeconomy}, who find evidence that it holds fairly well over some periods, but not their entire sample. 
+Worth mentioning is the work by \citet{kessel1971cyclical}, who offers a broad overview of common (past) theories explaining the term structure of interest rates.
+
+% Some of the latest contributions in the corresponding literature have mainly focused on how to improve the modelling strategy of the term structure either using Nelson-Siegel or a similar approach 
+Recent advancements in modeling government bond yields have focused on incorporating time-varying parameters and Bayesian approaches and how-well these approaches can be implemented in a machine learning framework.
+Papers by \citet{Carriero_2011} and \citet{CARRIERO20122026} present an innovative approach to forecasting government bond yields using a Bayesian Vector Autoregression (BVAR) frameworks. 
+The authors show that their BVAR approach outperforms both standard VARs and well-known yield curve models like the dynamic Nelson-Siegel model in out-of-sample forecasting.  
+\citet{Fischer_et_al_2023} propose a General Bayesian time-varying parameter vector autoregression (TVP-VAR) model for analyzing government bond yields. Their approach allows for flexible shrinkage priors and stochastic volatility, enhancing the model's ability to capture complex dynamics in yield curves. 
+Similar to this work, \citet{Carriero_et_al_2021} introduce no-arbitrage priors and drifting volatilities to improve the modeling of interest rate term structures. 
+In the context of a machine learning framework \citet{pedersen2019survey}, among others, offer a comprehensive examination. 
+These studies contribute to a growing body of literature that aims to better forecast and understand the behavior of government bond yields within today's dynamic economic environment. 

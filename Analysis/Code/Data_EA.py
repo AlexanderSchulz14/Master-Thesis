@@ -125,7 +125,7 @@ vix_data.index = vix_data.index + pd.offsets.MonthBegin(1)
 credit_risk_ea = pd.read_excel(
     data_path_ma + "\\" + "gm_ea_credit_risk_indicators.xlsx",
     index_col=[0],
-    usecols=["spread"],
+    # usecols=["spr_nfc_bund_ea"],
 )
 
 credit_risk_ea.index = pd.to_datetime(credit_risk_ea.index, format="%Ym%m")

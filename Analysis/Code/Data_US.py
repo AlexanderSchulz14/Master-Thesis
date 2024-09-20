@@ -129,8 +129,7 @@ sp_500_1_m_ret.name = "S&P_500_YoY"
 
 # Financial Stress Variables
 # Excess Bond Premium (EBP)
-os.chdir(r"C:\Users\alexa\Documents\Studium\MSc (WU)\Master Thesis\Analysis\Data")
-ebp = pd.read_csv("ebp_csv.csv", index_col=[0], parse_dates=True)
+ebp = pd.read_csv(data_path_ma + "\\" + "ebp_csv.csv", index_col=[0], parse_dates=True)
 
 # CISS Index
 entrypoint = "https://data-api.ecb.europa.eu/service"
@@ -172,10 +171,10 @@ vix_data.index = vix_data.index + pd.offsets.MonthBegin(1)
 # corp_spread.rename("BAA10Y", inplace=True)
 # corp_spread_m = corp_spread.resample("M", loffset="1d").mean()
 
-
+###############################################################################
 # Yields Data
-os.chdir(r"C:\Users\alexa\Documents\Studium\MSc (WU)\Master Thesis\Analysis\Data")
-yields_us = pd.read_excel("LW_monthly.xlsx", skiprows=8)
+###############################################################################
+yields_us = pd.read_excel(data_path_ma + "\\" + "LW_monthly.xlsx", skiprows=8)
 
 yields_us.rename(columns={yields_us.columns[0]: "Date"}, inplace=True)
 
@@ -185,12 +184,12 @@ yields_us.set_index([yields_us.columns[0]], inplace=True)
 
 yields_us.columns = [col.replace(" ", "") for col in yields_us.columns]
 
-yields_us = yields_us / 100
+yields_us = yields_us
 
 # Subset Yield Data as not all maturities are available for each point in time -> used in R for Nelson-Siegel decomposition
 start_yields_us = "1975-01-01"
 yields_us_sub = yields_us.loc[start_yields_us:]
-yields_us_sub.to_csv("Yields_Data_Subset.csv")
+yields_us_sub.to_csv(data_path_ma + "\\" + "Yields_Data_Subset.csv")
 
 
 # Beta Coefficients from R
@@ -319,29 +318,29 @@ df_us = pd.concat(df_us, axis=1).dropna()
 # Add shadded Recession Areas in Figures for Sample Period
 us_rec = us_rec.loc[start_us:end_us]
 
-# mal 100 damit alles in Prozentpunkte ist
-df_us[
-    [
-        "Level Factor",
-        "Slope Factor",
-        "Curvature Factor",
-        "(y(3) + y(24) + y(120))/3",
-        "y(3) - y(120)",
-        "2 * y(24) - y(120) - y(3)",
-    ]
-] = (
-    df_us[
-        [
-            "Level Factor",
-            "Slope Factor",
-            "Curvature Factor",
-            "(y(3) + y(24) + y(120))/3",
-            "y(3) - y(120)",
-            "2 * y(24) - y(120) - y(3)",
-        ]
-    ]
-    * 100
-)
+# # mal 100 damit alles in Prozentpunkte ist
+# df_us[
+#     [
+#         "Level Factor",
+#         "Slope Factor",
+#         "Curvature Factor",
+#         "(y(3) + y(24) + y(120))/3",
+#         "y(3) - y(120)",
+#         "2 * y(24) - y(120) - y(3)",
+#     ]
+# ] = (
+#     df_us[
+#         [
+#             "Level Factor",
+#             "Slope Factor",
+#             "Curvature Factor",
+#             "(y(3) + y(24) + y(120))/3",
+#             "y(3) - y(120)",
+#             "2 * y(24) - y(120) - y(3)",
+#         ]
+#     ]
+# * 100
+# )
 
 # All Coefficients
 os.chdir(r"C:\Users\alexa\Documents\Studium\MSc (WU)\Master Thesis\Analysis")
@@ -1014,8 +1013,9 @@ print(df_result_yc_us.to_latex())
 # plt.savefig("IRF_US_30_15_Diebold_2006.pdf", dpi=1000)
 # plt.show()
 
-
-# ########## Playing Around ##########
+###############################################################################
+# Playing Around
+###############################################################################
 # Create a plot
 # ind_pro_us_diff = ind_pro_us_diff.loc[start_us:end_us]
 # us_rec = us_rec.loc[start_us:end_us]
@@ -1137,7 +1137,8 @@ for date in dates_factor_plot:
     yc_us_date = date
 
     yc_us = yields_us_sub_r.loc[yc_us_date].iloc[0:120]
-    lmda = yields_us_sub_r.loc[yc_us_date]["lambda"]
+    # lmda = yields_us_sub_r.loc[yc_us_date]["lambda"]
+    lmda = 0.7308
     # beta_0 = yields_us_sub_r.loc[yc_us_date]["Level Factor"]
     # beta_1 = yields_us_sub_r.loc[yc_us_date]["Slope Factor"]
     # beta_2 = yields_us_sub_r.loc[yc_us_date]["Curvature Factor"]
@@ -1305,3 +1306,7 @@ for date in dates_factor_plot:
 ########## sVAR Function ##########
 df_ic_test = get_svars(df_analysis_us, lag_start=1, lag_end=6, geography="US")
 print(df_ic_test.to_latex(index=False, escape=False, float_format="%.2f"))
+
+###############################################################################
+# Block Comment
+###############################################################################

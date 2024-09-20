@@ -141,5 +141,5 @@ def get_svars(data, lag_start: int, lag_end: int, geography: str):
         print(f"Figure IRF_{geography}_lag_{lag}.pdf has been saved!")
         plt.show()
 
-    print(df_ic.to_latex(index=False, escape=False, float_format="%.2f"))
+    print(df_ic.to_latex(index=False, escape=False, float_format="%.4f"))
     return df_ic

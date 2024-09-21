@@ -193,7 +193,7 @@ yields_us_sub.to_csv(data_path_ma + "\\" + "Yields_Data_Subset.csv")
 
 
 # Beta Coefficients from R
-yields_us_sub_r = pd.read_csv("Yields_US_R.csv", index_col=[0], parse_dates=True)
+yields_us_sub_r = pd.read_csv(data_path_ma + "\\" + "Yields_US_R.csv", index_col=[0], parse_dates=True)
 
 yields_us_sub_r.rename(
     columns={

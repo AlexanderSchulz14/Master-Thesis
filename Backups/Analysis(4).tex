@@ -1,28 +1,51 @@
-\section{Analysis}
+\section{Empirical Results}
 \label{sec:analysis}
+
+This final Section constitutes the main body of the thesis, presenting the empirical analysis aimed at answering the research question how the macroeconomy and the yield curve are related in the United States and the Euro Area based on the methodology outlined in Section \ref{sec:method}. 
+Section \ref{sec:data} gives on overview of the data.
+Section \ref{sec:analysis_us} is concerned with the empirical results for United States, while Section \ref{sec:analysis_ea} focuses on the Euro Area. 
+Section \ref{sec:comparison} offers a brief comparison of the main findings in the US and the EA.  
+Each subsection starts in a descriptive manner, focusing on the respective time series of interest, especially the estimated yield curve factors and their characteristics in relation to the macroeconomic variables, after which interpretations of the potential link between the macroeconomy and the yield curve are presented based on the resulting impulse responses obtained via a structural vector autoregression model. 
+% impulse response functions (IRF) of the structural shocks. 
+Lastly, block Granger causality tests are conducted as to investigate the existence of a one- or two-way relationship between the yield curve and macro variables.  
 
 \subsection{Data}
 \label{sec:data}
 
-As to the concrete data used, the sample for the United States contains monthly data ranging from January 1975 to December 2022. 
-All macroeconomic time series (industrial production, consumer price index, federal funds rate) have been obtained from the \href{https://fred.stlouisfed.org/}{FRED} website. 
+As to the concrete data used, the sample for the United States contains monthly data ranging from January 1976 to December 2022. 
+All macroeconomic time series (\href{https://fred.stlouisfed.org/series/INDPRO}{industrial production}, \href{https://fred.stlouisfed.org/series/CPIAUCSL}{consumer price index}, \href{https://fred.stlouisfed.org/series/DFF}{federal funds rate}) have been obtained from the \href{https://fred.stlouisfed.org/}{FRED} website. 
 The S\&P 500 stock market index has been acquired via \href{https://finance.yahoo.com/}{Yahoo Finance}. 
-The excess bond premium (ebp) has been chosen as the financial stress indicator, which is based on the FED note by \citet{favara2016updating}, and provides a measure of risk in the corporate bond market \citep{gilchrist_2012}. 
-Of the highest significance for any analysis involving a Nelson-Siegel decomposition of the yield curve are the yields data used. So far, the literature --- heavily focused on the US --- has primarily used unsmoothed \citet{fama1987information} Treasury forward rates obtained via the CRSP\footnote{\url{https://www.crsp.org/}} database, which are then converted to unsmoothed Fama-Bliss zero yields. However, in this thesis zero-coupon US Treasury yields obtained via a novel and improved approach freely provided by \citet{liu2021reconstructing} are utilized. Following \citet{diebold2006macroeconomy}, the maturities used are 3, 6, 9, 12, 15, 18, 21, 24, 30, 36, 48, 60, 72, 84, 96, 108 and 120 months. 
+The excess bond premium (\href{https://www.federalreserve.gov/econres/notes/feds-notes/ebp_csv.csv}{ebp}) has been chosen as the financial stress indicator, which is based on the FED note by \citet{favara2016updating}, and provides a measure of risk in the corporate bond market \citep{gilchrist_2012}. 
+Of the highest significance for any analysis involving a Nelson-Siegel decomposition of the yield curve are the yields data used. So far, the literature --- heavily focused on the US --- has primarily used unsmoothed \citet{fama1987information} Treasury forward rates obtained via the CRSP\footnote{\url{https://www.crsp.org/}} database, which are then converted to unsmoothed Fama-Bliss zero yields. 
+Alternatively, the FED provides zero-coupon yields\footnote{see: \url{https://www.federalreserve.gov/data/nominal-yield-curve.htm}} based on the Svensson model. 
+However, in this thesis zero-coupon US Treasury yields obtained via a novel and improved approach provided by \citet{liu2021reconstructing} are utilized. Following \citet{diebold2006macroeconomy}, the maturities used are 3, 6, 9, 12, 15, 18, 21, 24, 30, 36, 48, 60, 72, 84, 96, 108 and 120 months. 
 
 % Except for data on US yields, the excess bond premium, which is selected as the indicator for financial stress, and the S\&P 500 stock market index,  
 
-The data for the analysis of the Euro Area consists of monthly data, spanning from October 2004 to December 2022. Again, the bulk of the dataset has been obtained via the \href{https://fred.stlouisfed.org/}{FRED} website. Solely the Eurostoxx 50 index, representing the European stock market, as well as the VSTOXX index, again serving as the indicator for financial stress in the European economy, have been obtained via \href{https://finance.yahoo.com/}{Yahoo Finance} and the Bloomberg Terminal, respectively. The Euro Area yield curve data consists of spot rates derived from bonds with finite maturity denominated in EUR and issued by a euro area central government with an (issuer) rating of triple A. The data has been obtained via the \href{https://www.ecb.europa.eu/stats/financial_markets_and_interest_rates/euro_area_yield_curves/html/index.en.html}{ECB} website and, due to somewhat limited data availability, includes yields with maturities of 3, 6, 9, 12, 24, 36, 48, 60, 72, 84, 96 and 120 months.
-A more detailed description of the data and its sources is provided in the Appendix \ref{sec:appendix}. 
+The data for the analysis of the Euro Area consists of monthly data, spanning from October 2004 to September 2022. Again, the bulk of the dataset has been obtained via the \href{https://fred.stlouisfed.org/}{FRED} website (\href{https://fred.stlouisfed.org/series/EA19PRINTO01GYSAM}{industrial production}, \href{https://fred.stlouisfed.org/series/CPHPTT01EZM659N}{consumer price index}, \href{https://fred.stlouisfed.org/series/IR3TIB01EZM156N}{short-term interest rate}). The Eurostoxx 50 index, representing the European stock market
+%, as well as the VSTOXX index, again serving as the indicator for financial stress in the European economy, 
+has been obtained via \href{https://finance.yahoo.com/}{Yahoo Finance}.
+Similar to the US, a credit risk indicator --- specifically the average spread of non-financial corporation bonds relative to the German Bund yields at matched maturities --- has been chosen as the financial stress variable based on the work by \citet{Gilhrist_2014}.
+%and the Bloomberg Terminal, respectively. 
+The Euro Area yield curve data consists of spot rates derived from bonds with finite maturity denominated in EUR and issued by a euro area central government with an (issuer) rating of triple A. The data has been obtained via the \href{https://www.ecb.europa.eu/stats/financial_markets_and_interest_rates/euro_area_yield_curves/html/index.en.html}{ECB} website and, due to somewhat limited data availability, includes yields with maturities of 3, 6, 9, 12, 24, 36, 48, 60, 72, 84, 96 and 120 months.
+%A more detailed description of the data and its sources is provided in the Appendix \ref{sec:appendix}. 
 
-This final section constitutes the main body of the thesis, presenting the empirical analysis aimed at answering the research question how the macroeconomy and the yield curve are related in the US and the Euro Area based on the methodology outlined in section \ref{sec:method}. Subsection \ref{sec:analysis_us} is concerned with the United States, while subsection \ref{sec:analysis_ea} focuses on the Euro Area. Each subsection starts in a descriptive manner, focusing on the respective time series of interest, especially the estimated yield curve factors and their characteristics in relation to the macroeconomic variables, after which interpretations of the potential link between the macroeconomy and the yield curve are presented based on the resulting impulse responses obtained via a structural vector autoregression model. 
-% impulse response functions (IRF) of the structural shocks. 
-Lastly, block Granger causality tests are conducted as to investigate the existence of a one- or two-way relationship between the yield curve and macro variables.  
 
-\subsection{Empirical results}
 
-\subsubsection{The Yield Curve and the Macroeconomy in the US}
+\subsection{The Yield Curve and the Macroeconomy in the United States}
 \label{sec:analysis_us}
+
+Figures \ref{fig:factors_us}-\ref{fig:curvature_factor_us} provide a graphical illustration of the estimated yield curve factors, how well they approximate the term structure as well as previewing their potential relationship with macroeconomic variables.
+Note that the shaded areas depict the months where a recession occurred in the US as identified by the National Bureau of Economic Research (NBER) Business Cycle Dating Committee.\footnote{The recession indicator used can be found at \href{https://fred.stlouisfed.org/series/USRECD}{https://fred.stlouisfed.org/series/USRECD}}
+In order to get an initial sense of comparability, Figure \ref{fig:factors_us} depicts all three estimated yield curve factors obtained via a Nelson-Siegel decomposition based on the US Treasury yields sample spanning from January 1976 until December 2022.
+Among other things, one can see that the level factor, $\hat{L}^{US}_{t}$, has consistently been positive and well above the level of 5\% up until the early 2000s. 
+Being above 10\%, the estimated level factor is fairly high during the second oil price crisis induced by the Iranian Revolution in 1979, which caused world oil prices and thus, US inflation to spike --- an interesting observation that is further discussed when looking at Figure \ref{fig:level_factor_us}. 
+%The spike in October 2008 could potentially be attributed to the onset of the financial crisis, where the bursting of the real estate bubble in the US led to the biggest financial crisis since the Great Depression --- an idiosyncratic shock that might reveal possible shortcomings of the Nelson-Siegel model during times of turmoil. 
+Ever since the 1990s a decreasing trend in the estimated level can be observed, though the pace of the decrease has somewhat been the highest with the level being the lowest during the 2010s, whilst reaching its minimum during the COVID-19 pandemic in July 2020 --- a time period marked by unconventional monetary policy such as QE and deflationary risks. 
+As for the estimated slope ($\hat{S}^{US}_{t}$) and the curvature ($\hat{C}^{US}_{t}$) factors, both factors assume positive and negative values during the sample period, though both factors are negative for most of the time.
+%It is apparent that the curvature factor is the most volatile, especially during the 1970s and 1980s, while from the 2000s onwards, the correlation between the slope and the curvature factors is fairly high.\footnote{The correlation between estimates of the slope and curvature factor is about 32\% from January 1973 until December 1999, while it is around 77\% from 01-2000 until the end of the sample}
+Interestingly, the (negative) slope factor displays upward spikes and assumes positive values, i.e. 10-year yields are above 3-months yields implying an inversion of the yield curve, before almost all recessions, which is not only consistent with the findings by the yields-to-macro literature of the likes of \citet{estrella1991term}, but also discussed in more detail in Figure \ref{fig:slope_factor_us}.
+%since one would expect an inverted yield curve and thus, an increase of the negative slope at times of a looming a recession, contradicts economic theory as well as countless empirical analyses outlined in the literature review of Section \ref{sec:lit_rev}, again underlining the possible inaptitude of the Nelson-Siegel approach when faced with an idiosyncratic event. 
 
 \begin{figure}[!t]
     \centering
@@ -30,15 +53,6 @@ Lastly, block Granger causality tests are conducted as to investigate the existe
     \caption{Estimated level, slope and curvature factor, US (in \%)}
     \label{fig:factors_us}
 \end{figure}
-
-In order to get an initial sense of comparability, Figure \ref{fig:factors_us} depicts all three estimated yield curve factors obtained via a Nelson-Siegel decomposition based on the US Treasury yields sample spanning from January 1975 until December 2022.
-Among other things, one can see that the level factor, $\hat{L}^{US}_{t}$, has consistently been positive and well above the level of 5\% for most of the time. 
-Being above 10\%, the estimated level factor is fairly high during the second oil price crisis induced by the Iranian Revolution in 1979, which caused world oil prices and thus, US inflation to spike --- an interesting observation that is further discussed when looking at Figure \ref{fig:level_factor_us}. 
-The spike in October 2008 could potentially be attributed to the onset of the financial crisis, where the bursting of the real estate bubble in the US led to the biggest financial crisis since the Great Depression --- an idiosyncratic shock that might reveal possible shortcomings of the Nelson-Siegel model during times of turmoil. 
-Though a decreasing trend in the estimated level can be observed since the 1990s, the pace of the decrease has been the highest with the level being the lowest during the 2010s --- a time marked by QE and deflationary risks. 
-As for the estimated slope ($\hat{S}^{US}_{t}$) and the curvature ($\hat{C}^{US}_{t}$) factors, both factors assume positive and negative values during the sample period. 
-It is apparent that the curvature factor is the most volatile, especially during the 1970s and 1980s, while from the 2000s onwards, the correlation between the slope and the curvature factors is fairly high.\footnote{The correlation between estimates of the slope and curvature factor is about 32\% from January 1973 until December 1999, while it is around 77\% from 01-2000 until the end of the sample}
-As a mirror image to the likely erroneous spike of the level factor during the financial crisis of 2008, the (negative) slope factor displays a similar spike, only downwards, which, since one would expect an inverted yield curve and thus, an increase of the negative slope at times of a looming a recession, contradicts economic theory as well as countless empirical analyses outlined in the literature review of Section \ref{sec:lit_rev}, again underlining the possible inaptitude of the Nelson-Siegel approach when faced with an idiosyncratic event. 
 
 \begin{figure}[!t]
     \centering
@@ -58,18 +72,19 @@ As a mirror image to the likely erroneous spike of the level factor during the f
 Figures \ref{fig:level_factor_us}-\ref{fig:curvature_factor_us} show the estimated factors together with their empirical proxies. 
 These proxies are insofar relevant as they offer a first indication of the gap between the estimated coefficients and the actually realized yields \citep{kanjilal2011macroeconomic}.
 Figure \ref{fig:level_factor_us} depicts the estimated level factor, $\hat{L}^{US}_{t}$ and the proxy variable proposed in the literature being the arithmetic mean of the 10-year, 2-year and 3-month yield. 
-It is apparent that the empirical proxy is fairly close to the estimated level factor, especially in the beginning of the sample, while a stronger divergence can be observed from the financial crisis onwards.
+It is apparent that the empirical proxy is fairly close to the estimated level factor, especially in the beginning of the sample, while a stronger divergence can be observed in the early 2000s as well as since the financial crisis of 2008.
 In recent years however, the proxy has again been close to the estimated level factor. 
-Over the whole sample period, the correlation between the estimated level factor and the respective proxy is 82\%, being in line with the findings of \citet{diebold2006macroeconomy}, and validating the estimate as being a good representation for level factor, i.e. the long-run component of the US Treasury yield curve. 
-Since it is the first indication of a link between the macroeconomy and the yield curve, a highly interesting observation for the task at hand can also be drawn when comparing the level factor with the inflation rate over time. 
+Over the whole sample period, the correlation between the estimated level factor and the respective proxy is 96\%, being in line with the findings of \citet{diebold2006macroeconomy}, and validating the estimate as being a good representation for level factor, i.e. the long-run component of the US Treasury yield curve. 
+Since it is the first indication of a link between the macroeconomy and the yield curve, a highly interesting observation for the task at hand can also be drawn when comparing the evolution of the level factor with the inflation rate over time. 
 From the Fisher equation one can derive how nominal interest rates and inflation expectations could be linked. 
 Based on \citet{fisher1930theory}, one would expect that nominal interest rates move one-to-one with a change in expected inflation, with the real interest rate being unaffected. 
 In order to study this proposition, Figure \ref{fig:level_factor_us} also includes the year-on-year change in the CPI depicted by the dotted green line.
-Though this inflation measure is concerned with actual and not expected inflation, one can see that an increase in the inflation rate is oftentimes accompanied by a surging level factor. For example, the spiking inflation rate during the second oil crisis beginning in 1979 coincides with a tremendous increase in the level factor - a first indication that the inflation rate is indeed linked with the long-run factor of the yield curve. In a similar fashion, $\hat{L}^{US}_{t}$ first spikes in October 2008 and then decreases strongly, a pattern that is almost perfectly matched by inflation during that time. 
+Though this inflation measure is concerned with actual and not expected inflation, one can see that an increase in the inflation rate is oftentimes accompanied by a surging level factor. For example, the spiking inflation rate during the second oil crisis beginning in 1979 is followed by a tremendous increase in the level factor --- both variables reaching levels merely short of 15\% --- providing a first indication that the inflation rate is indeed linked with the long-run factor of the yield curve. 
+%In a similar fashion, $\hat{L}^{US}_{t}$ first spikes in October 2008 and then decreases strongly, a pattern that is almost perfectly matched by inflation during that time. 
 % Interestingly, this is not observed during the first oil crisis of the 1970s.
-When looking at the recent period of inflationary pressures induced by supply bottlenecks during the COVID-19 pandemic in 2021 as well as the Russian aggression in Ukraine in 2022, one can see that again the level factor, which has of course been flanked by increasing interest rates through monetary tightening by the Federal Reserve System (Fed) beginning in 2022, has moved in accordance with actual inflation, though not rising as sharply as the inflation rate. 
+When looking at the recent period of inflationary pressures induced by supply bottlenecks during the COVID-19 pandemic in 2021 as well as the Russian aggression in Ukraine since 2022, one can see that again the level factor, which has certainly been flanked by increasing interest rates through monetary tightening by the Federal Reserve System beginning in March 2022, has moved in accordance with actual inflation, though not rising as sharply as the inflation rate did. 
 Overall, the estimated level factor and inflation exhibit a rather strong co-movement in the US.
-In fact, the correlation between $\hat{L}^{US}_{t}$ and inflation over the sample period is 44\% and significant\footnote{From hereon, a significance level of 5\% is postulated with regards to statistical hypothesis testing}, a finding that is consistent with the interpretation of the level factor as being related to inflation expectations, as described in, among others, \citet{dewachter2006macro}, \citet{rudebusch2008macro}, and \citet{diebold2006macroeconomy}.
+In fact, the correlation between $\hat{L}^{US}_{t}$ and inflation over the sample period is 55\% and significant\footnote{From hereon, a significance level of 5\% is postulated with regards to statistical hypothesis testing}, a finding that is consistent with the interpretation of the level factor as being related to inflation expectations, as described in, among others, \citet{dewachter2006macro}, \citet{rudebusch2008macro}, and \citet{diebold2006macroeconomy}.
 % - a first indication that there indeed is a relationship between macro variables and the yield curve.   
 
 
@@ -85,49 +100,36 @@ In fact, the correlation between $\hat{L}^{US}_{t}$ and inflation over the sampl
 % \textbf{Correlation between factors, and approximations}
 
 Looking at Figure \ref{fig:slope_factor_us}, one can see that the estimated slope factor, $\hat{S}^{US}_{t}$ is extremely close to its empirical proxy being the (negative) slope of the yield curve, i.e. the difference between the 3-month and 10-year yields. 
-In fact, the correlation is strikingly high and significant with 81\%.  
+In fact, the correlation is 95\% and thus, not only significant but also strikingly high.
 As mentioned before, the slope factor is assumed to be correlated, indeed even able to predict economic activity based on an abundance of literature. 
-Thus, to again get a glimpse of a possible link between the macroeconomy and the yield curve - here represented by the slope factor - Figure \ref{fig:slope_factor_us} also depicts economic activity in the form of the year-on-year growth rate of industrial production over time. 
-Evidently, there is some co-movement between the slope and industrial production, where most economic downturns are preceded by an upward trend in the term spread, corroborating the findings related to the yields-to macro literature outlined in section \ref{sec:lit_rev} and again strengthening the case of a link between the yield curve and the macroeconomy. 
+Thus, to again get a glimpse of a possible link between the macroeconomy and the yield curve --- here represented by the slope factor --- Figure \ref{fig:slope_factor_us} also depicts economic activity in the form of the year-on-year growth rate of industrial production over time. 
+Evidently, there is some co-movement between the slope and industrial production, where most economic downturns are preceded by an upward spike in the term spread. Though the correlation of around $-3\%$ is neither strong nor significant, the pattern revealed corroborates the findings related to the yields-to macro literature outlined in Section \ref{sec:lit_rev} to some extent and again strengthens the case of a link between the yield curve and the macroeconomy. 
 % though this pattern is by no means very strong.
 % \footnote{Note that the choice of the variable for economic activity matter tremendously. When correlating the estimated slope factor with capacity utilization}.
-Similarly in Figure \ref{fig:curvature_factor_us}, with a correlation of 79\%, the curvature factor tends to be somewhat close to its proxy, where they generally have similar trends over time, though it unambiguously has a very high volatility relative to it's proxy variable. 
+Similarly in Figure \ref{fig:curvature_factor_us}, with a correlation of 93\%, the curvature factor tends to be somewhat close to its proxy, where they generally have similar trends over time, though it unambiguously has a very high volatility relative to it's proxy variable. 
 
 In summary, on the one hand the observations described above tend to validate the indication that the estimated Nelson-Siegel factors accurately represent the yield curve and are thus, fitted for studying the relationship between the macroeconomy and the term structure. On the other hand, Figures \ref{fig:level_factor_us} and \ref{fig:slope_factor_us} have also offered preemptive evidence confirming that there indeed seems to be a relationship consistent with economic theory as well as the literature, namely that the level factor seems to be an accurate representation of the bond market's long-run inflation gauge, as well as an increasing slope factor potentially indicating an upcoming recession.
 % , where evidence for the latter seems to be .  
+Consequently, the next step involves analysing macroeconomic and yield curve variables together in a comprehensive structural VAR framework\footnote{Note that the VAR models in this thesis are estimated via Ordinary Least Squares (OLS)} outlined in Section \ref{sec:method}. 
+However, before fitting a VAR model, it is first important to understand the nature of the variables involved. Thus, Table \ref{tab:adf_us} shows the results of an Augmented Dickey-Fuller (ADF) test of each variable included in the model, testing whether it is non-stationary, i.e. it possesses a unit root at the 5\% significance level. 
+While inflation ($\pi^{US}_{t}$), the federal funds rate ($i^{US}_{t}$), the level ($\hat{L}^{US}_{t}$) and curvature factor ($\hat{C}^{US}_{t}$) are non-stationary, one can reject the null hypothesis of the existence of a unit root at the 5\% level for all remaining model variables. 
+This is partly not surprising given the fact that the year-on-year growth rates for industrial production and stock prices are used, which results in detrended time-series. 
+Without the price level spikes of the 1980s and the idiosyncratic shocks of the 2020s, inflation would be stationary.\footnote{Conducting an ADF test for the period from January 1990 until December 2019 results in the rejection of the null hypothesis of the existence of a unit root (p-value = $0.0025$)}
+Taking the first (second) differences of all non-stationary variables would result in stationary time series, though due to consistency considerations as well as previous methodologies used in the literature, these time series are included levels (first differences). 
+%%%%%%%%%%%%%%%%%%%%%%%% (stopped here 21.09.2024; 12:16)
+While \citet{morales2010real}, among others, argues that the order of the estimated model should take into account parsimony reasons and thus, limit the lag order to a minimum, authors such as \citet{evans1998monetary}, \citet{ang2003no} and \citet{ang2006does} implement their modelling strategy with up to 12 lags. 
+Accordingly, Table \ref{tab:ic_us} shows the different information criteria for a VAR model with an autoregressive order of up to 12 lags. Seemingly, the log-likelihood as well as the Akaike information criterion (AIC) would select an order of $p=12$, while the Bayesian (BIC) and Hannan-Quinn (HQIC) information criteria suggest using a lag length of 1 and 2, respectively. 
+Therefore, to take both parsimony reasons as well as the limited frequentist modelling strategy into account, a lag length of 6 is chosen. 
 
-\begin{table}[t]
-    \centering
-    \begin{tabular}{lrrr}
-        \toprule
-        {} &  t-Statistic &  Critical value &  p-value \\
-        \midrule
-        $IP^{US}_{t}$  &      -5.6906 &         -2.8665 &   0.0000 \\
-        $\pi^{US}_{t}$ &      -3.0096 &         -2.8665 &   0.0340 \\
-        $i^{US}_{t}$   &      -2.7681 &         -2.8665 &   0.0630 \\
-        $FS^{US}_{t}$  &      -5.4727 &         -2.8664 &   0.0000 \\
-        $\hat{L}^{US}_{t}$   &      -1.7930 &         -2.8665 &   0.3839 \\
-        $\hat{S}^{US}_{t}$   &      -3.0791 &         -2.8665 &   0.0281 \\
-        $\hat{C}^{US}_{t}$   &      -2.9236 &         -2.8665 &   0.0427 \\
-        $M^{US}_{t}$   &      -4.8305 &         -2.8665 &   0.0000 \\
-        \bottomrule
-    \end{tabular}
-    \caption{Augmented Dickey-Fuller (ADF) unit root test, US}
-    \label{tab:adf_us}
-\end{table}
+%the order of the vector autoregression process is selected based on both the Bayesian (BIC) and Hannan-Quinn (HQIC) information criteria selecting a lag length of 1. 
+% Table \ref{tab:VAR_output_US_v2} presents the estimated VAR(1) coefficients of the comprehensive yields-macro model along with the log-likelihood and various information criteria. 
+%Looking at the individual time series on the main diagonal, one can immediately infer that the three yield curve factors are highly persistent, especially the level and slope factor, while in the macroeconomic realm industrial production and inflation display a high persistence. 
+%Additionally, the financial market variables stock prices as well as financial stress exhibit a high persistence.  
 
-% In order to further understand the interactions between the yield curve and the macroeconomy on an econometric basis,
+%%%%%%%% ev wichtig
+%Only the short-term interest rate has a strikingly low persistence, which can be seen as confirming the finding by \citet{rudebusch2005monetary} that incorporating the term structure when modelling a monetary policy reaction function results in refuting the notion of monetary policy inertia. 
 
-Consequently, the next step involves analysing macroeconomic and yield curve variables together in a comprehensive structural VAR framework\footnote{Note that the VAR models in this thesis are estimated via Ordinary Least Squares (OLS)} outlined in section \ref{sec:method}. 
-However, before fitting a VAR model, it is first important to understand the nature of the variables involved. Thus, Table \ref{tab:adf_us} shows the results of an Augmented Dickey-Fuller test of each variable included in the model, testing whether it is stationary, i.e. it possesses a unit root at the 5\% significance level. 
-Apart from the federal funds rate ($i^{US}_{t}$) and the level factor ($\hat{L}^{US}_{t}$), one can reject the null hypothesis of the existence of a unit root at the 5\% level for all remaining model variables. 
-This is insofar not surprising given the fact that the year-on-year growth rates for industrial production, the price level and stock prices are used, which results in detrended time-series. 
-Taking the first differences of both the federal funds rate as well as the level factor would result in stationary time series, though due to consistency considerations as well as previous methodologies used in the literature, both time series are included in levels. 
-As noted by \citet{morales2010real}, due to parsimony reasons, the order of the vector autoregression process is selected based on both the Bayesian (BIC) and Hannan-Quinn (HQIC) information criteria selecting a lag length of 1. 
-Table \ref{tab:VAR_output_US_v2} presents the estimated VAR(1) coefficients of the comprehensive yields-macro model along with the log-likelihood and various information criteria. 
-Looking at the individual time series on the main diagonal, one can immediately infer that the three yield curve factors are highly persistent, especially the level and slope factor, while in the macroeconomic realm industrial production and inflation display a high persistence. 
-Additionally, the financial market variables stock prices as well as financial stress exhibit a high persistence.  
-Only the short-term interest rate has a strikingly low persistence, which can be seen as confirming the finding by \citet{rudebusch2005monetary} that incorporating the term structure when modelling a monetary policy reaction function results in refuting the notion of monetary policy inertia. 
+
 % When examining the off-diagonal estimated coefficients
 % In spite of these findings, the off-diagonal interactions are better suited for impulse response analysis
 
@@ -139,9 +141,36 @@ Only the short-term interest rate has a strikingly low persistence, which can be
 
 % \textbf{passt ordering? Ev Financial stress weiter nach unten (so wie stock market)}
 
+\begin{table}[t]
+    \centering
+    \begin{tabular}{lrrrr}
+    \toprule
+           Lag &  Log-Likelihood &     AIC &     BIC &    HQIC \\
+        \midrule
+         $p=1$ &      -4270.0608 & -7.5475 & -7.0008 & -7.3342 \\
+         $p=2$ &      -4072.6743 & -7.9874 & -6.9533 & -7.5840 \\
+         $p=3$ &      -3954.3057 & -8.1520 & -6.6293 & -7.5580 \\
+         $p=4$ &      -3954.3057 & -8.1520 & -6.6293 & -7.5580 \\
+         $p=5$ &      -3954.3057 & -8.1520 & -6.6293 & -7.5580 \\
+         $p=6$ &      -3954.3057 & -8.1520 & -6.6293 & -7.5580 \\
+         $p=7$ &      -3954.3057 & -8.1520 & -6.6293 & -7.5580 \\
+         $p=8$ &      -3954.3057 & -8.1520 & -6.6293 & -7.5580 \\
+         $p=9$ &      -3954.3057 & -8.1520 & -6.6293 & -7.5580 \\
+        $p=10$ &      -3954.3057 & -8.1520 & -6.6293 & -7.5580 \\
+        $p=11$ &      -3356.5766 & -8.2498 & -2.7697 & -6.1105 \\
+        $p=12$ &      -3272.7619 & -8.2946 & -2.3137 & -5.9596 \\
+    \bottomrule
+    \end{tabular}
+    \caption{Information criteria VAR(p) model, US}
+    \label{tab:ic_us}
+\end{table}
+
+% In order to further understand the interactions between the yield curve and the macroeconomy on an econometric basis,
+
+
 Since the aim of this thesis is to understand the dynamic interactions
 % , i.e. the off-diagonal elements of interest,
-between the yield curve and the macroeconomy in the United States, Figure \ref{fig:IRF_US} depicts the orthogonal impulse responses to a one unit shock in each of the model's variables over a three year period (36 months) with 90\% confidence intervals. 
+between the yield curve and the macroeconomy in the United States, Figure \ref{fig:IRF_US_6} depicts the orthogonal impulse responses to a one unit shock in each of the model's variables over a three year period (36 months) with 90\% confidence intervals. 
 Each row shows the response of a certain variable $i$ to a specific structural shock of variable $j$, where each column displays to which variable $j$ the respective shock occurred. 
 For example, the second row shows the responses of inflation ($\pi^{US}_{t}$) to various structural shocks to the model variables, while the third column illustrates the responses of each variable to a structural monetary policy shock represented by the short-term interest rate ($i^{US}_{t}$). 
 With this in mind, there are four types of impulse responses to consider: macro-to-macro, macro-to-yields, yields-to-macro and yields-to-yields.  
@@ -157,48 +186,50 @@ The federal funds rate ($i^{US}_{t}$) increases both on impact as well as over t
 % , e.g. modelled by central bank reaction functions. 
 The last macro-to-macro shock to consider is a monetary policy shock (third column). 
 Since the short-term restrictions described in Section \ref{sec:method} are based on the assumption that both industrial production and inflation react with a certain time lag, both variables do not react on impact, but over time --- as one would expect based on economic reasoning --- industrial production as well as inflation decrease as a response to a surprise increase in the short-term rate, where the decrease of inflation is more persistent, while industrial production decreases more strongly during the first year. 
+Interestingly, when comparing the response of inflation to a monetary policy shock given different autoregressive orders, the well known ``price puzzle'', that is a positive response of inflation to a monetary tightening, occurs in both Figures \ref{fig:IRF_US_6} and \ref{fig:IRF_US_12} depicting the IRFs based on a higher autoregressive order, while inflation steadily decreases over time in Figure \ref{fig:IRF_US_1}, where the IRFs are based on an order of $p=1$.
+%\textbf{note: add occurence prize puzzle in VAR(12) table \url{https://core.ac.uk/download/pdf/6755187.pdf}}
 
-\begin{sidewaystable}
-    \centering
-\begin{tabular}{lrrrrrrrr}
-        \toprule
-        {} &        $IP^{US}_{t}$ &   $\pi^{US}_{t}$ &       $i^{US}_{t}$ &       $FS^{US}_{t}$ &         $\hat{L}^{US}_{t}$ &         $\hat{S}^{US}_{t}$ &         $\hat{C}^{US}_{t}$ &   $M^{US}_{t}$ \\
-        \midrule
-    $c$ & -0.1651 & 0.2026 & -0.0501 & -0.0345 & 0.5002 & -0.5581 & -0.7174 & 1.5318 \\
-     & (0.1744) & (0.0529) & (0.0471) & (0.0318) & (0.1138) & (0.1314) & (0.2473) & (0.6817) \\
-    $IP^{US}_{t-1}$ & 0.8816 & 0.0132 & 0.0086 & 0.0005 & 0.0046 & 0.0025 & -0.0134 & -0.4305 \\
-     & (0.0137) & (0.0042) & (0.0037) & (0.0025) & (0.0089) & (0.0103) & (0.0194) & (0.0535) \\
-    $\pi^{US}_{t-1}$ & -0.0477 & 0.9795 & 0.0126 & 0.0058 & 0.0102 & 0.0223 & 0.0039 & -0.4072 \\
-     & (0.0260) & (0.0079) & (0.0070) & (0.0047) & (0.0169) & (0.0196) & (0.0368) & (0.1014) \\
-    $i^{US}_{t-1}$ & -0.2730 & -0.0024 & 0.5393 & 0.0220 & -0.0801 & -0.0106 & 0.3227 & -0.1502 \\
-     & (0.0632) & (0.0192) & (0.0171) & (0.0115) & (0.0413) & (0.0476) & (0.0897) & (0.2471) \\
-    $FS^{US}_{t-1}$ & -0.6609 & -0.1468 & 0.0521 & 0.8966 & 0.0685 & -0.1480 & -0.2175 & -4.4019 \\
-     & (0.1260) & (0.0382) & (0.0340) & (0.0230) & (0.0822) & (0.0949) & (0.1787) & (0.4925) \\
-    $\hat{L}^{US}_{t-1}$ & 0.3604 & -0.0011 & 0.5155 & -0.0237 & 1.0000 & 0.0493 & -0.2522 & 0.5345 \\
-     & (0.0739) & (0.0224) & (0.0199) & (0.0135) & (0.0482) & (0.0557) & (0.1048) & (0.2888) \\
-    $\hat{S}^{US}_{t-1}$ & 0.2571 & 0.0431 & 0.5407 & -0.0305 & 0.1206 & 0.9161 & -0.2928 & 0.4040 \\
-     & (0.0734) & (0.0223) & (0.0198) & (0.0134) & (0.0479) & (0.0553) & (0.1041) & (0.2869) \\
-    $\hat{C}^{US}_{t-1}$ & 0.0303 & -0.0163 & -0.0158 & 0.0035 & 0.0426 & -0.0156 & 0.8149 & -0.0219 \\
-     & (0.0191) & (0.0058) & (0.0052) & (0.0035) & (0.0125) & (0.0144) & (0.0271) & (0.0747) \\
-    $M^{US}_{t}$ & 0.0148 & -0.0030 & -0.0009 & 0.0001 & 0.0001 & -0.0013 & 0.0049 & 0.9086 \\
-     & (0.0040) & (0.0012) & (0.0011) & (0.0007) & (0.0026) & (0.0030) & (0.0057) & (0.0157) \\
-    \midrule
-    Log-Likelihood & -5443.2304 \\
-    AIC & -4.2882 \\
-    BIC & -3.7599 \\
-    HQIC & -4.0825 \\
-    \bottomrule
-    \end{tabular}
-    \caption{Vector Autoregression estimation results, US}
-    \label{tab:VAR_output_US_v2}
-\end{sidewaystable}
+% \begin{sidewaystable}
+%     \centering
+% \begin{tabular}{lrrrrrrrr}
+%         \toprule
+%         {} &        $IP^{US}_{t}$ &   $\pi^{US}_{t}$ &       $i^{US}_{t}$ &       $FS^{US}_{t}$ &         $\hat{L}^{US}_{t}$ &         $\hat{S}^{US}_{t}$ &         $\hat{C}^{US}_{t}$ &   $M^{US}_{t}$ \\
+%         \midrule
+%     $c$ & -0.1651 & 0.2026 & -0.0501 & -0.0345 & 0.5002 & -0.5581 & -0.7174 & 1.5318 \\
+%      & (0.1744) & (0.0529) & (0.0471) & (0.0318) & (0.1138) & (0.1314) & (0.2473) & (0.6817) \\
+%     $IP^{US}_{t-1}$ & 0.8816 & 0.0132 & 0.0086 & 0.0005 & 0.0046 & 0.0025 & -0.0134 & -0.4305 \\
+%      & (0.0137) & (0.0042) & (0.0037) & (0.0025) & (0.0089) & (0.0103) & (0.0194) & (0.0535) \\
+%     $\pi^{US}_{t-1}$ & -0.0477 & 0.9795 & 0.0126 & 0.0058 & 0.0102 & 0.0223 & 0.0039 & -0.4072 \\
+%      & (0.0260) & (0.0079) & (0.0070) & (0.0047) & (0.0169) & (0.0196) & (0.0368) & (0.1014) \\
+%     $i^{US}_{t-1}$ & -0.2730 & -0.0024 & 0.5393 & 0.0220 & -0.0801 & -0.0106 & 0.3227 & -0.1502 \\
+%      & (0.0632) & (0.0192) & (0.0171) & (0.0115) & (0.0413) & (0.0476) & (0.0897) & (0.2471) \\
+%     $FS^{US}_{t-1}$ & -0.6609 & -0.1468 & 0.0521 & 0.8966 & 0.0685 & -0.1480 & -0.2175 & -4.4019 \\
+%      & (0.1260) & (0.0382) & (0.0340) & (0.0230) & (0.0822) & (0.0949) & (0.1787) & (0.4925) \\
+%     $\hat{L}^{US}_{t-1}$ & 0.3604 & -0.0011 & 0.5155 & -0.0237 & 1.0000 & 0.0493 & -0.2522 & 0.5345 \\
+%      & (0.0739) & (0.0224) & (0.0199) & (0.0135) & (0.0482) & (0.0557) & (0.1048) & (0.2888) \\
+%     $\hat{S}^{US}_{t-1}$ & 0.2571 & 0.0431 & 0.5407 & -0.0305 & 0.1206 & 0.9161 & -0.2928 & 0.4040 \\
+%      & (0.0734) & (0.0223) & (0.0198) & (0.0134) & (0.0479) & (0.0553) & (0.1041) & (0.2869) \\
+%     $\hat{C}^{US}_{t-1}$ & 0.0303 & -0.0163 & -0.0158 & 0.0035 & 0.0426 & -0.0156 & 0.8149 & -0.0219 \\
+%      & (0.0191) & (0.0058) & (0.0052) & (0.0035) & (0.0125) & (0.0144) & (0.0271) & (0.0747) \\
+%     $M^{US}_{t}$ & 0.0148 & -0.0030 & -0.0009 & 0.0001 & 0.0001 & -0.0013 & 0.0049 & 0.9086 \\
+%      & (0.0040) & (0.0012) & (0.0011) & (0.0007) & (0.0026) & (0.0030) & (0.0057) & (0.0157) \\
+%     \midrule
+%     Log-Likelihood & -5443.2304 \\
+%     AIC & -4.2882 \\
+%     BIC & -3.7599 \\
+%     HQIC & -4.0825 \\
+%     \bottomrule
+%     \end{tabular}
+%     \caption{Vector Autoregression estimation results, US}
+%     \label{tab:VAR_output_US_v2}
+% \end{sidewaystable}
 
 
 \begin{sidewaysfigure}
     \centering
-    \includegraphics[scale=0.29]{Figures/IRF_US_30_15_v2.pdf}
-    \caption{Impulse Responses, US}
-    \label{fig:IRF_US}
+    \includegraphics[scale=0.29]{Figures/IRF_US_lag_6.pdf}
+    \caption{Impulse Responses VAR(6), US}
+    \label{fig:IRF_US_6}
 \end{sidewaysfigure}
 
 Examining the first direction of the link between the macroeconomy and the yield curve, i.e., yield curve responses to macro shocks, offers some interesting insights. 
@@ -210,68 +241,54 @@ Similarly, the slope factor increases after an aggregate demand shock over time,
 Again, this is in line with standard monetary policy responses to surprises in aggregate demand since bond investors would expect central banks to increase interest rates in the near term as they anticipate higher inflation due to the aggregate demand shock, likely pushing up short-run yields relative to the long-end of the term structure \citep{diebold2006macroeconomy}.
 % The curvature factor - depicting the medium-term maturities of the yield curve - first decreases slightly and then increses.
 A similar response can be observed when looking at aggregate supply shocks (inflation shocks).
-Specifically, the level, curvature as well as the slope factor increase after a surprise increase in US inflation. 
+Specifically, the level, curvature as well as the slope factor increase after a surprise increase in US inflation, though notably, the slope factor initially decreases in the first few months after which it increases over time. 
 The former result can be explained via the aforementioned Fisher effect, where the bond market likely expects higher future inflation when facing a surprise upward tilt in the current inflation rate leading to an increase in yields. 
 This increase in the level factor would correspond to the assumption that inflation expectations are not firmly anchored \citep{diebold2006macroeconomy}. 
 The latter effect is again linked to monetary policy, where higher short-term rates are priced in by investors due to present and likely future expected price level increases, leading to a more negatively sloped yield curve. 
 Interestingly, both phenomena have occurred only recently during the last two years, where inflationary pressures induced by the war in Ukraine led to significant increases in US yields due to the markets expectation of an imminent monetary tightening by the FED, while the yield curve inverted as short-end yields exceeded long-end yields in anticipation of an upcoming recession. 
 The last macro-to-yields shock to consider is a monetary policy shock. 
-While the curvature factor responds only marginally, the level factor decreases as a response to a surprise increase in the federal funds rate (third column). 
+As well as the curvature factor responding by a decrease over time, the level factor marginally increases on impact but then decreases after about a year in response to a surprise increase in the federal funds rate (third column). 
 In this context, contrasting explanations regarding the level factor's response to a monetary policy shock are offered by the literature. 
 Given a central bank has a high degree of credibility and transparency, a surprise monetary tightening could indicate a lower inflation target and thus, induce bond investors to revise their inflation expectations downwards, potentially lowering the level factor, while a surprise tightening could also signal that a central bank is concerned about an overheating economy and an overshooting inflation rate, which would likely result in higher expected inflation and thus, an increasing level factor \citep{diebold2006macroeconomy}. 
 Apparently, the former effect has dominated the latter over the sample period, which does not seem implausible given the high credibility of the Fed. 
 
+%\textbf{note: check response of short-run interest rate to level factor shock in \citet{diebold2006macroeconomy}}
 The other direction of causality to consider is the yields-to-macro channel. 
-Whereas the short-term interest rate does not react to the long-run level factor, its reaction to the slope factor is strikingly high, increasing after a surprise increase in the slope factor, confirming that there is a close connection between the monetary policy instrument and the short-run factor of the yield curve. 
-This result is consistent with the finding by \citet{evans1998monetary}, i.e. that monetary policy primarily affects short-term interest rates with longer-term rates being affected only marginally. 
+The short-term interest rate increases after a shock to both the long-run level factor, as well as the slope factor, where its response to the latter is strikingly high, not only confirming that there is a close connection between the monetary policy instrument and the short-run factor of the yield curve, but also being consistent with the finding by \citet{evans1998monetary}, i.e. that monetary policy primarily affects short-term interest rates with longer-term rates being affected only marginally. 
+Again considering the level factor as depicting agents long-run inflation expectations, it could be argued that monetary authorities increase their policy rate in order to counteract the unanticipated increase in inflation expectations and prevent them from becoming unanchored. 
 In this context, two distinct explanations are offered by the literature. 
-On the one hand, the FED might respond to current yields when setting the short-term rate, whilst on the other hand, market yields very likely respond to new information regarding the macroeconomy in anticipation of monetary policy decisions, and, given the six week cycles of monetary policy decisions, shifts in fixed-income markets presumably precede central bank actions \citep{diebold2006macroeconomy, morales2010real}.
+On the one hand, the FED might respond to current yields when setting the short-term rate, whilst on the other hand, market yields very likely respond to new information regarding the macroeconomy in anticipation of monetary policy decisions, and, given the ordinary six week cycles of monetary policy decisions, shifts in fixed-income markets presumably precede central bank actions \citep{diebold2006macroeconomy, morales2010real}.
 This would, for example, lead to short-end yields to increase in anticipation of an imminent monetary policy tightening due to a surprise increase in aggregate demand.
 Notably, the federal funds rate also responds with an increase to a shock in the curvature factor, though not by the same order of magnitude as compared to a shock to the yield curve slope.  
-Another compelling case to consider is a shock to the level factor, which increases aggregate demand. 
-This is insofar relevant from the economists lens when once again keeping in mind the level factors interpretation as a proxy for inflation expectations. 
+Another compelling case to consider is that a shock to the level factor increases aggregate demand. 
+This is insofar relevant from the economists lens when once again keeping in mind the level factors' interpretation as a proxy for inflation expectations. 
 In this case, an increase in inflation expectations lowers the ex-ante real interest rate, $i^{US}_{t} - \hat{L}^{US}_{t}$, leading to a surge in economic activity - a finding that is consistent with standard DSGE models. 
+Likewise, a shock to the level factor leads to an increase in inflation, which is plausible since a decreasing ex-ante real interest rate should lead to rising aggregate demand, which indeed is the case based on the impulse response in the first row and fifth column - and thus, ceteris paribus, inflation.
+Nonetheless, the response of inflation to a level factor shock is rather muted.
+Interestingly, considering the IRFs based on a VAR(12) in Figure \ref{fig:IRF_US_12}, the response of inflation to a level factor shock is more pronounced an more persistent. 
 In contrast, some rather implausible responses raise questions about the validity of the yields-to-macro results. 
 For example, the response of industrial production to a surprise increase in the yield curve slope does contradict previous findings in the literature. 
 Specifically, an increase in the slope - equivalent to a flattening and potentially inversion of the yield curve - is generally associated with an imminent recession rather than an economic boom. 
 Similarly, assuming an impending recession, one would anticipate inflation to decrease over time in response to a shock to the slope factor.
-Likewise, inflation is expected to increase with a surprise increase in the level factor, since a decreasing ex-ante real interest rate raises aggregate demand - which indeed is the case based on the impulse response in the first row and fifth column - and thus, inflation. 
-In this context, it could be argued that an increase in the level of yields possibly has dampening effects on the economy - similar to contractionary monetary policy - inducing a decrease in inflation, though this effect should likely be in conjunction with a decrease in industrial production.
+Again considering Figure \ref{fig:IRF_US_12}, a shock to the slope factor indeed results in an economic contraction after about a year, though the same response cannot be observed for inflation. 
+% Likewise, inflation is expected to increase with a surprise increase in the level factor, since a decreasing ex-ante real interest rate raises aggregate demand - which indeed is the case based on the impulse response in the first row and fifth column - and thus, inflation. 
+% In this context, it could be argued that an increase in the level of yields possibly has dampening effects on the economy - similar to contractionary monetary policy - inducing a decrease in inflation, though this effect should likely be in conjunction with a decrease in industrial production.
 % , and not an increase as the impulse response of industrial production suggests. 
-Based on the dubious results regarding the slope one could argue that these findings confirm the conclusions of \citet{ang2006does}, where the short-term interest rate dominates the slope of the yield curve when predicting economic activity, at least when comparing the plausibility of the impulse responses for shocks to the short-term interest rate vis-a-vis shocks to the slope in Figure \ref{fig:IRF_US}. 
+Based on these partly dubious results regarding the slope one could argue that these findings confirm the conclusions of \citet{ang2006does}, where the short-term interest rate dominates the slope of the yield curve when predicting economic activity, at least when comparing the plausibility of the impulse responses for shocks to the short-term interest rate vis-a-vis shocks to the slope in Figure \ref{fig:IRF_US_6}. 
 % , where the  economic theory as well as previous findings in the literature. 
-Furthermore, it could be argued that the modelling strategy based on OLS estimates certainly has some limitations and likely leads to partly improbable results. 
+Furthermore, it could be argued that the frequentist modelling strategy based on OLS estimates certainly has some limitations and likely leads to partially improbable results. 
 In this context, it also has to be noted that the yields-to macro responses generally have wider confidence intervals. Hence, it seems that there is more uncertainty involved in the macro responses to yield curve shocks, whereas there is a stronger evidence for the macro-to-yields channel, not only because those responses are associated with relatively less uncertainty, but they are also broadly consistent with economic theory as well as previous results in the related literature. 
 % \textbf{\citet{ang2006does} results regarding slope somewhat confirms their finding that the short rate dominates the slope when predicting economic activity}
 
 
 The remaining impulse responses to consider are the yields-to-yields shocks. 
-Apart from the high persistence in the level and slope factor noted above, some noteworthy observations include the slope factors response to a level factor shock.
-Consistent with the findings of \citet{diebold2006macroeconomy}, a surprise increase in the level factor, i.e. long-run inflation expectations, is associated with loose monetary policy conditions represented by a lowering of the short-end of the yield curve relative to the long-end, synonymous with a steepening of the yield curve.
-% , i.e. a decrease in the slope factor. 
+Apart from the high persistence in the level and slope factor, some noteworthy observations include the slope factors response to a level factor shock.
+Consistent with the findings of \citet{diebold2006macroeconomy}, a surprise increase in the level factor, i.e. long-run inflation expectations, is associated with loose monetary policy conditions represented by a lowering of the short-end of the yield curve relative to the long-end, synonymous with a steepening of the yield curve, i.e., a decrease in the slope factor. 
 Similarly, a surprise increase in the slope factor, possibly as anticipation to a monetary tightening, is associated with an increase of the level factor, corresponding to higher future inflation expectations. 
 
 
 % In order to get an initial quantitative gauge how the yield curve factors and the macro variables are related, Table xxx shows the results of various Granger causality tests conducted for the sample variables. 
 % Though Table xxx shows the individual relationships between the model variables, of higher importance for the research question are the 
-
-
-\begin{table}[!t]
-    \centering
-    \begin{tabular}{lllll}
-    \toprule
-    {} &     t-statistic &      Critical value &                 p-value 
-    \\
-    \midrule
-    Macro-to-Yields &  4.3170 &  1.8818 &  0.0000 &  \\
-    % \midrule
-    Yields-to-Macro &  91.2622 &  1.8818 &  0.0000  \\
-\bottomrule
-    \end{tabular}
-    \caption{Block Granger causality tests, US}
-    \label{tab:granger_us}
-\end{table}
-
 
 
 
@@ -280,11 +297,37 @@ Conveniently, this method enables to indicatively determine whether there is a o
 In the present setting, the macro-to-yields test examines whether the set of macro variables in the model ($IP^{US}_{t}$, $\pi^{US}_{t}$, $i^{US}_{t}$) do Granger cause the estimated yield curve factors ($\hat{L}^{US}_{t}$, $\hat{S}^{US}_{t}$, $\hat{C}^{US}_{t}$), whilst the yields-to-macro test evaluates the presence of a Granger causality in reverse order, namely, if the yield curve factors Granger cause the set of macro variables. 
 Based on Table \ref{tab:granger_us}, depicting the resulting block Granger causality tests, one can conclude that there seems to be a bi-directional link present in the United States, where both macroeconomic variables seem to contain useful information regarding the behavior of the yield curve and, vice versa, the yield curve seems to affect macroeconomic fluctuations. 
 
+\begin{table}[!t]
+    \centering
+    \begin{tabular}{lllll}
+    \toprule
+    {} &     t-statistic &      Critical value &                 p-value 
+    \\
+    \midrule
+    Macro-to-Yields &  78.3778 &  40.1132 &  0.0000 &   \\
+    % \midrule
+    Yields-to-Macro & 1129.6180 &  40.1132 &  0.0000 &  \\
+\bottomrule
+    \end{tabular}
+    \caption{Block Granger causality tests, US}
+    \label{tab:granger_us}
+\end{table}
+
 % Thus, the next step involves analysing macroeconomic and yield curve variables together in a comprehensive structural VAR setting outlined in section \ref{sec:method}. Note that the VAR model is estimated via Ordinary Least Squares (OLS).  
 
 
-\subsubsection{The Yield Curve and the Macroeconomy in the Euro Area}
+\subsection{The Yield Curve and the Macroeconomy in the Euro Area}
 \label{sec:analysis_ea}
+
+Though, starting in January 2004, the sample period is markedly smaller compared to that of the United States, the analysis of the Euro Area nevertheless reveals some further interesting insights into the relationship between the yield curve and the economy.
+Figures \ref{fig:factors_ea}-\ref{fig:curvature_factor_ea} give an initial overview, where the shaded bars represent months where a recession occurred as dated by the CEPR-EABCN Euro Area Business Cycle Dating Committee.\footnote{The corresponding recession dates can be found here \url{https://eabcn.org/dbc/peaksandtroughs/chronology-euro-area-business-cycles}}
+Again Figure \ref{fig:factors_ea} offers a comparison between all three estimated Nelson-Siegel factors over time.
+The level factor has been positive up until 2016, while also exhibiting a decreasing trend for most of the time, especially since 2012, a time period, as mentioned before, marked by QE, negative interest rates, and in the case of the Euro Area, the European debt crisis. 
+Since the start of 2022, where residual inflationary pressures due to the COVID-19 pandemic as well a sharp increase in prices induced by soaring energy prices due to the conflict in Ukraine severely affected the European economy, the level factor has increased quite strongly, surpassing the 2\% mark --- an interesting observation that is not only in line with the above mentioned Fisher effect regarding the relationship between the level effect and inflation, but also best seen in Figure \ref{fig:level_factor_ea}. 
+%With a correlation of 75\%, the slope factor displays a strong co-movement with the curvature factor. 
+%Additionally, the slope factor approaches zero right at the onset of the financial crisis of 2007/08, an indication that it somewhat behaves in line with economic theory signaling a downturn when it inverts, though of course this is the only instance in the sample and by no means conclusive proof.
+% Interestingly, $\hat{L}^{US}_{t}$, has been in positive territory since xx-2022, signalling an imminent recession, which was in this case a false positive. 
+Evidently, the curvature factor has the highest volatility, especially due to the spike in  2008, which could be due to an idiosyncratic shock in the form of the financial crisis, but could also be attributed to the fact that the Euro Area yields are based on a rather diverse pool of issuers with possible unobserved heterogeneity, which could potentially have confounding effects when using the Nelson-Siegel model.
 
 \begin{figure}[!t]
     \centering
@@ -314,26 +357,14 @@ Based on Table \ref{tab:granger_us}, depicting the resulting block Granger causa
     \label{fig:curvature_factor_ea}
 \end{figure}
 
-
-
-Though, starting in January 2004, the sample period is markedly smaller compared to that of the United States, the analysis of the Euro Area nevertheless reveals some further interesting insights into the relationship between the yield curve and the economy.
-Again Figure \ref{fig:factors_ea} offers a comparison between all three estimated Nelson-Siegel factors over time.
-Just like in the US, the level factor has been positive during the whole sample period, while also exhibiting a decreasing trend for most of the time, especially since the mid 2010s, a period, as mentioned before, marked by QE, negative interest rates, and in the case of the Euro Area, the European debt crisis. 
-Since the start of 2022, where residual inflationary pressures due to the COVID-19 pandemic as well a sharp increase in prices induced by soaring energy prices due to the conflict in Ukraine severely affected the European economy, the level factor has increased quite strongly, surpassing the 2\% mark --- an interesting observation that is not only in line with the above mentioned Fisher effect regarding the relationship between the level effect and inflation, but also best seen in Figure \ref{fig:level_factor_ea}. 
-With a correlation of 75\%, the slope factor displays a strong co-movement with the curvature factor. 
-%Additionally, the slope factor approaches zero right at the onset of the financial crisis of 2007/08, an indication that it somewhat behaves in line with economic theory signaling a downturn when it inverts, though of course this is the only instance in the sample and by no means conclusive proof.
-% Interestingly, $\hat{L}^{US}_{t}$, has been in positive territory since xx-2022, signalling an imminent recession, which was in this case a false positive. 
-Evidently, the curvature factor has the highest volatility, especially due to the spike in  May 2011, which could again be due to an idiosyncratic shock in the form of the Euro crisis, but could also be attributed  to the fact that the Euro Area yields are based on a rather diverse pool of issuers with possible unobserved heterogeneity, which could potentially have confounding effects when using the Nelson-Siegel model.
-
 Once more, in order to get an indication of how well the factor estimates represent the yield curve, Figures \ref{fig:level_factor_ea}-\ref{fig:curvature_factor_ea} display the estimated factors, $\hat{L}^{EA}_{t}$, $\hat{S}^{EA}_{t}$, $\hat{C}^{EA}_{t}$, along with their respective empirical proxies. 
-All three estimates exhibit a very strong and significant correlation with their proxies ranging from 74\% ($\hat{L}^{EA}_{t}$) to 86\% ($\hat{C}^{EA}_{t}$), which underlines the suitability of the estimates as accurately representing the level, slope and curvature of the Euro Area yield curve. 
-Interestingly, the correlation between inflation and the level factor in the Euro Area, though not only being non-significant, is negative during the sample period, which certainly would contradict the Fisher effect and the interpretation of the level factor being an approximation for the expected inflation rate. 
-In the context of the Euro Area it is important to again underline that besides the sample being rather limited, four highly idiosyncratic shocks have occurred during that short period of time, i.e. the financial crisis of 2007/08, the European debt crisis starting in 2010, the COVID-19 pandemic starting in 2020 and the ongoing war in Ukraine since February 2022, which likely stretches the rather simplistic approach used in this thesis to its limits. Adding to that the comparatively high heterogeneity of the Euro Area, it is by no means surprising to obtain counterintuitive results. 
-
+All three estimates exhibit a very strong and significant correlation with their proxies ranging from 92\% ($\hat{L}^{EA}_{t}$) to 96\% ($\hat{C}^{EA}_{t}$), which underlines the suitability of the estimates as accurately representing the level, slope and curvature of the Euro Area yield curve. 
+The correlation between inflation and the level factor in the Euro Area, though not only being significant, is 17\% during the sample period, which certainly is consistent with the Fisher effect and the interpretation of the level factor as being an approximation for the expected inflation rate, considering the small sample period and the occurrence of various distinct idiosyncratic shocks. 
 Apart from the estimated slope factor and it's proxy variable, Figure \ref{fig:slope_factor_ea} also includes Euro Area industrial production representing economic activity. The first thing that stands out is the very high variability of industrial production, especially during the onset of the COVID-19 pandemic in early 2020, ranging from -19,91\% to 23,90\%. 
-Though the recession following the financial crisis of 2007/08 was preceded by an upward trend of the estimated slope factor - being consistent with economic theory - the number of economic downturns simply is too small during the short sample to infer any substantial conclusions regarding the validity of the relationship between the term spread and economic activity in the Euro Area.
+Though the recession following the financial crisis of 2007/08 was preceded by an upward trend and the estimated slope factor even assuming positive values shortly before the contraction --- being consistent with economic theory --- the number of economic downturns simply is too small during the short sample to infer any substantial conclusions regarding the validity of the relationship between the term spread and economic activity in the Euro Area. 
+In short, Figures \ref{fig:factors_ea}-\ref{fig:curvature_factor_ea} show that the obtained estimates are very close to their respective proxy variables, and are thus well suited to represent the level, slope and curvature of the Euro Area yield curve. Nevertheless, they have also indicated that the limited sample period of 220 months marked by various distinct exogenous shocks such as he financial crisis of 2007/08, the European debt crisis starting in 2010, the COVID-19 pandemic starting in 2020 and the ongoing war in Ukraine since February 2022 likely stretch the rather simplistic approach used in this thesis to its limits and seems to impede the ability to draw viable conclusions when examining the interactions between macro variables and the term structure.  
 
-In short, Figures \ref{fig:factors_ea}-\ref{fig:curvature_factor_ea} show that the obtained estimates are very close to their respective proxy variables, and are thus well suited to represent the level, slope and curvature of the Euro Area yield curve. Nevertheless, they have also indicated that the limited sample period of 220 months marked by various distinct exogenous shocks seems to impede the ability to draw viable conclusions when examining the interactions between macro variables and the term structure.  
+%In the context of the Euro Area it is important to again underline that besides the sample being rather limited, four highly idiosyncratic shocks have occurred during that short period of time, i.e. the financial crisis of 2007/08, the European debt crisis starting in 2010, the COVID-19 pandemic starting in 2020 and the ongoing war in Ukraine since February 2022, which likely stretches the rather simplistic approach used in this thesis to its limits. Adding to that the comparatively high heterogeneity of the Euro Area, it is by no means surprising to obtain counterintuitive results. 
 % regarding the relationship between the yield curve and the macroeconomy in the Euro Area. 
 
 
@@ -344,27 +375,6 @@ In short, Figures \ref{fig:factors_ea}-\ref{fig:curvature_factor_ea} show that t
 
 % \textbf{Granger Causality Tests?}
 
-\begin{table}[ht]
-    \centering
-    \begin{tabular}{lrrr}
-        \toprule
-        {} &  t-Statistic &  Critical value &  p-value \\
-        \midrule
-        $IP^{EA}_{t}$  &      -3.6453 &         -2.8757 &   0.0050 \\
-        $\pi^{EA}_{t}$ &      -2.1955 &         -2.8757 &   0.2079 \\
-        $i^{EA}_{t}$   &      -1.9314 &         -2.8756 &   0.3174 \\
-        $FS^{EA}_{t}$  &      -5.0570 &         -2.8748 &   0.0000 \\
-        $L^{EA}_{t}$   &      -1.0338 &         -2.8751 &   0.7407 \\
-        $S^{EA}_{t}$   &      -1.3915 &         -2.8751 &   0.5863 \\
-        $C^{EA}_{t}$   &      -1.5053 &         -2.8751 &   0.5309 \\
-        $M^{EA}_{t}$   &      -3.5289 &         -2.8757 &   0.0073 \\
-        \bottomrule
-    \end{tabular}
-    \caption{Augmented Dickey-Fuller (ADF) unit root test, EA}
-    \label{tab:adf_ea}
-\end{table}
-
-
 Nonetheless, in order to study the dynamics between the yield curve and the macroeconomy in the Euro Area, orthogonalized impulse responses have been obtained using the modelling strategy outlined in Section \ref{sec:method}. 
 In order to examine the stationary of the time series involved, Table \ref{tab:adf_ea} shows the results of respective ADF tests for each variable, testing the presence of a unit root at the 5\% significance level. 
 The inflation rate in the Euro Area is not stationary, which is not surprising since the years after the financial crisis of 2007/08 have been marked by a decreasing trend in inflation, while inflation has surged since the start of 2022 due to the ongoing Ukraine war. 
@@ -372,9 +382,9 @@ Similarly, the short-term Euro Area interest rate - the 3-month interbank rate -
 % , while for all other variables the null hypothesis of a unit root is rejected. 
 In contrast to the United States, all three yield curve factors do possess a unit root and are thus, not stationary. 
 Equivalently to the model that has been fitted for the US data, a VAR of order one has been chosen for the Euro Area based on the BIC and HQIC, respectively. 
-Table \ref{tab:VAR_output_EA} shows the estimation results. 
+%Table \ref{tab:VAR_output_EA} shows the estimation results. 
 All coefficients on the main diagonal point to the fact that each time series exhibits a rather high persistence, most notably, the short-term interest rate as well. 
-Hence, while the hypothesis of monetary policy inertia in the context of \citet{rudebusch2005monetary} seems to be rejected for the United States, the ECB seems to act more sluggishly based on the high persistence of the short-term rate even when controlling for the term structure via the Nelson-Siegel factors. 
+
 
 Now, taking Figure \ref{fig:IRF_EA} into consideration, depicting the orthogonal responses to a one unit impulse of each variable involved in the model over a period of 36 month with 90\% confidence bands, there are again four different types of dynamics to evaluate. 
 Among those, the macro-to-macro responses seem to be consistent with standard impulse responses from macro-only models. 
@@ -407,40 +417,40 @@ Overall, as in the US, the yields-to-macro responses in the Euro Area do not alw
 Taking into account the yields-to-yields responses, the slope factor seems to only marginally affect the other two term structure factors, while a shock to the long-run level factor decreases both the slope and curvature factor, respectively.
 The surprise increase in the medium-term curvature factor leads to an increase in the level and slope, where the increase of the level is clearly more pronounced.
 
-\begin{sidewaystable}
-    \centering
-    \begin{tabular}{lrrrrrrrr}
-        \toprule
-        {} &        $IP^{EA}_{t}$ &   $\pi^{EA}_{t}$ &       $i^{EA}_{t}$ &       $FS^{EA}_{t}$ &         $\hat{L}^{EA}_{t}$ &         $\hat{S}^{EA}_{t}$ &         $\hat{C}^{EA}_{t}$ &   $M^{EA}_{t}$ \\
-        \midrule
-        $c$           &  1.2566 &   0.1349 &      0.1196 &  3.3488 &  0.0514 &  0.1131 & -0.3529 &    8.4328 \\
-                &  (0.6388) &   (0.0985) &      (0.0355) &  (1.5143) &  (0.1072) &  (0.1115) &  (0.2697) &    (2.2158) \\
-        $IP^{EA}_{t-1}$        &  0.8892 &   0.0156 &      0.0007 & -0.1784 & -0.0027 &  0.0017 & -0.0137 &    0.1437 \\
-              &  (0.0422) &   (0.0065) &      (0.0023) &  (0.1001) &  (0.0071) &  (0.0074) &  (0.0178) &    (0.1465) \\
-        $\pi^{EA}_{t-}$    & -0.0933 &   0.9983 &      0.0272 &  0.3455 & -0.0007 &  0.0135 &  0.1053 &   -0.7083 \\
-            &  (0.0989) &   (0.0152) &      (0.0055) &  (0.2343) &  (0.0166) &  (0.0172) &  (0.0417) &    (0.3429) \\
-        $i^{EA}_{t-1}$    & -0.5740 &  -0.0884 &      0.9627 &  1.5284 &  0.0275 &  0.0842 &  0.1549 &   -3.4139 \\
-         &  (0.8192) &   (0.1263) &      (0.0455) &  (1.9419) &  (0.1375) &  (0.1429) &  (0.3458) &    (2.8416) \\
-        $FS^{EA}_{t-1}$        & -0.0348 &   0.0030 &     -0.0056 &  0.7429 &  0.0042 & -0.0123 & -0.0093 &   -0.2087 \\
-             &  (0.0230) &   (0.0036) &      (0.0013) &  (0.0546) &  (0.0039) &  (0.0040) &  (0.0097) &    (0.0799) \\
-        $\hat{L}^{EA}_{t-1}$          &  0.4550 &   0.0404 &      0.0188 & -1.2571 &  0.9504 & -0.0918 & -0.1435 &    3.3983 \\
-               &  (0.8775) &   (0.1353) &      (0.0488) &  (2.0801) &  (0.1473) &  (0.1531) &  (0.3704) &    (3.0438) \\
-        $\hat{S}^{EA}_{t-1}$          &  0.0760 &   0.0605 &     -0.0022 & -1.0454 & -0.0330 &  0.8605 &  0.0540 &    2.0348 \\
-               &  (0.8234) &   (0.1269) &      (0.0457) &  (1.9517) &  (0.1382) &  (0.1436) &  (0.3476) &    (2.8559) \\
-        $\hat{C}^{EA}_{t-1}$          &  0.3245 &   0.0258 &      0.0317 & -0.5248 &  0.0417 &  0.0015 &  0.7142 &    1.1557 \\
-               &  (0.1359) &   (0.0210) &      (0.0076) &  (0.3222) &  (0.0228) &  (0.0237) &  (0.0574) &    (0.4715) \\
-        $M^{EA}_{t-1}$      & -0.0024 &   0.0002 &      0.0013 &  0.0383 &  0.0011 & -0.0002 &  0.0051 &    0.8038 \\
-           &  (0.0126) &   (0.0019) &      (0.0007) &  (0.0299) &  (0.0021) &  (0.0022) &  (0.0053) &    (0.0437) \\
-    \midrule
-    Log-Likelihood & -1759.3817 \\
-    AIC            &    -5.9781 \\
-    BIC            &    -4.8639 \\
-    HQIC           &    -5.5281 \\
-    \bottomrule
-    \end{tabular}
-    \caption{Vector Autoregression estimation results, EA}
-    \label{tab:VAR_output_EA}
-\end{sidewaystable}
+% \begin{sidewaystable}
+%     \centering
+%     \begin{tabular}{lrrrrrrrr}
+%         \toprule
+%         {} &        $IP^{EA}_{t}$ &   $\pi^{EA}_{t}$ &       $i^{EA}_{t}$ &       $FS^{EA}_{t}$ &         $\hat{L}^{EA}_{t}$ &         $\hat{S}^{EA}_{t}$ &         $\hat{C}^{EA}_{t}$ &   $M^{EA}_{t}$ \\
+%         \midrule
+%         $c$           &  1.2566 &   0.1349 &      0.1196 &  3.3488 &  0.0514 &  0.1131 & -0.3529 &    8.4328 \\
+%                 &  (0.6388) &   (0.0985) &      (0.0355) &  (1.5143) &  (0.1072) &  (0.1115) &  (0.2697) &    (2.2158) \\
+%         $IP^{EA}_{t-1}$        &  0.8892 &   0.0156 &      0.0007 & -0.1784 & -0.0027 &  0.0017 & -0.0137 &    0.1437 \\
+%               &  (0.0422) &   (0.0065) &      (0.0023) &  (0.1001) &  (0.0071) &  (0.0074) &  (0.0178) &    (0.1465) \\
+%         $\pi^{EA}_{t-}$    & -0.0933 &   0.9983 &      0.0272 &  0.3455 & -0.0007 &  0.0135 &  0.1053 &   -0.7083 \\
+%             &  (0.0989) &   (0.0152) &      (0.0055) &  (0.2343) &  (0.0166) &  (0.0172) &  (0.0417) &    (0.3429) \\
+%         $i^{EA}_{t-1}$    & -0.5740 &  -0.0884 &      0.9627 &  1.5284 &  0.0275 &  0.0842 &  0.1549 &   -3.4139 \\
+%          &  (0.8192) &   (0.1263) &      (0.0455) &  (1.9419) &  (0.1375) &  (0.1429) &  (0.3458) &    (2.8416) \\
+%         $FS^{EA}_{t-1}$        & -0.0348 &   0.0030 &     -0.0056 &  0.7429 &  0.0042 & -0.0123 & -0.0093 &   -0.2087 \\
+%              &  (0.0230) &   (0.0036) &      (0.0013) &  (0.0546) &  (0.0039) &  (0.0040) &  (0.0097) &    (0.0799) \\
+%         $\hat{L}^{EA}_{t-1}$          &  0.4550 &   0.0404 &      0.0188 & -1.2571 &  0.9504 & -0.0918 & -0.1435 &    3.3983 \\
+%                &  (0.8775) &   (0.1353) &      (0.0488) &  (2.0801) &  (0.1473) &  (0.1531) &  (0.3704) &    (3.0438) \\
+%         $\hat{S}^{EA}_{t-1}$          &  0.0760 &   0.0605 &     -0.0022 & -1.0454 & -0.0330 &  0.8605 &  0.0540 &    2.0348 \\
+%                &  (0.8234) &   (0.1269) &      (0.0457) &  (1.9517) &  (0.1382) &  (0.1436) &  (0.3476) &    (2.8559) \\
+%         $\hat{C}^{EA}_{t-1}$          &  0.3245 &   0.0258 &      0.0317 & -0.5248 &  0.0417 &  0.0015 &  0.7142 &    1.1557 \\
+%                &  (0.1359) &   (0.0210) &      (0.0076) &  (0.3222) &  (0.0228) &  (0.0237) &  (0.0574) &    (0.4715) \\
+%         $M^{EA}_{t-1}$      & -0.0024 &   0.0002 &      0.0013 &  0.0383 &  0.0011 & -0.0002 &  0.0051 &    0.8038 \\
+%            &  (0.0126) &   (0.0019) &      (0.0007) &  (0.0299) &  (0.0021) &  (0.0022) &  (0.0053) &    (0.0437) \\
+%     \midrule
+%     Log-Likelihood & -1759.3817 \\
+%     AIC            &    -5.9781 \\
+%     BIC            &    -4.8639 \\
+%     HQIC           &    -5.5281 \\
+%     \bottomrule
+%     \end{tabular}
+%     \caption{Vector Autoregression estimation results, EA}
+%     \label{tab:VAR_output_EA}
+% \end{sidewaystable}
 
 
 \begin{sidewaysfigure}
@@ -477,10 +487,10 @@ leading to the conclusion that again a bi-directional link between the macroecon
 However, when considering the rather implausible and/or insignificant yields-to-macro responses in in Figure \ref{fig:IRF_EA}, this conclusion seems unconvincing. 
 As was the case in the United States, the responses concerned with the macro-to-yields channel in the Euro Area seem more credible and consistent with the literature. 
 
-\subsubsection{Comparing the US and the EA}
+\subsection{Comparing the United States and the Euro Area}
 \label{sec:comparison}
-
-
+While the level factor has been positive over the whole sample in the US, the level factor has been positive and negative during the whole sample period in the EA, while also exhibiting a decreasing trend for most of the time, especially since the mid 2010s, a period, as mentioned before, marked by QE, negative interest rates, and in the case of the Euro Area, the European debt crisis. 
+Hence, while the hypothesis of monetary policy inertia in the context of \citet{rudebusch2005monetary} seems to be rejected for the United States, the ECB seems to act more sluggishly based on the high persistence of the short-term rate even when controlling for the term structure via the Nelson-Siegel factors. 
 
 
 

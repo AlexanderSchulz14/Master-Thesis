@@ -4,95 +4,150 @@
 \subsection{The Nelson-Siegel model}
 \label{sec:n-s_model}
 
-This section is aimed at outlining the methodology applied in this thesis. After giving a comprehensive primer on the aforementioned model of the yield curve established by \citet{nelson1987parsimonious}, the identification strategy for the VAR model containing macroeconomic and yield curve variables is introduced. Lastly, an overview of the data and its sources is offered. 
+This section is aimed at outlining the methodology applied in this thesis. After giving a comprehensive primer on the aforementioned model of the yield curve established by \citet{nelson1987parsimonious}, the identification strategy for the VAR model containing macroeconomic and yield curve variables is introduced.
 
 The first step of the two-step methodological approach involves modelling the yield curve using the Nelson-Siegel three factor model. 
 The genius of the Nelson-Siegel decomposition lies within its flexibility as well as its parsimony. 
-Based on a set of observable yields, the model is able to capture a wide range of yield curve shapes. 
-One of its core strength is its ability to enable analysts to inter- and extrapolate between yields within the sample, thus providing yields for all maturities along the curve.
+Based on a set of observable yields, the model is able to capture a wide range of yield curve shapes in a rather simplistic manner by decomposing the entire term structure solely into three factors.
+Another core strength is its ability to enable analysts to inter- and extrapolate between yields within the sample, thus providing yields for all maturities along the curve.
 As mentioned in section \ref{sec:lit_rev}, the Nelson-Siegel model performs relatively well in out-of sample forecasting.
 What is more, though it does not explicitly ensure the absence of arbitrage, \citet{coroneo2011arbitrage} show that the Nelson-Siegel model aligns with the assumption of no-arbitrage. 
 Given these highly promising attributes, the Nelson-Siegel approach appears to be well suited for the task at hand.
 
-Following the representation of \citet{diebold2006macroeconomy}, the yield curve at any time $t$ is thus assumed to be represented as the \citet{nelson1987parsimonious} model:
+Following the representation of \citet{diebold2006macroeconomy}, while also leaning on the foundational work provided by \citet{diebold2006forecasting}, the yield curve at any time $t$ is thus assumed to be represented as the \citet{nelson1987parsimonious} model:
 
-\usetagform{fn}
-\begin{equation}
-\label{eq:NS_basic}
-    y_{t}(\tau)=\beta_{1t}+\beta_{2t}\left(\frac{1-\mathrm{e}^{-\lambda \tau}}{\lambda \tau}\right)+\beta_{3t}\left(\frac{1-\mathrm{e}^{-\lambda \tau}}{\lambda \tau}-\mathrm{e}^{-\lambda \tau}\right),
-\end{equation}
-\footnotetext{Mathematically, this representation can be thought of as a constant plus a Laguerre function \citep{nelson1987parsimonious}}
-
-where $t=1,\ldots, T$, $y_{t}(\tau)$ is a set of $N$ yields, each with a distinct maturity $\tau$, used for the decomposition, and $\beta_{1t}$, $\beta_{2t}$, $\beta_{3t}$ and $\lambda$ are the parameters to be estimated. 
-The regressors are also known as the factor loadings of the $\beta$ coefficients, where $\lambda$ shows their respective rate of decay. 
-These factor loadings are central for ensuring the flexibility to represent various yield curve shapes. 
-The loading on $\beta_{1t}$ is 1 for all maturities and is thus, interpreted as the long-term factor, while the loading on the second factor, $\beta_{2t}$ starts at 1 and decays monotonically towards 0, and thus can be viewed as a short-term factor. Finally, the loading on the third factor, $\beta_{3t}$, starts at 0, increases, but then decays back to 0, hence, it may be thought of as the medium-term factor \citep{diebold2006forecasting}. The contribution of each factor loading to the overall shape of the estimated yield curve is then given by each respective factor, e.g. $\beta_{1t}$ shows the contribution of the long-term factor, $\beta_{2t}$ that of the short-term component, while $\beta_{3t}$ illustrates the contribution of the medium-term component\citep{nelson1987parsimonious}. 
-
-As described in \citet{nelson1987parsimonious}, the estimation can be conducted in the following way. For a provisional value $\lambda$, the sample values for the factor loadings are calculated. Based thereupon, the best-fitting values of the $\beta$ coefficients are estimated. This procedure is repeated over a grid of values for $\lambda$, yielding the overall best-fitting values for $\lambda$, $\beta_{1t}$, $\beta_{2t}$, and $\beta_{3t}$. 
-
-Conveniently, as demonstrated by \citet{diebold2006forecasting}, the factors $\beta_{1t}$, $\beta_{2t}$, and $\beta_{3t}$ can have economically meaningful interpretations, i.e. they are the time-varying level, slope\footnote{As shown by \citet{diebold2006forecasting}, $\beta_{2t}$, and hence $S_{t}$, equals the negative slope, that is, the difference between short-term and long-term yields} and curvature factors, $L_{t}$, $S_{t}$, $C_{t}$, respectively.
-
-
-Thus, the estimated\footnote{The estimation of the yield curve factors is conducted using the Nelson.Siegel method from the R package \href{https://cran.r-project.org/web/packages/YieldCurve/index.html}{YieldCurve}} model of the yield curve used in this thesis is represented by:
+% Thus, the estimated\footnote{The estimation of the yield curve factors is conducted using the Nelson.Siegel method from the R package \href{https://cran.r-project.org/web/packages/YieldCurve/index.html}{YieldCurve}} model of the yield curve used in this thesis is represented by:
 
 \usetagform{default}
 \begin{equation}
 \label{eq:NS_factor_interpretation}
-    y_{t}(\tau)=L_{t}+S_{t}\left(\frac{1-\mathrm{e}^{-\lambda \tau}}{\lambda \tau}\right)+C_{t}\left(\frac{1-\mathrm{e}^{-\lambda \tau}}{\lambda \tau}-\mathrm{e}^{-\lambda \tau}\right),
+    y_{t}(\tau)=L_{t}+S_{t}\left(\frac{1-\mathrm{e}^{-\lambda \tau}}{\lambda \tau}\right)+C_{t}\left(\frac{1-\mathrm{e}^{-\lambda \tau}}{\lambda \tau}-\mathrm{e}^{-\lambda \tau}\right) + \varepsilon_{t},
 \end{equation}
 
-In a more comprehensive matrix representation, the estimation of the factors is done using the following system of linear equations, where each row corresponds to equation \ref{eq:NS_factor_interpretation} with a specific yield $y_{t}$ and a corresponding maturity $\tau_{N}$ as well as an error term $\varepsilon_{t}(\tau_{N})$:
+where $t=1,\ldots, T$, $y_{t}(\tau)$ is a set of $N$ yields, each with a distinct maturity $\tau$, used for the decomposition, $L_{t}$, $S_{t}$, $C_{t}$ and $\lambda$ are the parameters to be estimated, while $\varepsilon_{t}$ represents the error term.
+The regressors, which are also known as the factor loadings, are central for ensuring the flexibility to represent various yield curve shapes, where $\lambda$ shows their respective rate of decay.
+The loading on  $L_{t}$ is 1 for all maturities,
+%and is thus, interpreted as the long-term factor
+while the loading on the second factor,  $S_{t}$ starts at 1 and decays monotonically towards 0.
+%, and thus can be viewed as a short-term factor. 
+Finally, the loading on the third factor,  $C_{t}$, starts at 0, increases, but then decays back to 0.
+The significance of the $\lambda$ coefficient can be seen in Figure \ref{fig:factor_loadings_lambdas}, illustrating the factor loadings given a set of two different values for the rate of decay.
+While the level factor is 1 regardless of $\lambda$, it is evident that a higher $\lambda$ implies a faster decay towards 0 of the slope and curvature factor loading. 
+As a result, the lower the estimated $\lambda$ coefficient, the higher the loading induced by yields at longer maturities for both the slope and the curvature factor. 
+Moreover, $\lambda$ determines where the loading on $C_{t}$ reaches its maximum, where a lower rate of decay implies a maximum at a relatively longer maturity. 
+In this context, Figure \ref{fig:factor_loadings} offers a concrete example showing the US Treasury yield curve as of December 2019 based on data provided by \citet{liu2021reconstructing} along with the estimated factor loadings. 
+One can see that the yield curve is upward sloping, though there is a clear hump at the short as well as the long-end end.
+The long-term factor is one regardless of the maturity.
+The slope factor is (per definition) at its maximum at the 1-month maturity, decreasing exponentially with increasing maturity, and hence having the highest loadings at the short-end.  
+The medium-term factor is increasing, reaching --- rather prematurely --- its maximum around the 14-month maturity, after which it is decreasing towards 0.
 
-\usetagform{fn}
-\begin{equation}
-\left(\begin{array}{c}
-y_t\left(\tau_1\right) \\
-y_t\left(\tau_2\right) \\
-\vdots \\
-y_t\left(\tau_N\right)
-\end{array}\right)=\left(\begin{array}{ccc}
-1 & \frac{1-\mathrm{e}^{-\tau_1 \lambda}}{\tau_1 \lambda} & \frac{1-\mathrm{e}^{-\tau_1 \lambda}}{\tau_1 \lambda}-\mathrm{e}^{-\tau_1 \lambda} \\
-1 & \frac{1-\mathrm{e}^{-\tau_2 \lambda}}{\tau_2 \lambda} & \frac{1-\mathrm{e}^{-\tau_2 \lambda}}{\tau_2 \lambda}-\mathrm{e}^{-\tau_2 \lambda} \\
-\vdots & \vdots & \vdots \\
-1 & \frac{1-\mathrm{e}^{-\tau_N \lambda}}{\tau_N \lambda} & \frac{1-\mathrm{e}^{-\tau_N \lambda}}{\tau_N \lambda}-\mathrm{e}^{-\tau_N \lambda}
-\end{array}\right)\left(\begin{array}{c}
-L_t \\
-S_t \\
-C_t
-\end{array}\right)+\left(\begin{array}{c}
-\varepsilon_t\left(\tau_1\right) \\
-\varepsilon_t\left(\tau_2\right) \\
-\vdots \\
-\varepsilon_t\left(\tau_N\right)
-\end{array}\right)
-\end{equation}
-\footnotetext{This corresponds to the measurement equation in \citet{diebold2006macroeconomy}}
+As shown by \citet{diebold2006forecasting}, the regression coefficients can have economically meaningful interpretations, i.e. they are the time-varying level ($L_{t}$), slope 
+%
+($S_{t}$)\footnote{As shown by \citet{diebold2006forecasting}, $S_{t}$ equals the negative slope, that is, the difference between short-term and long-term yields} 
+%
+and curvature ($C_{t}$) factors, respectively. 
+% , where $\lambda$ shows the rate of decay of each individual factor loading.
+What is more, $L_{t}$ can be thought of as the long-term factor since the loading is identical for all maturities, implying that an increase in the level factor increases all yields across the entire yield curve.
+%in a term structure setting represented by equation \ref{eq:NS_factor_interpretation}.
+%, hence governing the overall level of yields. 
+By contrast, the slope factor is interpreted as the short-term factor since short-term rates induce a heavier loading on  $S_{t}$, thereby changing the slope of the yield curve.
+Similarly, the curvature factor is considered as the medium-term component since medium-term yields tend to have the highest loading, while simultaneously an increase in $C_{t}$ will mainly increase medium-term yields.
+%\citep{diebold2006forecasting}.
+%, hence, it may be thought of as the medium-term factor. 
+The contribution of each factor loading to the overall shape of the estimated yield curve is thus given by each respective factor, e.g.  $L_{t}$ shows the contribution of the long-term factor,  $S_{t}$ that of the short-term component, while  $C_{t}$ illustrates the contribution of the medium-term component \citep{nelson1987parsimonious}.
 
-Thus, for each time period $t$, a level, slope and curvature factor is estimated based on the prevailing yields contained in vector $y_{t}$ with distinct maturities $\tau_{N}$. 
-Consequently, the $L_{t}$, $S_{t}$ and $C_{t}$ factors are assumed to be an approximate representation of the yield curve at any given time $t$ and, together with the macroeconomic variables, are included in a VAR(p) model aimed at studying the link between the economy and the yield curve. 
+
+% \usetagform{fn}
+% \begin{equation}
+% \label{eq:NS_basic}
+%     y_{t}(\tau)=\beta_{1t}+\beta_{2t}\left(\frac{1-\mathrm{e}^{-\lambda \tau}}{\lambda \tau}\right)+\beta_{3t}\left(\frac{1-\mathrm{e}^{-\lambda \tau}}{\lambda \tau}-\mathrm{e}^{-\lambda \tau}\right),
+% \end{equation}
+% \footnotetext{Mathematically, this representation can be thought of as a constant plus a Laguerre function \citep{nelson1987parsimonious}}
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=15cm]{Figures/Factor_Loadings_Lambdas.pdf}
+    \caption{Exemplary Nelson Siegel Factor Loadings}
+    \label{fig:factor_loadings_lambdas}
+    
+\end{figure}
+
+As described in \citet{nelson1987parsimonious}, the estimation\footnote{The estimation of the yield curve factors in this thesis is conducted using the Nelson.Siegel method from the R package \href{https://cran.r-project.org/web/packages/YieldCurve/index.html}{YieldCurve}} can be conducted in the following way. For a provisional value $\lambda$, the sample values for the factor loadings are calculated. Based thereupon, the best-fitting yield curve factors are estimated using ordinary least squares (OLS). This procedure is repeated over a grid of values for $\lambda$, yielding the overall best-fitting values for $\lambda$, $L_{t}$, $S_{t}$, and $C_{t}$. 
+Alternatively, $\lambda$ can be chosen beforehand after which the best fitting Nelson-Siegel factors are estimated based on the imposed loadings at a specific maturity.
+As done by \citet{Fischer_et_al_2023} --- based on the work by \citet{diebold2006forecasting} --- the estimation of the three yield curve factors in this thesis is implemented by setting the rate of decay to $\lambda = 0.7308$ and fitting the Nelson-Siegel model to the prevailing yield curve for each time period $t$ in the sample, resulting in the best fitting a level ($L_{t}$), slope ($S_{t}$) and curvature ($C_{t}$) factors, respectively.
+%, i.e., the zero-coupon yields contained in vector $y_{t}$ at different maturities $\tau_{N}$. 
+Consequently, these factors are assumed to be an approximate representation of the yield curve at any given time $t$ ---dramatically reducing the dimensionality compared to including each yield separately --- and, together with the macroeconomic variables, are included in a VAR(p) model aimed at studying the link between the economy and the yield curve. 
+% In a more comprehensive matrix representation, the estimation of the factors is done using the following system of linear equations, where each row corresponds to equation \ref{eq:NS_factor_interpretation} with a specific yield $y_{t}$ and a corresponding maturity $\tau_{N}$ as well as an error term $\varepsilon_{t}(\tau_{N})$:
+
+% \usetagform{fn}
+% \begin{equation}
+% \left(\begin{array}{c}
+% y_t\left(\tau_1\right) \\
+% y_t\left(\tau_2\right) \\
+% \vdots \\
+% y_t\left(\tau_N\right)
+% \end{array}\right)=\left(\begin{array}{ccc}
+% 1 & \frac{1-\mathrm{e}^{-\tau_1 \lambda}}{\tau_1 \lambda} & \frac{1-\mathrm{e}^{-\tau_1 \lambda}}{\tau_1 \lambda}-\mathrm{e}^{-\tau_1 \lambda} \\
+% 1 & \frac{1-\mathrm{e}^{-\tau_2 \lambda}}{\tau_2 \lambda} & \frac{1-\mathrm{e}^{-\tau_2 \lambda}}{\tau_2 \lambda}-\mathrm{e}^{-\tau_2 \lambda} \\
+% \vdots & \vdots & \vdots \\
+% 1 & \frac{1-\mathrm{e}^{-\tau_N \lambda}}{\tau_N \lambda} & \frac{1-\mathrm{e}^{-\tau_N \lambda}}{\tau_N \lambda}-\mathrm{e}^{-\tau_N \lambda}
+% \end{array}\right)\left(\begin{array}{c}
+% L_t \\
+% S_t \\
+% C_t
+% \end{array}\right)+\left(\begin{array}{c}
+% \varepsilon_t\left(\tau_1\right) \\
+% \varepsilon_t\left(\tau_2\right) \\
+% \vdots \\
+% \varepsilon_t\left(\tau_N\right)
+% \end{array}\right)
+% \end{equation}
+% \footnotetext{This corresponds to the measurement equation in \citet{diebold2006macroeconomy}}
+
+
+
+
+
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=15cm]{Figures/Factor_Loadings_Plot.pdf}
+    \caption{Actual Nelson Siegel Factor Loadings}
+    \label{fig:factor_loadings}
+
+    \begin{minipage}{.7\linewidth}
+    \footnotesize
+    \medskip
+    \emph{Note:} This figure provides a graphical illustration of the Nelson Siegel factor loadings based on the US Treasury yield curve as of January 2022 ($\lambda = 0.7308$).
+    \end{minipage}
+    
+\end{figure}
+
+
+
 
 \subsection{Vector autoregression}
 
 % \textbf{VAR description + variable ordering $\Rightarrow$ ecbwp1276}
 
-Aforesaid VAR(p) model forms the second step of the analysis and is represented in the following way:
+Aforesaid VAR(p) model forms the second step of the analysis and --- ignoring the vector containing the intercept terms $c$ --- is represented in the following way:
 % After the extraction of the three factors, the corresponding time series of the factors are included in a 
 \usetagform{default}
 \begin{equation}
-\mathbf{Y}_t=\mathbf{c}+\sum_{p=1}^p 
-\mathbf{A}_p \mathbf{Y}_{t-p}+\mathbf{\varepsilon_t}, \ \mathbf{\varepsilon_t} \sim \mathcal{N}\left(0, \Sigma_{\varepsilon}\right),
+\bm{Y}_{t}=\sum_{p=1}^p 
+\bm{A}_{p} \mathbf{Y}_{t-p}+\bm{\varepsilon}_{t}, \ \bm{\varepsilon}_{t} \sim \mathcal{N}\left(0, \bm{\Sigma_{\varepsilon}}\right),
 \end{equation}
 where $Y_{t}$ denotes the $(K \times 1)$ matrix containing $K$ endogenous variables, $c$ is a $(K \times 1)$ vector of intercept terms, $p$ denotes the maximum lag length, $A_{p}$ is a $(K \times K)$ matrix of the autoregressive coefficients for lag length $p$ and $\varepsilon_{t}$ is a $(K \times 1)$ matrix of the reduced-form error terms. 
 
-The identification strategy is based on a structural VAR approach using contemporary recursive restrictions via a Cholesky decomposition of the variance-covariance matrix of the reduced-form errors $\Sigma_{\varepsilon}$. Largely following the notation of \citet{kilian2017structural}, the representation of the structural VAR, ignoring the intercept vector $c$, as well as the relationship between the reduced-form and structural form VAR can be seen by:
+The identification strategy is based on a structural VAR approach using contemporary recursive restrictions via a Cholesky decomposition of the variance-covariance matrix of the reduced-form errors $\Sigma_{\varepsilon}$. Largely following the notation of \citet{kilian2017structural}, the representation of the structural VAR --- again ignoring the intercept vector $c$ --- as well as the relationship between the reduced-form and structural form VAR can be seen by:
 
 \usetagform{default}
 \begin{equation}
 \label{eq:structural_VAR}
     \begin{split}
-   \mathbf{B}_{0}\mathbf{Y}_t= \mathbf{B}_p \mathbf{Y}_{t-p}+\mathbf{\omega_t}, \ \mathbf{\omega_{t}} \sim \mathcal{N}\left(0, \mathbf{I}\right), \\
+   \bm{B}_{0}\bm{Y}_{t}= \bm{B}_{p} \bm{Y}_{t-p}+\bm{\omega}_{t}, \ \bm{\omega}_{t} \sim \mathcal{N}\left(0, \bm{I}\right), \\
    \\
-    \underbrace{\mathbf{B}^{-1}_{0}\mathbf{B}_{0}}_{\mathbf{I}}\mathbf{Y}_t= \underbrace{\mathbf{B}^{-1}_{0}\mathbf{B}_p}_{\mathbf{A_p}} \mathbf{Y}_{t-p}+\underbrace{\mathbf{B}^{-1}_{0}\mathbf{\omega_t}}_{\mathbf{\varepsilon_{t}}},
+    \underbrace{\bm{B}^{-1}_{0}\bm{B}_{0}}_{\bm{I}}\bm{Y}_{t}= \underbrace{\bm{B}^{-1}_{0}\bm{B}_{p}}_{\bm{A}_{p}} \bm{Y}_{t-p}+\underbrace{\bm{B}^{-1}_{0}\bm{\omega}_{t}}_{\bm{\varepsilon}_{t}},
     \end{split} 
 \end{equation}
 
